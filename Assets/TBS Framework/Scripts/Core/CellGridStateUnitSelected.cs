@@ -42,9 +42,9 @@ class CellGridStateUnitSelected : CellGridState
         if (unit.Equals(_unit) || unit.isMoving)
             return;
 
-        if (_unitsInRange.Contains(unit) && _unit.ActionPoints > 0)
+        if (_unitsInRange.Contains(unit) && _unit.currentAtt.actionPoints > 0)
         {
-            _unit.DealDamage(unit);
+            _unit.onAttack(unit);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
 
@@ -97,21 +97,21 @@ class CellGridStateUnitSelected : CellGridState
             cell.MarkAsReachable();
         }
 
-        if (_unit.ActionPoints <= 0) return;
+        if (_unit.currentAtt.actionPoints <= 0) return;
 
         foreach (var currentUnit in _cellGrid.Units)
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
                 continue;
         
-            if (_unit.IsUnitAttackable(currentUnit,_unit.Cell))
+            if (_unit.isUnitReachable(currentUnit,_unit.Cell))
             {
                 currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
                 _unitsInRange.Add(currentUnit);
             }
         }
         
-        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.MovementPoints).Count == 0 
+        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0 
             && _unitsInRange.Count == 0)
             _unit.SetState(new UnitStateMarkedAsFinished(_unit));
     }

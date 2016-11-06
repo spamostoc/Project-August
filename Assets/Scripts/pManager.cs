@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 //using UnityEngine.SceneManagement;
 
 public class pManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class pManager : MonoBehaviour
 
     public static pManager pDataManager;
 
-    private int testNumber;
+    public List<mech> playerMechs;
 
     // Use this for initialization
     void Awake()
@@ -23,25 +24,24 @@ public class pManager : MonoBehaviour
         }
     }
 
-    void Start()
+    public void makeTestMech()
     {
-        this.testNumber = 1;
-        //SceneManager.LoadScene("Main Menu");
+        mech newMech = this.transform.gameObject.AddComponent<mech>();
+        playerMechs = new List<mech>();
+
+        attributes newAtt = new attributes();
+
+        newAtt.health = 10;
+        newAtt.movementPoints = 3;
+        newAtt.actionPoints = 1;
+
+        newMech.Initialize();
+
+        newMech.att.setTo(newAtt);
+
+        newMech.MovementSpeed = 5;
+
+        this.playerMechs.Add(newMech);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void setTestNumber(int num)
-    {
-        this.testNumber = num;
-    }
-
-    public int getTestNumber()
-    {
-        return this.testNumber;
-    }
 }

@@ -6,13 +6,13 @@ public class mainMenuScript : MonoBehaviour {
 
     public void loadScene(int index)
     {
-        Debug.Log( "ptest number is :" + pManager.pDataManager.getTestNumber());
+        //Debug.Log( "ptest number is :" + pManager.pDataManager.getTestNumber());
         SceneManager.LoadScene(index);
     }
 
     public void loadScene(string levelName)
     {
-        Debug.Log("ptest number is :" + pManager.pDataManager.getTestNumber());
+        //Debug.Log("ptest number is :" + pManager.pDataManager.getTestNumber());
         SceneManager.LoadScene(levelName);
     }
 

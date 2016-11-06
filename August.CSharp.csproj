@@ -69,8 +69,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\attributes.cs" />
+    <Compile Include="Assets\Scripts\hanger.cs" />
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
+    <Compile Include="Assets\Scripts\mech.cs" />
+    <Compile Include="Assets\Scripts\mechPart.cs" />
+    <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\Scripts\pManager.cs" />
+    <Compile Include="Assets\Scripts\unitBase.cs" />
     <Compile Include="Assets\Scripts\vnManager.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\AStarPathfinding.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\BreadthFirstSearch.cs" />
@@ -112,28 +118,10 @@
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitStateMarkedAsReachableEnemy.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitStateMarkedAsSelected.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitStateNormal.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\Archer.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\AttackBuff.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\BuffSpawner.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\DefenceBuff.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\GuiController.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\HealingBuff.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\Hero.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\MyHexagon.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\MyUnit.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\Paladin.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\RandomObstacleGenerator.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example1\Spearman.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\Alien.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\FlyingAlien.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\MyOtherHexagon.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\OtherGuiController.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example3\GenericUnit.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example3\MySquare.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Example3\NextGuiController.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Tutorial\GUIController.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Tutorial\SampleSquare.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Tutorial\SampleUnit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />

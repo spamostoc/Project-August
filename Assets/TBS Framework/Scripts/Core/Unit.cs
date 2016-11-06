@@ -7,12 +7,13 @@ using System.Collections;
 /// <summary>
 /// Base class for all units in the game.
 /// </summary>
-public abstract class Unit : MonoBehaviour
+public abstract class Unit : unitBase
 {
     /// <summary>
     /// UnitClicked event is invoked when user clicks the unit. It requires a collider on the unit game object to work.
     /// </summary>
     public event EventHandler UnitClicked;
+    public event EventHandler UnitRightClicked;
     /// <summary>
     /// UnitSelected event is invoked when user clicks on unit that belongs to him. It requires a collider on the unit game object to work.
     /// </summary>
@@ -33,44 +34,28 @@ public abstract class Unit : MonoBehaviour
         UnitState.MakeTransition(state);
     }
 
-    public List<Buff> Buffs { get; private set; }
 
-    public int TotalHitPoints { get; private set; }
-    protected int TotalMovementPoints;
-    protected int TotalActionPoints;
+    public attributes currentAtt;
+    
+    public int AttackRange;
+    public int AttackFactor;
 
     /// <summary>
     /// Cell that the unit is currently occupying.
     /// </summary>
     public Cell Cell { get; set; }
-
-    public int HitPoints;
-    public int AttackRange;
-    public int AttackFactor;
-    public int DefenceFactor;
-    /// <summary>
-    /// Determines how far on the grid the unit can move.
-    /// </summary>
-    public int MovementPoints;
     /// <summary>
     /// Determines speed of movement animation.
     /// </summary>
     public float MovementSpeed;
     /// <summary>
-    /// Determines how many attacks unit can perform in one turn.
-    /// </summary>
-    public int ActionPoints;
-
-    /// <summary>
     /// Indicates the player that the unit belongs to. Should correspoond with PlayerNumber variable on Player script.
     /// </summary>
     public int PlayerNumber;
-
     /// <summary>
     /// Indicates if movement animation is playing.
     /// </summary>
     public bool isMoving { get; set; }
-
     private static IPathfinding _pathfinder = new AStarPathfinding();
 
     /// <summary>
@@ -78,19 +63,117 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void Initialize()
     {
-        Buffs = new List<Buff>();
+        base.initialize();
+        if (null == UnitState)
+        {
+            UnitState = new UnitStateNormal(this);
+        }
 
-        UnitState = new UnitStateNormal(this);
+        if (null == this.currentAtt)
+        {
+            this.currentAtt = new attributes();
+        }
 
-        TotalHitPoints = HitPoints;
-        TotalMovementPoints = MovementPoints;
-        TotalActionPoints = ActionPoints;
+        this.currentAtt.health = this.getTotalHealth();
+        this.currentAtt.movementPoints = this.getTotalMovementPoints();
+        this.currentAtt.actionPoints = this.getTotalActionPoints();
+
     }
 
-    protected virtual void OnMouseDown()
+    /// <summary>
+    /// Method is called at the start of each turn.
+    /// </summary>
+    public virtual new void onTurnStart()
     {
-        if (UnitClicked != null)
+        base.onTurnStart();
+        this.currentAtt.movementPoints = this.getTotalMovementPoints();
+        this.currentAtt.actionPoints = this.getTotalActionPoints();
+
+        SetState(new UnitStateMarkedAsFriendly(this));
+    }
+    /// <summary>
+    /// Method is called at the end of each turn.
+    /// </summary>
+    public virtual new void onTurnEnd()
+    {
+        base.onTurnEnd();
+
+        SetState(new UnitStateNormal(this));
+    }
+    /// <summary>
+    /// Method is called when units HP drops below 1.
+    /// </summary>
+    protected virtual new void onDeath()
+    {
+        base.onDeath();
+        Cell.IsTaken = false;
+        MarkAsDestroyed();
+        Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
+    /// </summary>
+    public virtual new bool isUnitReachable(Unit other, Cell sourceCell)
+    {
+        if (sourceCell.GetDistance(other.Cell) <= AttackRange)
+            return true;
+
+        return false;
+    }
+    /// <summary>
+    /// Method deals damage to unit given as parameter.
+    /// </summary>
+    public virtual new void onAttack(Unit other)
+    {
+        base.onAttack(other);
+        if (isMoving)
+            return;
+        if (this.currentAtt.actionPoints == 0)
+            return;
+        if (!isUnitReachable(other, Cell))
+            return;
+
+        MarkAsAttacking(other);
+        this.currentAtt.actionPoints--;
+        other.onDefend(this, AttackFactor);
+
+        if (this.currentAtt.actionPoints == 0)
+        {
+            SetState(new UnitStateMarkedAsFinished(this));
+            this.currentAtt.movementPoints = 0;
+        }  
+    }
+    /// <summary>
+    /// Attacking unit calls Defend method on defending unit. 
+    /// </summary>
+    protected virtual void onDefend(Unit other, int damage)
+    {
+        base.onDefend(other);
+        MarkAsDefending(other);
+        //this.currentAtt.health -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
+        //This behaviour can be overridden in derived classes.
+        this.currentAtt.health -= damage;
+
+        if (UnitAttacked != null)
+            UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
+
+        if (this.currentAtt.health <= 0)
+        {
+            if (UnitDestroyed != null)
+                UnitDestroyed.Invoke(this, new AttackEventArgs(other, this, damage));
+            onDeath();
+        }
+    }
+
+
+
+    protected virtual void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(0) && UnitClicked != null)
             UnitClicked.Invoke(this, new EventArgs());
+        if (Input.GetMouseButtonDown(1) && UnitRightClicked != null)
+            UnitRightClicked.Invoke(this, new EventArgs());
     }
     protected virtual void OnMouseEnter()
     {
@@ -101,37 +184,6 @@ public abstract class Unit : MonoBehaviour
     {
         if (UnitDehighlighted != null)
             UnitDehighlighted.Invoke(this, new EventArgs());
-    }
-
-    /// <summary>
-    /// Method is called at the start of each turn.
-    /// </summary>
-    public virtual void OnTurnStart()
-    {
-        MovementPoints = TotalMovementPoints;
-        ActionPoints = TotalActionPoints;
-
-        SetState(new UnitStateMarkedAsFriendly(this));
-    }
-    /// <summary>
-    /// Method is called at the end of each turn.
-    /// </summary>
-    public virtual void OnTurnEnd()
-    {
-        Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
-        Buffs.RemoveAll(b => b.Duration == 0);
-        Buffs.ForEach(b => { b.Duration--; });
-
-        SetState(new UnitStateNormal(this));
-    }
-    /// <summary>
-    /// Method is called when units HP drops below 1.
-    /// </summary>
-    protected virtual void OnDestroyed()
-    {
-        Cell.IsTaken = false;
-        MarkAsDestroyed();
-        Destroy(gameObject);
     }
 
     /// <summary>
@@ -153,71 +205,22 @@ public abstract class Unit : MonoBehaviour
             UnitDeselected.Invoke(this, new EventArgs());
     }
 
-    /// <summary>
-    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
-    /// </summary>
-    public virtual bool IsUnitAttackable(Unit other, Cell sourceCell)
-    {
-        if (sourceCell.GetDistance(other.Cell) <= AttackRange)
-            return true;
-
-        return false;
-    }
-    /// <summary>
-    /// Method deals damage to unit given as parameter.
-    /// </summary>
-    public virtual void DealDamage(Unit other)
-    {
-        if (isMoving)
-            return;
-        if (ActionPoints == 0)
-            return;
-        if (!IsUnitAttackable(other, Cell))
-            return;
-
-        MarkAsAttacking(other);
-        ActionPoints--;
-        other.Defend(this, AttackFactor);
-
-        if (ActionPoints == 0)
-        {
-            SetState(new UnitStateMarkedAsFinished(this));
-            MovementPoints = 0;
-        }  
-    }
-    /// <summary>
-    /// Attacking unit calls Defend method on defending unit. 
-    /// </summary>
-    protected virtual void Defend(Unit other, int damage)
-    {
-        MarkAsDefending(other);
-        HitPoints -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
-                                                                      //This behaviour can be overridden in derived classes.
-        if (UnitAttacked != null)
-            UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
-
-        if (HitPoints <= 0)
-        {
-            if (UnitDestroyed != null)
-                UnitDestroyed.Invoke(this, new AttackEventArgs(other, this, damage));
-            OnDestroyed();
-        }
-    }
-
     public virtual void Move(Cell destinationCell, List<Cell> path)
     {
         if (isMoving)
             return;
 
         var totalMovementCost = path.Sum(h => h.MovementCost);
-        if (MovementPoints < totalMovementCost)
+        if (this.currentAtt.movementPoints < totalMovementCost)
             return;
 
-        MovementPoints -= totalMovementCost;
+        this.currentAtt.movementPoints -= totalMovementCost;
 
         Cell.IsTaken = false;
         Cell = destinationCell;
         destinationCell.IsTaken = true;
+
+        Debug.Log("movement speed val: " + this.MovementSpeed);
 
         if (MovementSpeed > 0)
             StartCoroutine(MovementAnimation(path));
@@ -227,10 +230,11 @@ public abstract class Unit : MonoBehaviour
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));    
     }
+
     protected virtual IEnumerator MovementAnimation(List<Cell> path)
     {
         isMoving = true;
-
+        Debug.Log("do move");
         path.Reverse();
         foreach (var cell in path)
         {
@@ -264,9 +268,9 @@ public abstract class Unit : MonoBehaviour
     public List<Cell> GetAvailableDestinations(List<Cell> cells)
     {
         var ret = new List<Cell>();
-        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= MovementPoints);
+        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= this.currentAtt.movementPoints);
 
-        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= MovementPoints);
+        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= this.currentAtt.movementPoints);
         traversableCells.Add(Cell);
 
         foreach (var cellInRange in cellsInMovementRange)
@@ -275,7 +279,7 @@ public abstract class Unit : MonoBehaviour
 
             var path = FindPath(traversableCells, cellInRange);
             var pathCost = path.Sum(c => c.MovementCost);
-            if (pathCost > 0 && pathCost <= MovementPoints)
+            if (pathCost > 0 && pathCost <= this.currentAtt.movementPoints)
                 ret.AddRange(path);
         }
         return ret.FindAll(IsCellMovableTo).Distinct().ToList();

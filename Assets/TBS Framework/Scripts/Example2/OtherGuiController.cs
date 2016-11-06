@@ -31,7 +31,7 @@ class OtherGuiController : MonoBehaviour
 
         OnUnitDehighlighted(sender, e);
 
-        if ((sender as Unit).HitPoints <= 0) return;
+        if ((sender as Unit).currentAtt.health <= 0) return;
 
         OnUnitHighlighted(sender, e);
     }
@@ -82,10 +82,10 @@ class OtherGuiController : MonoBehaviour
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
         var attack = (sender as Unit).AttackFactor;
-        var defence = (sender as Unit).DefenceFactor;
+        var defence = 0;
         var range = (sender as Unit).AttackRange;
 
-        float hpScale = (float)((float)(sender as Unit).HitPoints / (float)(sender as Unit).TotalHitPoints);
+        float hpScale = (sender as Unit).currentAtt.health / (sender as Unit).getTotalHealth();
 
         Image fullHpBar = Instantiate(FullHPBar);
         Image emptyHpBar = Instantiate(EmptyHPBar);

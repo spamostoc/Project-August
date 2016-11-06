@@ -7,6 +7,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
 {
     public Transform UnitsParent;
     public Transform CellsParent;
+    public Transform Alien4;
 
     /// <summary>
     /// Returns units that are already children of UnitsParent object.
@@ -14,6 +15,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
     public List<Unit> SpawnUnits(List<Cell> cells)
     {
         List<Unit> ret = new List<Unit>();
+        spawnTestUnit();
         for (int i = 0; i < UnitsParent.childCount; i++)
         {
             var unit = UnitsParent.GetChild(i).GetComponent<Unit>();
@@ -60,6 +62,24 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                 unit.position = closestCell.transform.position - offset;
             }//Unit gets snapped to the nearest cell
         }
+    }
+
+    public Transform spawnTestUnit()
+    {
+        if(pManager.pDataManager.playerMechs.Count <= 0)
+        {
+            return null;
+        }
+
+        Transform ret = (Transform) Instantiate(Alien4, new Vector3(18, 18, -1), Quaternion.identity, UnitsParent);
+        if (pManager.pDataManager.playerMechs.Count > 0)
+        {
+            //ret.GetComponent<mech>().Initialize();
+            Debug.Log(pManager.pDataManager.playerMechs[0]);
+            ret.GetComponent<mech>().copyFrom(pManager.pDataManager.playerMechs[0]);
+        }
+
+        return ret;
     }
 }
 

@@ -33,7 +33,7 @@ public class NaiveAiPlayer : Player
             var unitsInRange = new List<Unit>();
             foreach (var enemyUnit in enemyUnits)
             {
-                if (unit.IsUnitAttackable(enemyUnit,unit.Cell))
+                if (unit.isUnitReachable(enemyUnit,unit.Cell))
                 {
                     unitsInRange.Add(enemyUnit);
                 }
@@ -41,7 +41,7 @@ public class NaiveAiPlayer : Player
             if (unitsInRange.Count != 0)
             {
                 var index = _rnd.Next(0, unitsInRange.Count);
-                unit.DealDamage(unitsInRange[index]);
+                unit.onAttack(unitsInRange[index]);
                 yield return new WaitForSeconds(0.5f);
                 continue;
             }//If there is an enemy in range, attack it.
@@ -50,10 +50,10 @@ public class NaiveAiPlayer : Player
             
             foreach (var enemyUnit in enemyUnits)
             {
-                potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.IsUnitAttackable(enemyUnit, c))); 
+                potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.isUnitReachable(enemyUnit, c))); 
             }//Making a list of cells that the unit can attack from.
       
-            var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.MovementPoints);
+            var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.currentAtt.movementPoints);
             potentialDestinations = potentialDestinations.Except(notInRange).ToList();
 
             if (potentialDestinations.Count == 0 && notInRange.Count !=0)
@@ -70,7 +70,7 @@ public class NaiveAiPlayer : Player
                     shortestPath = path;
 
                 var pathCost = path.Sum(h => h.MovementCost);
-                if (pathCost > 0 && pathCost <= unit.MovementPoints)
+                if (pathCost > 0 && pathCost <= unit.currentAtt.movementPoints)
                 {
                     unit.Move(potentialDestination, path);
                     while (unit.isMoving)
@@ -87,7 +87,7 @@ public class NaiveAiPlayer : Player
                 {
                     var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
                     var pathCost = path.Sum(h => h.MovementCost);
-                    if (pathCost > 0 && pathCost <= unit.MovementPoints)
+                    if (pathCost > 0 && pathCost <= unit.currentAtt.movementPoints)
                     {
                         unit.Move(potentialDestination, path);
                         while (unit.isMoving)
@@ -101,9 +101,9 @@ public class NaiveAiPlayer : Player
             foreach (var enemyUnit in enemyUnits)
             {
                 var enemyCell = enemyUnit.Cell;
-                if (unit.IsUnitAttackable(enemyUnit,unit.Cell))
+                if (unit.isUnitReachable(enemyUnit,unit.Cell))
                 { 
-                    unit.DealDamage(enemyUnit);
+                    unit.onAttack(enemyUnit);
                     yield return new WaitForSeconds(0.5f);
                     break;
                 }
