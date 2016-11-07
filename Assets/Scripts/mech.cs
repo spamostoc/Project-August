@@ -26,6 +26,7 @@ public class mech : Unit {
         return base.IsCellMovableTo(cell) && (cell as MyOtherHexagon).GroundType != GroundType.Water;
         //Prohibits moving to cells that are marked as water.
     }
+
     public override bool IsCellTraversable(Cell cell)
     {
         return base.IsCellTraversable(cell) && (cell as MyOtherHexagon).GroundType != GroundType.Water;

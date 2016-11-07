@@ -47,6 +47,8 @@ class OtherGuiController : MonoBehaviour
             unit.GetComponent<Unit>().UnitHighlighted += OnUnitHighlighted;
             unit.GetComponent<Unit>().UnitDehighlighted += OnUnitDehighlighted;
             unit.GetComponent<Unit>().UnitAttacked += OnUnitAttacked;
+            unit.GetComponent<Unit>().UnitSelected += OnUnitSelected;
+            unit.GetComponent<Unit>().UnitDeselected += OnUnitDeselected;
         }
         InfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
 
@@ -88,8 +90,6 @@ class OtherGuiController : MonoBehaviour
             Destroy(hpBar.gameObject);
         }
 
-        this.AbilityIcon.sprite = this.emptySprite;
-        this.AbilityButton.interactable = false;
     }
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
@@ -128,16 +128,22 @@ class OtherGuiController : MonoBehaviour
                 RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
                 RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);             
         }
+    }
 
-        Debug.Log((sender as Unit).abilities.Count);
-
+    public void OnUnitSelected(object sender, EventArgs e)
+    {
         if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
         {
             Debug.Log("loading ability icon");
             this.AbilityIcon.sprite = (sender as Unit).abilities[0].abilitySprite;
             this.AbilityButton.interactable = true;
         }
+    }
 
+    public void OnUnitDeselected(object sender, EventArgs e)
+    {
+        this.AbilityIcon.sprite = this.emptySprite;
+        this.AbilityButton.interactable = false;
     }
 
     public void RestartLevel()

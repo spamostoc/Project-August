@@ -33,7 +33,7 @@ public class NaiveAiPlayer : Player
             var unitsInRange = new List<Unit>();
             foreach (var enemyUnit in enemyUnits)
             {
-                if (unit.isUnitReachable(enemyUnit,unit.Cell))
+                if (unit.isUnitReachable(enemyUnit, unit.AttackRange, unit.Cell))
                 {
                     unitsInRange.Add(enemyUnit);
                 }
@@ -50,7 +50,7 @@ public class NaiveAiPlayer : Player
             
             foreach (var enemyUnit in enemyUnits)
             {
-                potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.isUnitReachable(enemyUnit, c))); 
+                potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.isUnitReachable(enemyUnit, unit.AttackRange, c))); 
             }//Making a list of cells that the unit can attack from.
       
             var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.currentAtt.movementPoints);
@@ -101,7 +101,7 @@ public class NaiveAiPlayer : Player
             foreach (var enemyUnit in enemyUnits)
             {
                 var enemyCell = enemyUnit.Cell;
-                if (unit.isUnitReachable(enemyUnit,unit.Cell))
+                if (unit.isUnitReachable(enemyUnit, unit.AttackRange ,unit.Cell))
                 { 
                     unit.onAttack(enemyUnit);
                     yield return new WaitForSeconds(0.5f);

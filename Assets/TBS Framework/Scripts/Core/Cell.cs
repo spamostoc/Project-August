@@ -22,6 +22,7 @@ public abstract class Cell : MonoBehaviour, IGraphNode
     /// CellClicked event is invoked when user clicks the unit. It requires a collider on the cell game object to work.
     /// </summary>
     public event EventHandler CellClicked;
+    public event EventHandler CellRightClicked;
     /// <summary>
     /// CellHighlighed event is invoked when user moves cursor over the cell. It requires a collider on the cell game object to work.
     /// </summary>
@@ -38,10 +39,13 @@ public abstract class Cell : MonoBehaviour, IGraphNode
         if (CellDehighlighted != null)
             CellDehighlighted.Invoke(this, new EventArgs());
     }
-    void OnMouseDown()
+
+    protected virtual void OnMouseOver()
     {
-        if (CellClicked != null)
+        if (Input.GetMouseButtonDown(0) && CellClicked != null)
             CellClicked.Invoke(this, new EventArgs());
+        if (Input.GetMouseButtonDown(1) && CellRightClicked != null)
+            CellRightClicked.Invoke(this, new EventArgs());
     }
 
     /// <summary>

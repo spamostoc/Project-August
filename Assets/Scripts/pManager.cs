@@ -43,6 +43,7 @@ public class pManager : MonoBehaviour
         newMech.abilities.Add(new shoot());
 
         newMech.abilities[0].abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        newMech.abilities[0].setRange(2);
 
         this.playerMechs.Add(newMech);
     }

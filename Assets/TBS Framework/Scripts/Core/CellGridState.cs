@@ -20,8 +20,9 @@ public abstract class CellGridState
     {
         cell.MarkAsHighlighted();
     }
-    public virtual void OnCellClicked(Cell cell)
-    { }
+    public virtual void OnCellClicked(Cell cell)    { }
+
+    public virtual void OnCellRightClicked(Cell cell) { }
 
     public virtual void OnStateEnter()
     {
@@ -33,4 +34,6 @@ public abstract class CellGridState
     public virtual void OnStateExit()
     {
     }
+
+    public virtual void OnUnitRightClicked(Unit unit) { }
 }

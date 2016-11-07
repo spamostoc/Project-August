@@ -70,6 +70,7 @@ public class CellGrid : MonoBehaviour
         foreach (var cell in Cells)
         {
             cell.CellClicked += OnCellClicked;
+            cell.CellRightClicked += OnCellRightClicked;
             cell.CellHighlighted += OnCellHighlighted;
             cell.CellDehighlighted += OnCellDehighlighted;
         }
@@ -102,11 +103,22 @@ public class CellGrid : MonoBehaviour
     {
         CellGridState.OnCellClicked(sender as Cell);
     }
+    private void OnCellRightClicked(object sender, EventArgs e)
+    {
+        CellGridState.OnCellRightClicked(sender as Cell);
+    }
 
     private void OnUnitClicked(object sender, EventArgs e)
     {
         CellGridState.OnUnitClicked(sender as Unit);
     }
+
+    private void OnUnitRightClicked(object sender, EventArgs e)
+    {
+        CellGridState.OnUnitRightClicked(sender as Unit);
+    }
+
+
     private void OnUnitDestroyed(object sender, AttackEventArgs e)
     {
         Units.Remove(sender as Unit);
@@ -153,5 +165,13 @@ public class CellGrid : MonoBehaviour
 
         Units.FindAll(u => u.PlayerNumber.Equals(CurrentPlayerNumber)).ForEach(u => { u.onTurnStart(); });
         Players.Find(p => p.PlayerNumber.Equals(CurrentPlayerNumber)).Play(this);     
+    }
+
+    public void OnAbilityButton(int index)
+    {
+        if (CellGridState.GetType() == typeof(CellGridStateUnitSelected))
+        {
+            ((CellGridStateUnitSelected)CellGridState).OnAbilityActive(index);
+        }
     }
 }

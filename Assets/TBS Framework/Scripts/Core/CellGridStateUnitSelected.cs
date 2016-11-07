@@ -20,23 +20,28 @@ class CellGridStateUnitSelected : CellGridState
     {
         if (_unit.isMoving)
             return;
-        if(cell.IsTaken)
+        if (cell.IsTaken)
         {
             _cellGrid.CellGridState = new CellGridStateWaitingForInput(_cellGrid);
             return;
         }
-            
-        if(!_pathsInRange.Contains(cell))
+
+        if (!_pathsInRange.Contains(cell))
         {
             _cellGrid.CellGridState = new CellGridStateWaitingForInput(_cellGrid);
         }
-        else
+    }
+
+    public override void OnCellRightClicked(Cell cell)
+    {
+        if (!_unit.isMoving && !cell.IsTaken && _pathsInRange.Contains(cell))
         {
             var path = _unit.FindPath(_cellGrid.Cells, cell);
-            _unit.Move(cell,path);
+            _unit.Move(cell, path);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
     }
+
     public override void OnUnitClicked(Unit unit)
     {
         if (unit.Equals(_unit) || unit.isMoving)
@@ -52,8 +57,9 @@ class CellGridStateUnitSelected : CellGridState
         {
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, unit);
         }
-            
+
     }
+
     public override void OnCellDeselected(Cell cell)
     {
         base.OnCellDeselected(cell);
@@ -67,6 +73,7 @@ class CellGridStateUnitSelected : CellGridState
             _cell.UnMark();
         }
     }
+
     public override void OnCellSelected(Cell cell)
     {
         base.OnCellSelected(cell);
@@ -104,18 +111,19 @@ class CellGridStateUnitSelected : CellGridState
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
                 continue;
-        
-            if (_unit.isUnitReachable(currentUnit, _unit.AttackRange,_unit.Cell))
+
+            if (_unit.isUnitReachable(currentUnit, _unit.AttackRange, _unit.Cell))
             {
                 currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
                 _unitsInRange.Add(currentUnit);
             }
         }
-        
-        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0 
+
+        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0
             && _unitsInRange.Count == 0)
             _unit.SetState(new UnitStateMarkedAsFinished(_unit));
     }
+
     public override void OnStateExit()
     {
         _unit.OnUnitDeselected();
@@ -127,7 +135,13 @@ class CellGridStateUnitSelected : CellGridState
         foreach (var cell in _cellGrid.Cells)
         {
             cell.UnMark();
-        }   
+        }
+    }
+
+    public void OnAbilityActive(int index)
+    {
+        if (index < _unit.abilities.Count)
+        _cellGrid.CellGridState = new CellGridStateAbilityActive(_cellGrid, _unit, _unit.abilities[index]);
     }
 }
 
