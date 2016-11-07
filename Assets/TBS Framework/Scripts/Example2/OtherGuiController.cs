@@ -18,6 +18,11 @@ class OtherGuiController : MonoBehaviour
     public Text DefenceText;
     public Text RangeText;
 
+
+    public Sprite emptySprite;
+    public Button AbilityButton;
+    public Image AbilityIcon;
+
     private void Start()
     {
         CellGrid.GameStarted += OnGameStarted;
@@ -44,6 +49,10 @@ class OtherGuiController : MonoBehaviour
             unit.GetComponent<Unit>().UnitAttacked += OnUnitAttacked;
         }
         InfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
+
+
+        this.AbilityIcon.sprite = this.emptySprite;
+        this.AbilityButton.interactable = false;
 
         OnTurnEnded(sender,e);
     }
@@ -78,6 +87,9 @@ class OtherGuiController : MonoBehaviour
         {
             Destroy(hpBar.gameObject);
         }
+
+        this.AbilityIcon.sprite = this.emptySprite;
+        this.AbilityButton.interactable = false;
     }
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
@@ -116,6 +128,16 @@ class OtherGuiController : MonoBehaviour
                 RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
                 RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);             
         }
+
+        Debug.Log((sender as Unit).abilities.Count);
+
+        if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
+        {
+            Debug.Log("loading ability icon");
+            this.AbilityIcon.sprite = (sender as Unit).abilities[0].abilitySprite;
+            this.AbilityButton.interactable = true;
+        }
+
     }
 
     public void RestartLevel()

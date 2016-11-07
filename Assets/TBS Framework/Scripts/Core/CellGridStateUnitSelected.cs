@@ -99,12 +99,13 @@ class CellGridStateUnitSelected : CellGridState
 
         if (_unit.currentAtt.actionPoints <= 0) return;
 
+        //change all this to highlight in ability state only
         foreach (var currentUnit in _cellGrid.Units)
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
                 continue;
         
-            if (_unit.isUnitReachable(currentUnit,_unit.Cell))
+            if (_unit.isUnitReachable(currentUnit, _unit.AttackRange,_unit.Cell))
             {
                 currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
                 _unitsInRange.Add(currentUnit);

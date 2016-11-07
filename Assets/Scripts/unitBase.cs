@@ -11,6 +11,8 @@ public abstract class unitBase : MonoBehaviour {
 
     public List<modifier> buffs;
 
+    public List<ability> abilities;
+
     //list of abilities BIG HUGE
     
     public virtual void initialize()
@@ -22,6 +24,10 @@ public abstract class unitBase : MonoBehaviour {
         if (null == this.buffs)
         {
             this.buffs = new List<modifier>();
+        }
+        if (null == this.abilities)
+        {
+            this.abilities = new List<ability>();
         }
     }
 
@@ -95,9 +101,14 @@ public abstract class unitBase : MonoBehaviour {
     public virtual void onActivate() { }
 
     //utilites
-    public virtual bool isUnitReachable(Unit other, Cell sourceCell)
+    /// <summary>
+    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
+    /// </summary>
+    public virtual bool isUnitReachable(Unit other, int range, Cell sourceCell)
     {
-        return true;
+        if (sourceCell.GetDistance(other.Cell) <= range)
+            return true;
+
+        return false;
     }
-    
 }

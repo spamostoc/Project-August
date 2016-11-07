@@ -15,7 +15,13 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
     public List<Unit> SpawnUnits(List<Cell> cells)
     {
         List<Unit> ret = new List<Unit>();
-        spawnTestUnit();
+
+        if (pManager.pDataManager.playerMechs != null && pManager.pDataManager.playerMechs.Count > 0)
+        {
+            spawnPlayerUnits();
+        }
+
+        //spawn from script here
         for (int i = 0; i < UnitsParent.childCount; i++)
         {
             var unit = UnitsParent.GetChild(i).GetComponent<Unit>();
@@ -64,18 +70,12 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
         }
     }
 
-    public Transform spawnTestUnit()
+    public Transform spawnPlayerUnits()
     {
-        if(pManager.pDataManager.playerMechs.Count <= 0)
-        {
-            return null;
-        }
 
         Transform ret = (Transform) Instantiate(Alien4, new Vector3(18, 18, -1), Quaternion.identity, UnitsParent);
         if (pManager.pDataManager.playerMechs.Count > 0)
         {
-            //ret.GetComponent<mech>().Initialize();
-            Debug.Log(pManager.pDataManager.playerMechs[0]);
             ret.GetComponent<mech>().copyFrom(pManager.pDataManager.playerMechs[0]);
         }
 

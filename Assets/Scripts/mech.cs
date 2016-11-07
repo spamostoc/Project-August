@@ -170,5 +170,10 @@ public class mech : Unit {
         this.MovementSpeed = original.MovementSpeed;
         this.AttackRange = original.AttackRange;
         this.AttackFactor = original.AttackFactor;
+
+        foreach( ability a in original.abilities)
+        {
+            this.abilities.Add(a.clone());
+        }
     }
 }

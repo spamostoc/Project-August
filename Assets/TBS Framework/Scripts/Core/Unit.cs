@@ -112,16 +112,6 @@ public abstract class Unit : unitBase
     }
 
     /// <summary>
-    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
-    /// </summary>
-    public virtual new bool isUnitReachable(Unit other, Cell sourceCell)
-    {
-        if (sourceCell.GetDistance(other.Cell) <= AttackRange)
-            return true;
-
-        return false;
-    }
-    /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
     public virtual new void onAttack(Unit other)
@@ -131,7 +121,7 @@ public abstract class Unit : unitBase
             return;
         if (this.currentAtt.actionPoints == 0)
             return;
-        if (!isUnitReachable(other, Cell))
+        if (!isUnitReachable(other, this.AttackRange, Cell))
             return;
 
         MarkAsAttacking(other);

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class modifier : MonoBehaviour {
+public abstract class modifier {
 
     public attributes att { get; private set; }
 

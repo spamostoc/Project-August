@@ -17,6 +17,7 @@ public class pManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
             pDataManager = this;
+            playerMechs = new List<mech>();
         }
         else if (pDataManager != this)
         {
@@ -27,7 +28,6 @@ public class pManager : MonoBehaviour
     public void makeTestMech()
     {
         mech newMech = this.transform.gameObject.AddComponent<mech>();
-        playerMechs = new List<mech>();
 
         attributes newAtt = new attributes();
 
@@ -35,11 +35,14 @@ public class pManager : MonoBehaviour
         newAtt.movementPoints = 3;
         newAtt.actionPoints = 1;
 
+        newMech.att.setTo(newAtt);
         newMech.Initialize();
 
-        newMech.att.setTo(newAtt);
-
         newMech.MovementSpeed = 5;
+
+        newMech.abilities.Add(new shoot());
+
+        newMech.abilities[0].abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
 
         this.playerMechs.Add(newMech);
     }

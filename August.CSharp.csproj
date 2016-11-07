@@ -69,6 +69,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\ability.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
     <Compile Include="Assets\Scripts\hanger.cs" />
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Assets\Scripts\mechPart.cs" />
     <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\Scripts\pManager.cs" />
+    <Compile Include="Assets\Scripts\shoot.cs" />
     <Compile Include="Assets\Scripts\unitBase.cs" />
     <Compile Include="Assets\Scripts\vnManager.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\AStarPathfinding.cs" />
