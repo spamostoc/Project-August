@@ -78,7 +78,7 @@ public abstract class unitBase : MonoBehaviour {
         }
     }
 
-    public virtual void onAttack(Unit other)
+    public virtual void onAttack(Unit other, int actionPointCost)
     {
         foreach (modifier m in buffs)
         {
@@ -86,7 +86,7 @@ public abstract class unitBase : MonoBehaviour {
         }
     }
 
-    public virtual void onDefend(Unit other)
+    public virtual void onDefend(Unit other, float damage)
     {
         foreach (modifier m in buffs)
         {

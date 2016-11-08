@@ -40,10 +40,14 @@ public class pManager : MonoBehaviour
 
         newMech.MovementSpeed = 5;
 
-        newMech.abilities.Add(new shoot());
+        shoot newShoot = new shoot();
 
-        newMech.abilities[0].abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        newMech.abilities[0].setRange(2);
+        newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        newShoot.setRange(2);
+        newShoot.damage = 1;
+        newShoot.actionPointsCost = 1;
+
+        newMech.abilities.Add(newShoot);
 
         this.playerMechs.Add(newMech);
     }

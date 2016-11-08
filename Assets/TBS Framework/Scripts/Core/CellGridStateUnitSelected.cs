@@ -49,7 +49,7 @@ class CellGridStateUnitSelected : CellGridState
 
         if (_unitsInRange.Contains(unit) && _unit.currentAtt.actionPoints > 0)
         {
-            _unit.onAttack(unit);
+            //_unit.onAttack(unit, 1);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
 

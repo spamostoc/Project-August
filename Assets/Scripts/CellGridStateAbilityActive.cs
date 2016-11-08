@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class CellGridStateAbilityActive : CellGridState
 {
@@ -51,6 +52,8 @@ public class CellGridStateAbilityActive : CellGridState
         if (_unit.currentAtt.actionPoints <= 0) return;
 
         //change all this to highlight in ability state only
+
+        Debug.Log(_ability.range);
         foreach (var currentUnit in _cellGrid.Units)
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))

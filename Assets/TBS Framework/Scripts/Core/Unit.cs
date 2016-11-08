@@ -114,9 +114,9 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual new void onAttack(Unit other)
+    public virtual new void onAttack(Unit other, int actionPointCost)
     {
-        base.onAttack(other);
+        base.onAttack(other, actionPointCost);
         if (isMoving)
             return;
         if (this.currentAtt.actionPoints == 0)
@@ -125,8 +125,8 @@ public abstract class Unit : unitBase
             return;
 
         MarkAsAttacking(other);
-        this.currentAtt.actionPoints--;
-        other.onDefend(this, AttackFactor);
+        this.currentAtt.actionPoints -= actionPointCost;
+        //other.onDefend(this, AttackFactor);
 
         if (this.currentAtt.actionPoints == 0)
         {
@@ -137,12 +137,11 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
-    protected virtual void onDefend(Unit other, int damage)
+    public virtual new void onDefend(Unit other, float damage)
     {
-        base.onDefend(other);
+        base.onDefend(other, damage);
         MarkAsDefending(other);
-        //this.currentAtt.health -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
-        //This behaviour can be overridden in derived classes.
+
         this.currentAtt.health -= damage;
 
         if (UnitAttacked != null)
@@ -279,6 +278,7 @@ public abstract class Unit : unitBase
     {
         return _pathfinder.FindPath(GetGraphEdges(cells), Cell, destination);
     }
+
     /// <summary>
     /// Method returns graph representation of cell grid for pathfinding.
     /// </summary>
@@ -355,9 +355,9 @@ public class AttackEventArgs : EventArgs
     public Unit Attacker;
     public Unit Defender;
 
-    public int Damage;
+    public float Damage;
 
-    public AttackEventArgs(Unit attacker, Unit defender, int damage)
+    public AttackEventArgs(Unit attacker, Unit defender, float damage)
     {
         Attacker = attacker;
         Defender = defender;
