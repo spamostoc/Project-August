@@ -31,6 +31,8 @@ public class shoot : ability
 
         ret.abilitySprite = this.abilitySprite;
         ret.range = this.range;
+        ret.damage = this.damage;
+        ret.actionPointsCost = this.actionPointsCost;
 
         return ret;
     }

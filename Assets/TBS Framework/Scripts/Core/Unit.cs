@@ -117,12 +117,16 @@ public abstract class Unit : unitBase
     public virtual new void onAttack(Unit other, int actionPointCost)
     {
         base.onAttack(other, actionPointCost);
+
+        Debug.Log("current action points:" + this.currentAtt.actionPoints);
+        Debug.Log("ismoving:" + isMoving);
+
         if (isMoving)
             return;
         if (this.currentAtt.actionPoints == 0)
             return;
-        if (!isUnitReachable(other, this.AttackRange, Cell))
-            return;
+       // if (!isUnitReachable(other, this.AttackRange, Cell))
+         //   return;
 
         MarkAsAttacking(other);
         this.currentAtt.actionPoints -= actionPointCost;
@@ -223,7 +227,6 @@ public abstract class Unit : unitBase
     protected virtual IEnumerator MovementAnimation(List<Cell> path)
     {
         isMoving = true;
-        Debug.Log("do move");
         path.Reverse();
         foreach (var cell in path)
         {
