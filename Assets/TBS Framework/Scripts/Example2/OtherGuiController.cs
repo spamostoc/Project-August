@@ -93,9 +93,8 @@ class OtherGuiController : MonoBehaviour
     }
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
-        var attack = (sender as Unit).AttackFactor;
         var defence = 0;
-        var range = (sender as Unit).AttackRange;
+        //var range = (sender as Unit).AttackRange;
 
         float hpScale = (sender as Unit).currentAtt.health / (sender as Unit).getTotalHealth();
 
@@ -107,12 +106,12 @@ class OtherGuiController : MonoBehaviour
         
         for (int i = 0; i < 7; i++)
         {
-            Image AttackMarker;
+            /*Image AttackMarker;
             AttackMarker = Instantiate(i<attack ? FullMarkerImage : EmptyMarkerImage);
 
                 AttackMarker.rectTransform.SetParent(AttackText.rectTransform,false);
                 AttackMarker.rectTransform.anchorMin = new Vector2(i * 0.14f,0.1f);
-                AttackMarker.rectTransform.anchorMax = new Vector2((i * 0.14f)+0.13f, 0.6f);
+                AttackMarker.rectTransform.anchorMax = new Vector2((i * 0.14f)+0.13f, 0.6f);*/
 
             Image DefenceMarker;
             DefenceMarker = Instantiate(i < defence ? FullMarkerImage : EmptyMarkerImage);
@@ -121,12 +120,12 @@ class OtherGuiController : MonoBehaviour
                 DefenceMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
                 DefenceMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);
 
-            Image RangeMarker;
+           /* Image RangeMarker;
             RangeMarker = Instantiate(i < range ? FullMarkerImage : EmptyMarkerImage);
 
                 RangeMarker.rectTransform.SetParent(RangeText.rectTransform, false);
                 RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
-                RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);             
+                RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f); */            
         }
     }
 

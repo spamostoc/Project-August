@@ -107,7 +107,7 @@ class CellGridStateUnitSelected : CellGridState
         if (_unit.currentAtt.actionPoints <= 0) return;
 
         //change all this to highlight in ability state only
-        foreach (var currentUnit in _cellGrid.Units)
+        /*foreach (var currentUnit in _cellGrid.Units)
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
                 continue;
@@ -117,7 +117,7 @@ class CellGridStateUnitSelected : CellGridState
                 currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
                 _unitsInRange.Add(currentUnit);
             }
-        }
+        }*/
 
         if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0
             && _unitsInRange.Count == 0)

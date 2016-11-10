@@ -9,12 +9,6 @@ public class attributes
     public int actionPoints { get; set; }
 
 
-    public attributes()
-    {
-        health = 0;
-        movementPoints = 0;
-        actionPoints = 0;
-    }
     public void setTo(attributes att)
     {
         this.health = att.health;

@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "August.CSharp.Plugins", "August.CSharp.Plugins.csproj", "{B84D6781-D7AD-7DB0-EEE2-C8506209C8BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "August.CSharp", "August.CSharp.csproj", "{F0C66515-7F8E-7B96-DD9A-0B450055312F}"

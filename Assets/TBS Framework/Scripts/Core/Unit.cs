@@ -37,8 +37,8 @@ public abstract class Unit : unitBase
 
     public attributes currentAtt;
     
-    public int AttackRange;
-    public int AttackFactor;
+    //public int AttackRange;
+    //public int AttackFactor;
 
     /// <summary>
     /// Cell that the unit is currently occupying.
@@ -75,9 +75,6 @@ public abstract class Unit : unitBase
         }
 
         this.currentAtt.health = this.getTotalHealth();
-        this.currentAtt.movementPoints = this.getTotalMovementPoints();
-        this.currentAtt.actionPoints = this.getTotalActionPoints();
-
     }
 
     /// <summary>
@@ -86,6 +83,7 @@ public abstract class Unit : unitBase
     public virtual new void onTurnStart()
     {
         base.onTurnStart();
+        //maybe will never need this?
         this.currentAtt.movementPoints = this.getTotalMovementPoints();
         this.currentAtt.actionPoints = this.getTotalActionPoints();
 

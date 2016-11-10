@@ -2,6 +2,9 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
 
 public class mech : Unit {
 
@@ -117,6 +120,13 @@ public class mech : Unit {
         }
     }
 
+    public override void onTurnStart()
+    {
+        base.onTurnStart();
+        this.currentAtt.movementPoints = this.getTotalMovementPoints();
+        this.currentAtt.actionPoints = this.getTotalMovementPoints();
+    }
+
     public override void MarkAsFriendly()
     {
         SetHighlighterColor(new Color(0.75f, 0.75f, 0.75f, 0.5f));
@@ -158,6 +168,26 @@ public class mech : Unit {
         }
     }
 
+    public override int getTotalActionPoints()
+    {
+        int ret = base.getTotalActionPoints();
+        foreach (mechPart p in parts)
+        {
+            ret += p.att.actionPoints;
+        }
+        return ret;
+    }
+
+    public override int getTotalMovementPoints()
+    {
+        int ret = base.getTotalMovementPoints();
+        foreach (mechPart p in parts)
+        {
+            ret += p.att.movementPoints;
+        }
+        return ret;
+    }
+
     public void copyFrom(mech original)
     {
         this.att.setTo(original.att);
@@ -169,8 +199,6 @@ public class mech : Unit {
         }
 
         this.MovementSpeed = original.MovementSpeed;
-        this.AttackRange = original.AttackRange;
-        this.AttackFactor = original.AttackFactor;
 
         foreach( ability a in original.abilities)
         {
