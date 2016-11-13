@@ -49,7 +49,14 @@ public class pManager : MonoBehaviour
         partsDictionary.Add(typeof(steelCore), sc);
 
         //ability dictionary
-        abilityDictionary.Add(typeof(shoot), new shoot());
+
+        shoot newShoot = new shoot();
+
+        newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        newShoot.setRange(2);
+        newShoot.damage = 1;
+        newShoot.actionPointsCost = 1;
+        abilityDictionary.Add(typeof(shoot), newShoot);
 
     }
 
@@ -165,7 +172,6 @@ public class pManager : MonoBehaviour
 
             foreach (Guid g in mdata.partsIds)
             {
-                Debug.Log("making a part" + g);
                 Type mType = classDictionary.getType(g);
                 mechPart mp = (mechPart)this.transform.gameObject.AddComponent(mType);
                 mp.Initialize();
@@ -184,7 +190,9 @@ public class pManager : MonoBehaviour
 
             foreach (Guid g in mdata.abilityIds)
             {
+                Debug.Log("making an ability" + g);
                 ability a = abilityDictionary[classDictionary.getType(g)].clone();
+                Debug.Log(a);
                 a.parent = newMech;
                 newMech.abilities.Add(a);
             }
