@@ -5,6 +5,7 @@ public abstract class ability {
 
     public Sprite abilitySprite;
     public int range { get; protected set; }
+    public Unit parent;
 
     //other animation/asset data here
 

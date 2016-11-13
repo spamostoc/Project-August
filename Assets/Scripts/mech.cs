@@ -193,16 +193,10 @@ public class mech : Unit {
         this.att.setTo(original.att);
         this.currentAtt.setTo(original.currentAtt);
 
-        foreach( modifier m in original.buffs)
-        {
-            this.buffs.Add(m.clone());
-        }
+        this.buffs = original.copyBuffs();
 
         this.MovementSpeed = original.MovementSpeed;
 
-        foreach( ability a in original.abilities)
-        {
-            this.abilities.Add(a.clone());
-        }
+        this.abilities = original.copyAbilities();
     }
 }

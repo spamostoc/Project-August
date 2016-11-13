@@ -16,7 +16,7 @@ public abstract class unitBase : MonoBehaviour {
 
     //list of abilities BIG HUGE
     
-    public virtual void initialize()
+    public virtual void Initialize()
     {
         if(null == this.att)
         {
@@ -111,5 +111,30 @@ public abstract class unitBase : MonoBehaviour {
             return true;
 
         return false;
+    }
+
+    public List<modifier> copyBuffs()
+    {
+        List<modifier> newBuff = new List<modifier>();
+        Debug.Log(this.buffs);
+        foreach (modifier m in this.buffs)
+        {
+            newBuff.Add(m.clone());
+        }
+
+        return newBuff;
+    }
+
+
+    public List<ability> copyAbilities()
+    {
+        List<ability> newAbilities = new List<ability>();
+
+        foreach (ability a in this.abilities)
+        {
+            newAbilities.Add(a.clone());
+        }
+
+        return newAbilities;
     }
 }

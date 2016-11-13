@@ -10,7 +10,9 @@ public class pManager : MonoBehaviour
 
     public static pManager pDataManager;
 
-    public enum unitClass { mech, mechPart };
+    public static IDictionary<Type, Unit> unitDictionary = new Dictionary<Type, Unit>();
+    public static IDictionary<Type, mechPart> partsDictionary = new Dictionary<Type, mechPart>();
+    public static IDictionary<Type, ability> abilityDictionary = new Dictionary<Type, ability>();
 
     public List<mech> playerMechs;
 
@@ -22,6 +24,7 @@ public class pManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             pDataManager = this;
             playerMechs = new List<mech>();
+            startUp();
         }
         else if (pDataManager != this)
         {
@@ -29,9 +32,31 @@ public class pManager : MonoBehaviour
         }
     }
 
+    public void startUp()
+    {
+        //build dictionary
+        mech m = this.transform.gameObject.AddComponent<mech>();
+        m.Initialize();
+        unitDictionary.Add(typeof(mech), m);
+
+        //parts dictionary
+        mechPart mp = this.transform.gameObject.AddComponent<mechPart>();
+        mp.Initialize();
+        partsDictionary.Add(typeof(mechPart), mp);
+
+        steelCore sc = this.transform.gameObject.AddComponent<steelCore>();
+        sc.Initialize();
+        partsDictionary.Add(typeof(steelCore), sc);
+
+        //ability dictionary
+        abilityDictionary.Add(typeof(shoot), new shoot());
+
+    }
+
     public void makeTestMech()
     {
         mech newMech = this.transform.gameObject.AddComponent<mech>();
+        newMech.Initialize();
 
         attributes newAtt = new attributes();
 
@@ -40,7 +65,6 @@ public class pManager : MonoBehaviour
         newAtt.actionPoints = 1;
 
         newMech.att.setTo(newAtt);
-        newMech.Initialize();
 
         newMech.MovementSpeed = 5;
 
@@ -50,8 +74,14 @@ public class pManager : MonoBehaviour
         newShoot.setRange(2);
         newShoot.damage = 1;
         newShoot.actionPointsCost = 1;
+        newShoot.parent = newMech;
 
         newMech.abilities.Add(newShoot);
+
+        steelCore part = this.transform.gameObject.AddComponent<steelCore>();
+        part.Initialize();
+        part.parent = newMech;
+        newMech.parts.Add(part);
 
         this.playerMechs.Add(newMech);
     }
@@ -66,32 +96,44 @@ public class pManager : MonoBehaviour
         }
 
         FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Create);
-        mechdata data = new mechdata();
+        
 
-        data.partsIds = new List<Guid>();
-        foreach (mechPart p in playerMechs[0].parts)
+
+        dataLibrary dl = new dataLibrary();
+        dl.playerMechs = new List<mechdata>();
+
+        foreach( mech pmechj in playerMechs )
         {
-            data.partsIds.Add(classDictionary.unitGuids[p.GetType()]);
+            mechdata mdata = new mechdata();
+            mdata.mechId = classDictionary.classGuid[pmechj.GetType()];
+
+            mdata.partsIds = new List<Guid>();
+            foreach (mechPart p in pmechj.parts)
+            {
+                mdata.partsIds.Add(classDictionary.classGuid[p.GetType()]);
+            }
+
+            mdata.currentHealth = pmechj.currentAtt.health;
+            mdata.currentMovementPoints = pmechj.currentAtt.movementPoints;
+            mdata.currentActionPoints = pmechj.currentAtt.actionPoints;
+
+            mdata.movementSpeed = pmechj.MovementSpeed;
+            mdata.playerNumber = pmechj.PlayerNumber;
+
+            mdata.abilityIds = new List<Guid>();
+            foreach (ability a in pmechj.abilities)
+            {
+                mdata.abilityIds.Add(classDictionary.classGuid[a.GetType()]);
+            }
+
+            mdata.health = pmechj.att.health;
+            mdata.movementPoints = pmechj.att.movementPoints;
+            mdata.actionPoints = pmechj.att.actionPoints;
+            dl.playerMechs.Add(mdata);
         }
 
-        data.currentHealth = playerMechs[0].currentAtt.health;
-        data.currentMovementPoints = playerMechs[0].currentAtt.movementPoints;
-        data.currentActionPoints = playerMechs[0].currentAtt.actionPoints;
-
-        data.movementSpeed = playerMechs[0].MovementSpeed;
-        data.playerNumber = playerMechs[0].PlayerNumber;
-
-        data.abilityIds = new List<Guid>();
-        foreach (ability a in playerMechs[0].abilities)
-        {
-            data.abilityIds.Add(classDictionary.abilityGuids[a.GetType()]);
-        }
-
-        data.health = playerMechs[0].att.health;
-        data.movementPoints = playerMechs[0].att.movementPoints;
-        data.actionPoints = playerMechs[0].att.actionPoints;
-
-        bf.Serialize(file, data);
+        
+        bf.Serialize(file, dl);
         file.Close();
         Debug.Log(Application.persistentDataPath);
     }
@@ -103,41 +145,70 @@ public class pManager : MonoBehaviour
         FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Open);
 
 
-        mechdata data = (mechdata)bf.Deserialize(file);
+        dataLibrary dl = (dataLibrary)bf.Deserialize(file);
         file.Close();
 
-        mech newMech = this.transform.gameObject.AddComponent<mech>();
-        newMech.Initialize();
-
-        foreach (Guid g in data.partsIds)
+        foreach (mechdata mdata in dl.playerMechs)
         {
-           // newMech.parts.Add()
+
+            Type mechClass = classDictionary.getType(mdata.mechId);
+
+            if(mechClass == null)
+            {
+                Debug.Log("no such class found");
+                continue;
+            }
+
+            
+            mech newMech = (mech)this.transform.gameObject.AddComponent(mechClass);
+            newMech.Initialize();
+
+            foreach (Guid g in mdata.partsIds)
+            {
+                Debug.Log("making a part" + g);
+                Type mType = classDictionary.getType(g);
+                mechPart mp = (mechPart)this.transform.gameObject.AddComponent(mType);
+                mp.Initialize();
+                mp.parent = newMech;
+                mp.copyFrom(partsDictionary[mType]);
+                newMech.parts.Add(mp);
+            }
+
+            newMech.currentAtt.health = mdata.currentHealth;
+            newMech.currentAtt.movementPoints = mdata.currentMovementPoints;
+            newMech.currentAtt.actionPoints = mdata.currentActionPoints;
+
+            newMech.MovementSpeed = mdata.movementSpeed;
+            newMech.PlayerNumber = mdata.playerNumber;
+
+
+            foreach (Guid g in mdata.abilityIds)
+            {
+                ability a = abilityDictionary[classDictionary.getType(g)].clone();
+                a.parent = newMech;
+                newMech.abilities.Add(a);
+            }
+            newMech.att.health = mdata.health;
+            newMech.att.movementPoints = mdata.movementPoints;
+            newMech.att.actionPoints = mdata.actionPoints;
+
+            playerMechs.Add(newMech);
         }
-
-        newMech.currentAtt.health = data.currentHealth;
-        newMech.currentAtt.movementPoints = data.currentMovementPoints;
-        newMech.currentAtt.actionPoints = data.currentActionPoints;
-
-        newMech.MovementSpeed = data.movementSpeed;
-        newMech.PlayerNumber = data.playerNumber;
-
-
-        foreach (Guid g in data.abilityIds)
-        {
-           // data.abilityIds.Add(classDictionary.abilityGuids[a.GetType()]);
-        }
-        newMech.att.health = data.health;
-        newMech.att.movementPoints = data.movementPoints;
-        newMech.att.actionPoints = data.actionPoints;
-
-        playerMechs.Add(newMech);
     }
 
 }
 
 [Serializable]
+class dataLibrary
+{
+    public List<mechdata> playerMechs;
+}
+
+[Serializable]
 class mechdata
 {
+    public Guid mechId;
+
     public List<Guid> partsIds;
     // current att
     public float currentHealth;

@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\Scripts\pManager.cs" />
     <Compile Include="Assets\Scripts\shoot.cs" />
+    <Compile Include="Assets\Scripts\steelCore.cs" />
     <Compile Include="Assets\Scripts\typeDictionary.cs" />
     <Compile Include="Assets\Scripts\unitBase.cs" />
     <Compile Include="Assets\Scripts\vnManager.cs" />

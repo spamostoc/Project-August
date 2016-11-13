@@ -63,7 +63,7 @@ public abstract class Unit : unitBase
     /// </summary>
     public virtual void Initialize()
     {
-        base.initialize();
+        base.Initialize();
         if (null == UnitState)
         {
             UnitState = new UnitStateNormal(this);
