@@ -10,9 +10,6 @@ public class pManager : MonoBehaviour
 
     public static pManager pDataManager;
 
-    public static IDictionary<Type, Unit> unitDictionary = new Dictionary<Type, Unit>();
-    public static IDictionary<Type, mechPart> partsDictionary = new Dictionary<Type, mechPart>();
-    public static IDictionary<Type, ability> abilityDictionary = new Dictionary<Type, ability>();
 
     public List<mech> playerMechs;
 
@@ -34,30 +31,33 @@ public class pManager : MonoBehaviour
 
     public void startUp()
     {
-        //build dictionary
+        //units dictionary
         mech m = this.transform.gameObject.AddComponent<mech>();
         m.Initialize();
-        unitDictionary.Add(typeof(mech), m);
+        UniTable.unitDictionary.Add(typeof(mech), m);
 
         //parts dictionary
         mechPart mp = this.transform.gameObject.AddComponent<mechPart>();
         mp.Initialize();
-        partsDictionary.Add(typeof(mechPart), mp);
+        UniTable.partsDictionary.Add(typeof(mechPart), mp);
 
         steelCore sc = this.transform.gameObject.AddComponent<steelCore>();
         sc.Initialize();
-        partsDictionary.Add(typeof(steelCore), sc);
+        UniTable.partsDictionary.Add(typeof(steelCore), sc);
 
         //ability dictionary
-
         shoot newShoot = new shoot();
 
         newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         newShoot.setRange(2);
         newShoot.damage = 1;
         newShoot.actionPointsCost = 1;
-        abilityDictionary.Add(typeof(shoot), newShoot);
+        UniTable.abilityDictionary.Add(typeof(shoot), newShoot);
 
+        //prefabs Table
+
+        UniTable.prefabTable.Add(typeof(mech), Resources.Load<Transform>("Alien4") as Transform);
+        Debug.Log(Resources.Load<Transform>("Alien4") as Transform);
     }
 
     public void makeTestMech()
@@ -112,12 +112,12 @@ public class pManager : MonoBehaviour
         foreach( mech pmechj in playerMechs )
         {
             mechdata mdata = new mechdata();
-            mdata.mechId = classDictionary.classGuid[pmechj.GetType()];
+            mdata.mechId = UniTable.classGuid[pmechj.GetType()];
 
             mdata.partsIds = new List<Guid>();
             foreach (mechPart p in pmechj.parts)
             {
-                mdata.partsIds.Add(classDictionary.classGuid[p.GetType()]);
+                mdata.partsIds.Add(UniTable.classGuid[p.GetType()]);
             }
 
             mdata.currentHealth = pmechj.currentAtt.health;
@@ -130,7 +130,7 @@ public class pManager : MonoBehaviour
             mdata.abilityIds = new List<Guid>();
             foreach (ability a in pmechj.abilities)
             {
-                mdata.abilityIds.Add(classDictionary.classGuid[a.GetType()]);
+                mdata.abilityIds.Add(UniTable.classGuid[a.GetType()]);
             }
 
             mdata.health = pmechj.att.health;
@@ -158,7 +158,7 @@ public class pManager : MonoBehaviour
         foreach (mechdata mdata in dl.playerMechs)
         {
 
-            Type mechClass = classDictionary.getType(mdata.mechId);
+            Type mechClass = UniTable.getType(mdata.mechId);
 
             if(mechClass == null)
             {
@@ -172,11 +172,11 @@ public class pManager : MonoBehaviour
 
             foreach (Guid g in mdata.partsIds)
             {
-                Type mType = classDictionary.getType(g);
+                Type mType = UniTable.getType(g);
                 mechPart mp = (mechPart)this.transform.gameObject.AddComponent(mType);
                 mp.Initialize();
                 mp.parent = newMech;
-                mp.copyFrom(partsDictionary[mType]);
+                mp.copyFrom(UniTable.partsDictionary[mType]);
                 newMech.parts.Add(mp);
             }
 
@@ -191,7 +191,7 @@ public class pManager : MonoBehaviour
             foreach (Guid g in mdata.abilityIds)
             {
                 Debug.Log("making an ability" + g);
-                ability a = abilityDictionary[classDictionary.getType(g)].clone();
+                ability a = UniTable.abilityDictionary[UniTable.getType(g)].clone();
                 Debug.Log(a);
                 a.parent = newMech;
                 newMech.abilities.Add(a);

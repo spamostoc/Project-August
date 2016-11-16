@@ -70,9 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CellGridStateAbilityActive.cs" />
+    <Compile Include="Assets\Scripts\UniTable.cs" />
     <Compile Include="Assets\Scripts\ability.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
-    <Compile Include="Assets\Scripts\classDictionary.cs" />
     <Compile Include="Assets\Scripts\hanger.cs" />
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
     <Compile Include="Assets\Scripts\mech.cs" />

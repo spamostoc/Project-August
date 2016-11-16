@@ -3,8 +3,13 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class classDictionary
+public static class UniTable
 {
+    public static IDictionary<Type, Unit> unitDictionary = new Dictionary<Type, Unit>();
+    public static IDictionary<Type, mechPart> partsDictionary = new Dictionary<Type, mechPart>();
+    public static IDictionary<Type, ability> abilityDictionary = new Dictionary<Type, ability>();
+
+    public static IDictionary<Type, Transform> prefabTable = new Dictionary<Type, Transform>();
 
     public static readonly IDictionary<Type, Guid> classGuid = new Dictionary<Type, Guid>
     {
@@ -17,7 +22,7 @@ public class classDictionary
 
     public static Type getType(Guid id)
     {
-        foreach (KeyValuePair<Type, Guid> classKey in classDictionary.classGuid)
+        foreach (KeyValuePair<Type, Guid> classKey in UniTable.classGuid)
         {
             if (classKey.Value == id)
             {
