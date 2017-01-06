@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\UniTable.cs" />
     <Compile Include="Assets\Scripts\ability.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
+    <Compile Include="Assets\Scripts\controlUtility.cs" />
     <Compile Include="Assets\Scripts\hanger.cs" />
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
     <Compile Include="Assets\Scripts\mech.cs" />
