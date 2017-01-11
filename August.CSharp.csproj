@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
     <Compile Include="Assets\Scripts\mech.cs" />
     <Compile Include="Assets\Scripts\mechPart.cs" />
+    <Compile Include="Assets\Scripts\mechWeapon.cs" />
     <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\Scripts\pManager.cs" />
     <Compile Include="Assets\Scripts\shoot.cs" />

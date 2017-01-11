@@ -5,7 +5,6 @@ public abstract class modifier {
 
     public attributes att { get; private set; }
 
-
     public int duration { get; private set; }
     public int remainingDuration;
 
@@ -25,7 +24,7 @@ public abstract class modifier {
 
     public virtual void onTurnStart()
     {
-            remainingDuration--;
+        remainingDuration--;
 
         if (remainingDuration <= 0)
         {

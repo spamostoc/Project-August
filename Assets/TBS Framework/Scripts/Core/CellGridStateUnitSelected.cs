@@ -47,9 +47,12 @@ class CellGridStateUnitSelected : CellGridState
         if (unit.Equals(_unit) || unit.isMoving)
             return;
 
-        if (_unitsInRange.Contains(unit) && _unit.currentAtt.actionPoints > 0)
+        //what the heck does any of this even do
+        if (_unitsInRange.Contains(unit) &&
+            (_unit.dynamicAttributes.mainActionPoints > 0 || _unit.dynamicAttributes.bonusActionPoints > 0))
         {
             //_unit.onAttack(unit, 1);
+            //we just return to the same state and do nothing?
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
 
@@ -103,8 +106,8 @@ class CellGridStateUnitSelected : CellGridState
         {
             cell.MarkAsReachable();
         }
-
-        if (_unit.currentAtt.actionPoints <= 0) return;
+        //this line checks if we have points left, if we do skip the rest of the function which will end the state
+        if (_unit.dynamicAttributes.mainActionPoints <= 0 && _unit.dynamicAttributes.bonusActionPoints <= 0) return;
 
         //change all this to highlight in ability state only
         /*foreach (var currentUnit in _cellGrid.Units)
@@ -119,7 +122,7 @@ class CellGridStateUnitSelected : CellGridState
             }
         }*/
 
-        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0
+        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.dynamicAttributes.movementPoints).Count == 0
             && _unitsInRange.Count == 0)
             _unit.SetState(new UnitStateMarkedAsFinished(_unit));
     }

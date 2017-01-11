@@ -11,14 +11,13 @@ public class controlUtility : MonoBehaviour {
     {
         mech newMech = pManager.pDataManager.transform.gameObject.AddComponent<mech>();
         newMech.Initialize();
-
         attributes newAtt = new attributes();
 
         newAtt.health = 10;
         newAtt.movementPoints = 3;
-        newAtt.actionPoints = 1;
+        newAtt.mainActionPoints = 1;
 
-        newMech.att.setTo(newAtt);
+        newMech.baseAtt.setTo(newAtt);
 
         newMech.MovementSpeed = 5;
 
@@ -48,41 +47,47 @@ public class controlUtility : MonoBehaviour {
         {
             throw new IndexOutOfRangeException("no player mechs to save");
         }
-
+        //initialize save data structure
         FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Create);
-
-
-
         dataLibrary dl = new dataLibrary();
         dl.playerMechs = new List<mechdata>();
 
+        //transfer active data to save structure
         foreach (mech pmechj in pManager.pDataManager.playerMechs)
         {
             mechdata mdata = new mechdata();
             mdata.mechId = UniTable.classGuid[pmechj.GetType()];
-
+            //transcribe parts
             mdata.partsIds = new List<Guid>();
             foreach (mechPart p in pmechj.parts)
             {
                 mdata.partsIds.Add(UniTable.classGuid[p.GetType()]);
             }
 
-            mdata.currentHealth = pmechj.currentAtt.health;
-            mdata.currentMovementPoints = pmechj.currentAtt.movementPoints;
-            mdata.currentActionPoints = pmechj.currentAtt.actionPoints;
+            //transcribe dynamic attributes
+            mdata.currentHealth = pmechj.dynamicAttributes.health;
+            mdata.currentMovementPoints = pmechj.dynamicAttributes.movementPoints;
+            //mdata.currentActionPoints = pmechj.dynamicAttributes.actionPoints;
 
+            //transcribe base attributes
+            mdata.health = pmechj.baseAtt.health;
+            mdata.movementPoints = pmechj.baseAtt.movementPoints;
+            //mdata.actionPoints = pmechj.baseAtt.actionPoints;
+
+            //transcribe mech class info
+            //TODO
+
+            //transcribe unit class info
             mdata.movementSpeed = pmechj.MovementSpeed;
             mdata.playerNumber = pmechj.PlayerNumber;
 
+            //transcribe abilities
             mdata.abilityIds = new List<Guid>();
             foreach (ability a in pmechj.abilities)
             {
                 mdata.abilityIds.Add(UniTable.classGuid[a.GetType()]);
             }
 
-            mdata.health = pmechj.att.health;
-            mdata.movementPoints = pmechj.att.movementPoints;
-            mdata.actionPoints = pmechj.att.actionPoints;
             dl.playerMechs.Add(mdata);
         }
 
@@ -95,28 +100,26 @@ public class controlUtility : MonoBehaviour {
     public void load()
     {
         BinaryFormatter bf = new BinaryFormatter();
-
+        //read from file
         FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Open);
-
-
         dataLibrary dl = (dataLibrary)bf.Deserialize(file);
         file.Close();
 
+        //initialize game data structure
         foreach (mechdata mdata in dl.playerMechs)
         {
-
             Type mechClass = UniTable.getType(mdata.mechId);
-
             if (mechClass == null)
             {
                 Debug.Log("no such class found");
                 continue;
             }
 
-
+            //load mech
             mech newMech = (mech)pManager.pDataManager.transform.gameObject.AddComponent(mechClass);
             newMech.Initialize();
 
+            //load parts
             foreach (Guid g in mdata.partsIds)
             {
                 Type mType = UniTable.getType(g);
@@ -127,14 +130,23 @@ public class controlUtility : MonoBehaviour {
                 newMech.parts.Add(mp);
             }
 
-            newMech.currentAtt.health = mdata.currentHealth;
-            newMech.currentAtt.movementPoints = mdata.currentMovementPoints;
-            newMech.currentAtt.actionPoints = mdata.currentActionPoints;
+            //load dynamic attributes
+            newMech.dynamicAttributes.health = mdata.currentHealth;
+            newMech.dynamicAttributes.movementPoints = mdata.currentMovementPoints;
+            //newMech.dynamicAttributes.actionPoints = mdata.currentActionPoints;
 
+            //load base attributes
+            newMech.baseAtt.health = mdata.health;
+            newMech.baseAtt.movementPoints = mdata.movementPoints;
+            //newMech.baseAtt.actionPoints = mdata.actionPoints;
+
+            //load mech class info
+
+            //load unit class info
             newMech.MovementSpeed = mdata.movementSpeed;
             newMech.PlayerNumber = mdata.playerNumber;
 
-
+            //load abilities
             foreach (Guid g in mdata.abilityIds)
             {
                 Debug.Log("making an ability" + g);
@@ -143,9 +155,6 @@ public class controlUtility : MonoBehaviour {
                 a.parent = newMech;
                 newMech.abilities.Add(a);
             }
-            newMech.att.health = mdata.health;
-            newMech.att.movementPoints = mdata.movementPoints;
-            newMech.att.actionPoints = mdata.actionPoints;
 
             pManager.pDataManager.playerMechs.Add(newMech);
         }

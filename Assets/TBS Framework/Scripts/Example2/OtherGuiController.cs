@@ -36,7 +36,7 @@ class OtherGuiController : MonoBehaviour
 
         OnUnitDehighlighted(sender, e);
 
-        if ((sender as Unit).currentAtt.health <= 0) return;
+        if ((sender as Unit).dynamicAttributes.health <= 0) return;
 
         OnUnitHighlighted(sender, e);
     }
@@ -96,7 +96,7 @@ class OtherGuiController : MonoBehaviour
         var defence = 0;
         //var range = (sender as Unit).AttackRange;
 
-        float hpScale = (sender as Unit).currentAtt.health / (sender as Unit).getTotalHealth();
+        float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 
         Image fullHpBar = Instantiate(FullHPBar);
         Image emptyHpBar = Instantiate(EmptyHPBar);

@@ -30,7 +30,7 @@ public class CellGridStateAbilityActive : CellGridState
         if (unit.Equals(_unit) || unit.isMoving)
             return;
 
-        if (_unitsInRange.Contains(unit) && _unit.currentAtt.actionPoints > 0)
+        if (_unitsInRange.Contains(unit))
         {
             _ability.activate(_unit, unit);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
@@ -48,8 +48,6 @@ public class CellGridStateAbilityActive : CellGridState
 
         _unit.OnUnitSelected();
         _unitCell = _unit.Cell;
-   
-        if (_unit.currentAtt.actionPoints <= 0) return;
 
         //change all this to highlight in ability state only
 
@@ -66,7 +64,7 @@ public class CellGridStateAbilityActive : CellGridState
             }
         }
 
-        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.currentAtt.movementPoints).Count == 0
+        if (_unitCell.GetNeighbours(_cellGrid.Cells).FindAll(c => c.MovementCost <= _unit.dynamicAttributes.movementPoints).Count == 0
             && _unitsInRange.Count == 0)
             _unit.SetState(new UnitStateMarkedAsFinished(_unit));
     }

@@ -34,12 +34,8 @@ public abstract class Unit : unitBase
         UnitState.MakeTransition(state);
     }
 
-
-    public attributes currentAtt;
+    public attributes dynamicAttributes;
     
-    //public int AttackRange;
-    //public int AttackFactor;
-
     /// <summary>
     /// Cell that the unit is currently occupying.
     /// </summary>
@@ -61,20 +57,19 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 
     /// </summary>
-    public virtual void Initialize()
+    public virtual new void Initialize()
     {
         base.Initialize();
-        if (null == UnitState)
-        {
-            UnitState = new UnitStateNormal(this);
-        }
+    }
 
-        if (null == this.currentAtt)
-        {
-            this.currentAtt = new attributes();
-        }
-
-        this.currentAtt.health = this.getTotalHealth();
+    /// <summary>
+    /// Method called at start of grid to calculate initial values
+    /// </summary>
+    public virtual new void GameInit()
+    {
+        base.GameInit();
+        UnitState = new UnitStateNormal(this);
+        this.dynamicAttributes = new attributes(this.getSummedAttributes());
     }
 
     /// <summary>
@@ -82,10 +77,15 @@ public abstract class Unit : unitBase
     /// </summary>
     public virtual new void onTurnStart()
     {
+        //tick all buffs
         base.onTurnStart();
-        //maybe will never need this?
-        this.currentAtt.movementPoints = this.getTotalMovementPoints();
-        this.currentAtt.actionPoints = this.getTotalActionPoints();
+        //recalculate values
+        attributes newVals = this.getSummedAttributes();
+        //TODO: reassign some values
+
+        this.dynamicAttributes.movementPoints = this.dynamicAttributes.maxMovementPoints;
+        this.dynamicAttributes.mainActionPoints = this.dynamicAttributes.maxMainActionPoints;
+        this.dynamicAttributes.bonusActionPoints = this.dynamicAttributes.maxBonusActionPoints;
 
         SetState(new UnitStateMarkedAsFriendly(this));
     }
@@ -112,29 +112,18 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual new void onAttack(Unit other, int actionPointCost)
+    public virtual new void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
     {
-        base.onAttack(other, actionPointCost);
-
-        Debug.Log("current action points:" + this.currentAtt.actionPoints);
-        Debug.Log("ismoving:" + isMoving);
-
         if (isMoving)
             return;
-        if (this.currentAtt.actionPoints == 0)
+        if (!parseActionCost(mainActionPointsCost, bonusActionPointsCost))
             return;
-       // if (!isUnitReachable(other, this.AttackRange, Cell))
-         //   return;
+        base.onAttack(other, mainActionPointsCost, bonusActionPointsCost);
 
         MarkAsAttacking(other);
-        this.currentAtt.actionPoints -= actionPointCost;
-        //other.onDefend(this, AttackFactor);
 
-        if (this.currentAtt.actionPoints == 0)
-        {
-            SetState(new UnitStateMarkedAsFinished(this));
-            this.currentAtt.movementPoints = 0;
-        }  
+        //do some attacking stuff here
+
     }
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
@@ -144,17 +133,38 @@ public abstract class Unit : unitBase
         base.onDefend(other, damage);
         MarkAsDefending(other);
 
-        this.currentAtt.health -= damage;
+        //defensive parameter parsing
+
+        this.dynamicAttributes.health -= damage;
 
         if (UnitAttacked != null)
             UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
-
-        if (this.currentAtt.health <= 0)
+        //check if dying
+        if (this.dynamicAttributes.health <= 0)
         {
             if (UnitDestroyed != null)
                 UnitDestroyed.Invoke(this, new AttackEventArgs(other, this, damage));
             onDeath();
         }
+    }
+
+    /// <summary>
+    /// Check action cost to see if action is doable
+    /// </summary>
+    public virtual bool parseActionCost(int mainActionPointsCost, int bonusActionPointsCost)
+    {
+        if ((mainActionPointsCost > this.dynamicAttributes.mainActionPoints) || (bonusActionPointsCost > this.dynamicAttributes.bonusActionPoints))
+            return false;
+
+        this.dynamicAttributes.mainActionPoints -= mainActionPointsCost;
+        this.dynamicAttributes.bonusActionPoints -= bonusActionPointsCost;
+
+        if (this.dynamicAttributes.mainActionPoints == 0 && this.dynamicAttributes.bonusActionPoints == 0)
+        {
+            SetState(new UnitStateMarkedAsFinished(this));
+            this.dynamicAttributes.movementPoints = 0;
+        }
+        return true;
     }
 
 
@@ -202,10 +212,10 @@ public abstract class Unit : unitBase
             return;
 
         var totalMovementCost = path.Sum(h => h.MovementCost);
-        if (this.currentAtt.movementPoints < totalMovementCost)
+        if (this.dynamicAttributes.movementPoints < totalMovementCost)
             return;
 
-        this.currentAtt.movementPoints -= totalMovementCost;
+        this.dynamicAttributes.movementPoints -= totalMovementCost;
 
         Cell.IsTaken = false;
         Cell = destinationCell;
@@ -258,9 +268,9 @@ public abstract class Unit : unitBase
     public List<Cell> GetAvailableDestinations(List<Cell> cells)
     {
         var ret = new List<Cell>();
-        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= this.currentAtt.movementPoints);
+        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= this.dynamicAttributes.movementPoints);
 
-        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= this.currentAtt.movementPoints);
+        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= this.dynamicAttributes.movementPoints);
         traversableCells.Add(Cell);
 
         foreach (var cellInRange in cellsInMovementRange)
@@ -269,7 +279,7 @@ public abstract class Unit : unitBase
 
             var path = FindPath(traversableCells, cellInRange);
             var pathCost = path.Sum(c => c.MovementCost);
-            if (pathCost > 0 && pathCost <= this.currentAtt.movementPoints)
+            if (pathCost > 0 && pathCost <= this.dynamicAttributes.movementPoints)
                 ret.AddRange(path);
         }
         return ret.FindAll(IsCellMovableTo).Distinct().ToList();
@@ -336,6 +346,73 @@ public abstract class Unit : unitBase
     /// Method returns the unit to its base appearance
     /// </summary>
     public abstract void UnMark();
+
+    public IEnumerator Jerk(Unit other, float movementTime)
+    {
+        var heading = other.transform.position - transform.position;
+        var direction = heading / heading.magnitude;
+        float startTime = Time.time;
+
+        while (true)
+        {
+            var currentTime = Time.time;
+            if (startTime + movementTime < currentTime)
+                break;
+            transform.position = Vector3.Lerp(transform.position, transform.position + (direction / 2.5f), ((startTime + movementTime) - currentTime));
+            yield return 0;
+        }
+        startTime = Time.time;
+        while (true)
+        {
+            var currentTime = Time.time;
+            if (startTime + movementTime < currentTime)
+                break;
+            transform.position = Vector3.Lerp(transform.position, transform.position - (direction / 2.5f), ((startTime + movementTime) - currentTime));
+            yield return 0;
+        }
+        transform.position = Cell.transform.position + new Vector3(0, 0, -1);
+    }
+
+    public IEnumerator Glow(Color color, float cooloutTime)
+    {
+        var _renderer = GetComponent<SpriteRenderer>();
+        float startTime = Time.time;
+
+        while (true)
+        {
+            var currentTime = Time.time;
+            if (startTime + cooloutTime < currentTime)
+                break;
+
+            _renderer.color = Color.Lerp(Color.white, color, (startTime + cooloutTime) - currentTime);
+            yield return 0;
+        }
+
+        _renderer.color = Color.white;
+    }
+
+    public IEnumerator Pulse(float breakTime, float delay, float scaleFactor)
+    {
+        var baseScale = transform.localScale;
+        while (true)
+        {
+            float time1 = Time.time;
+            while (time1 + delay > Time.time)
+            {
+                transform.localScale = Vector3.Lerp(baseScale * scaleFactor, baseScale, (time1 + delay) - Time.time);
+                yield return 0;
+            }
+
+            float time2 = Time.time;
+            while (time2 + delay > Time.time)
+            {
+                transform.localScale = Vector3.Lerp(baseScale, baseScale * scaleFactor, (time2 + delay) - Time.time);
+                yield return 0;
+            }
+
+            yield return new WaitForSeconds(breakTime);
+        }
+    }
 }
 
 public class MovementEventArgs : EventArgs

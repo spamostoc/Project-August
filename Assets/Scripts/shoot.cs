@@ -6,11 +6,13 @@ public class shoot : ability
 {
     public float damage;
     public int actionPointsCost;
+    public int bonusActionPointsCost;
 
     public shoot()
     {
         damage = 0;
         actionPointsCost = 0;
+        bonusActionPointsCost = 0;
     }
 
     public shoot(float dmg, int apc)
@@ -21,7 +23,9 @@ public class shoot : ability
 
     public override void activate(Unit self, Unit other)
     {
-        self.onAttack(other, actionPointsCost);
+        //deduct stuff from primary weapon
+        self.onAttack(other, actionPointsCost, bonusActionPointsCost);
+        //use primary weapons stats on opponent
         other.onDefend(self, damage);
     }
 

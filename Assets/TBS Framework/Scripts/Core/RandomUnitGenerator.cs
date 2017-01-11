@@ -31,7 +31,7 @@ class RandomUnitGenerator : MonoBehaviour, IUnitGenerator
                 unit.transform.position = cell.transform.position + new Vector3(0, 0, 0);
                 unit.GetComponent<Unit>().PlayerNumber = i;
                 unit.GetComponent<Unit>().Cell = cell.GetComponent<Cell>();
-                unit.GetComponent<Unit>().Initialize();
+                unit.GetComponent<Unit>().GameInit();
                 unit.transform.parent = UnitsParent;
 
 

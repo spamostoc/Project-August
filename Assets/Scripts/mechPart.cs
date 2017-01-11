@@ -7,7 +7,7 @@ public class mechPart : unitBase {
     
     public void copyFrom(mechPart original)
     {
-        this.att.setTo(original.att);
+        this.baseAtt = new attributes(original.baseAtt);
         this.buffs = original.copyBuffs();
         this.abilities = original.copyAbilities();
     }

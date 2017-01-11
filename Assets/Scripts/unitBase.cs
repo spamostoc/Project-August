@@ -5,7 +5,7 @@ using System;
 
 public abstract class unitBase : MonoBehaviour {
 
-    public attributes att { get; protected set; }
+    public attributes baseAtt { get; protected set; }
     //rest of the attributes in here
 
     //leave current values for the mech class
@@ -15,58 +15,31 @@ public abstract class unitBase : MonoBehaviour {
     public List<ability> abilities;
 
     //list of abilities BIG HUGE
-    
+
     public virtual void Initialize()
     {
-        if(null == this.att)
-        {
-            this.att = new attributes();
-        }
-        if (null == this.buffs)
-        {
-            this.buffs = new List<modifier>();
-        }
-        if (null == this.abilities)
-        {
-            this.abilities = new List<ability>();
-        }
+        this.buffs = new List<modifier>();
+        this.abilities = new List<ability>();
+    }
+    
+    public virtual void GameInit()
+    {
     }
 
-    public virtual float getTotalHealth()
+    public virtual attributes getSummedAttributes()
     {
-        float ret = att.health;
+        attributes ret = new attributes(baseAtt);
         foreach( modifier m in buffs )
         {
-            ret += m.att.health;
+            ret.addTo(m.att);
         }
         return ret;
     }
-
-    public virtual int getTotalActionPoints()
-    {
-        int ret = att.actionPoints;
-        foreach (modifier m in buffs)
-        {
-            ret += m.att.actionPoints;
-        }
-        return ret;
-    }
-
-    public virtual int getTotalMovementPoints()
-    {
-        int ret = att.movementPoints;
-        foreach (modifier m in buffs)
-        {
-            ret += m.att.movementPoints;
-        }
-        return ret;
-    }
-
 
     //cues
     public virtual void onTurnStart()
     {
-        foreach( modifier m in buffs)
+        foreach(modifier m in buffs)
         {
             m.onTurnStart();
         }
@@ -79,7 +52,7 @@ public abstract class unitBase : MonoBehaviour {
         }
     }
 
-    public virtual void onAttack(Unit other, int actionPointCost)
+    public virtual void onAttack(Unit other, int actionPointsCost, int bonusActionPointsCost)
     {
         foreach (modifier m in buffs)
         {

@@ -10,17 +10,23 @@ public class mech : Unit {
 
     public List<mechPart> parts;
 
-    Coroutine PulseCoroutine;
+    public List<mechWeapon> weapons;
 
-    public mech()
-    {
-        this.Initialize();
-    }
+    public mechWeapon activeWeapon;
+
+    Coroutine PulseCoroutine;
 
     public override void Initialize()
     {
         base.Initialize();
-        parts = new List<mechPart>();
+        this.parts = new List<mechPart>();
+        this.weapons = new List<mechWeapon>();
+    }
+
+    public override void GameInit()
+    {
+        base.GameInit();
+        this.activeWeapon = this.weapons[0];
         //transform.position += new Vector3(0, 0, -1);
     }
 
@@ -55,76 +61,9 @@ public class mech : Unit {
     {
     }
 
-    private IEnumerator Jerk(Unit other, float movementTime)
-    {
-        var heading = other.transform.position - transform.position;
-        var direction = heading / heading.magnitude;
-        float startTime = Time.time;
-
-        while (true)
-        {
-            var currentTime = Time.time;
-            if (startTime + movementTime < currentTime)
-                break;
-            transform.position = Vector3.Lerp(transform.position, transform.position + (direction / 2.5f), ((startTime + movementTime) - currentTime));
-            yield return 0;
-        }
-        startTime = Time.time;
-        while (true)
-        {
-            var currentTime = Time.time;
-            if (startTime + movementTime < currentTime)
-                break;
-            transform.position = Vector3.Lerp(transform.position, transform.position - (direction / 2.5f), ((startTime + movementTime) - currentTime));
-            yield return 0;
-        }
-        transform.position = Cell.transform.position + new Vector3(0, 0, -1);
-    }
-    private IEnumerator Glow(Color color, float cooloutTime)
-    {
-        var _renderer = GetComponent<SpriteRenderer>();
-        float startTime = Time.time;
-
-        while (true)
-        {
-            var currentTime = Time.time;
-            if (startTime + cooloutTime < currentTime)
-                break;
-
-            _renderer.color = Color.Lerp(Color.white, color, (startTime + cooloutTime) - currentTime);
-            yield return 0;
-        }
-
-        _renderer.color = Color.white;
-    }
-    private IEnumerator Pulse(float breakTime, float delay, float scaleFactor)
-    {
-        var baseScale = transform.localScale;
-        while (true)
-        {
-            float time1 = Time.time;
-            while (time1 + delay > Time.time)
-            {
-                transform.localScale = Vector3.Lerp(baseScale * scaleFactor, baseScale, (time1 + delay) - Time.time);
-                yield return 0;
-            }
-
-            float time2 = Time.time;
-            while (time2 + delay > Time.time)
-            {
-                transform.localScale = Vector3.Lerp(baseScale, baseScale * scaleFactor, (time2 + delay) - Time.time);
-                yield return 0;
-            }
-
-            yield return new WaitForSeconds(breakTime);
-        }
-    }
-
     public override void onTurnStart()
     {
         base.onTurnStart();
-        this.currentAtt.movementPoints = this.getTotalMovementPoints();
-        this.currentAtt.actionPoints = this.getTotalMovementPoints();
     }
 
     public override void MarkAsFriendly()
@@ -168,35 +107,14 @@ public class mech : Unit {
         }
     }
 
-    public override int getTotalActionPoints()
-    {
-        int ret = base.getTotalActionPoints();
-        foreach (mechPart p in parts)
-        {
-            ret += p.att.actionPoints;
-        }
-        return ret;
-    }
-
-    public override int getTotalMovementPoints()
-    {
-        int ret = base.getTotalMovementPoints();
-        foreach (mechPart p in parts)
-        {
-            ret += p.att.movementPoints;
-        }
-        return ret;
-    }
-
     public void copyFrom(mech original)
     {
-        this.att.setTo(original.att);
-        this.currentAtt.setTo(original.currentAtt);
+        this.baseAtt.setTo(original.baseAtt);
 
         this.buffs = original.copyBuffs();
 
-        this.MovementSpeed = original.MovementSpeed;
-
         this.abilities = original.copyAbilities();
+
+        this.MovementSpeed = original.MovementSpeed;
     }
 }

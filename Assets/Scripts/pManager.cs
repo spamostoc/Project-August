@@ -75,7 +75,8 @@ class mechdata
     // current att
     public float currentHealth;
     public int currentMovementPoints;
-    public int currentActionPoints;
+    public int currentMainActionPoints;
+    public float currentShieldPoints;
 
     public float movementSpeed;
     public int playerNumber;
@@ -85,6 +86,11 @@ class mechdata
     //base att
     public float health;
     public int movementPoints;
-    public int actionPoints;
-
+    public int mainActionPoints;
+    public int bonusActionPoints;
+    public float armor;
+    public float heatReduceRate;
+    public float shieldPoints;
+    public float shieldRegenRate;
+    public float shieldMitigation;
 }

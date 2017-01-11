@@ -34,7 +34,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                     cell.IsTaken = true;
                     unit.Cell = cell;
                     unit.transform.position = cell.transform.position;
-                    unit.Initialize();
+                    unit.GameInit();
                     ret.Add(unit);
                 }//Unit gets snapped to the nearest cell
                 else

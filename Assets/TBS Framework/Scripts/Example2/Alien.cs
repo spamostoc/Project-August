@@ -6,9 +6,9 @@ public class Alien : Unit
 {
     Coroutine PulseCoroutine;
 
-    public override void Initialize()
+    public override void GameInit()
     {
-        base.Initialize();
+        base.GameInit();
         transform.position += new Vector3(0, 0, -1);
     }
 
