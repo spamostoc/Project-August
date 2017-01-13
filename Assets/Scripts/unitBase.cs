@@ -18,6 +18,7 @@ public abstract class unitBase : MonoBehaviour {
 
     public virtual void Initialize()
     {
+        this.baseAtt = new attributes();
         this.buffs = new List<modifier>();
         this.abilities = new List<ability>();
     }

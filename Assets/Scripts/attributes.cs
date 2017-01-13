@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
+[Serializable]
 public class attributes
 {
-
     public float health { get; set; }
     public float maxHealth { get; set; }
     public int movementPoints { get; set; }

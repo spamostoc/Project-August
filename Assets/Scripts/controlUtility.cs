@@ -11,6 +11,8 @@ public class controlUtility : MonoBehaviour {
     {
         mech newMech = pManager.pDataManager.transform.gameObject.AddComponent<mech>();
         newMech.Initialize();
+
+        //creating new testmech
         attributes newAtt = new attributes();
 
         newAtt.health = 10;
@@ -19,8 +21,12 @@ public class controlUtility : MonoBehaviour {
 
         newMech.baseAtt.setTo(newAtt);
 
+        newMech.dynamicAttributes = new attributes(newAtt);
+
         newMech.MovementSpeed = 5;
 
+
+        //make test shoot ability
         shoot newShoot = new shoot();
 
         newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
@@ -57,6 +63,14 @@ public class controlUtility : MonoBehaviour {
         {
             mechdata mdata = new mechdata();
             mdata.mechId = UniTable.classGuid[pmechj.GetType()];
+
+            //transcribe abilities
+            mdata.abilityIds = new List<Guid>();
+            foreach (ability a in pmechj.abilities)
+            {
+                mdata.abilityIds.Add(UniTable.classGuid[a.GetType()]);
+            }
+
             //transcribe parts
             mdata.partsIds = new List<Guid>();
             foreach (mechPart p in pmechj.parts)
@@ -65,28 +79,22 @@ public class controlUtility : MonoBehaviour {
             }
 
             //transcribe dynamic attributes
-            mdata.currentHealth = pmechj.dynamicAttributes.health;
-            mdata.currentMovementPoints = pmechj.dynamicAttributes.movementPoints;
-            //mdata.currentActionPoints = pmechj.dynamicAttributes.actionPoints;
+            mdata.dynamicAtt = new attributes(pmechj.dynamicAttributes);
 
             //transcribe base attributes
-            mdata.health = pmechj.baseAtt.health;
-            mdata.movementPoints = pmechj.baseAtt.movementPoints;
-            //mdata.actionPoints = pmechj.baseAtt.actionPoints;
+            mdata.baseAtt = new attributes(pmechj.dynamicAttributes);
 
             //transcribe mech class info
-            //TODO
+            mdata.weaponIds = new List<Guid>();
+            foreach (mechWeapon w in pmechj.weapons)
+            {
+                mdata.weaponIds.Add(UniTable.classGuid[w.GetType()]);
+            }
 
             //transcribe unit class info
             mdata.movementSpeed = pmechj.MovementSpeed;
             mdata.playerNumber = pmechj.PlayerNumber;
 
-            //transcribe abilities
-            mdata.abilityIds = new List<Guid>();
-            foreach (ability a in pmechj.abilities)
-            {
-                mdata.abilityIds.Add(UniTable.classGuid[a.GetType()]);
-            }
 
             dl.playerMechs.Add(mdata);
         }
@@ -126,36 +134,37 @@ public class controlUtility : MonoBehaviour {
                 mechPart mp = (mechPart)pManager.pDataManager.transform.gameObject.AddComponent(mType);
                 mp.Initialize();
                 mp.parent = newMech;
-                mp.copyFrom(UniTable.partsDictionary[mType]);
+                mp.copyFrom(UniTable.partDictionary[mType]);
                 newMech.parts.Add(mp);
             }
 
+            //load abilities
+            foreach (Guid g in mdata.abilityIds)
+            {
+                ability a = UniTable.abilityDictionary[UniTable.getType(g)].clone();
+                a.parent = newMech;
+                newMech.abilities.Add(a);
+            }
+
             //load dynamic attributes
-            newMech.dynamicAttributes.health = mdata.currentHealth;
-            newMech.dynamicAttributes.movementPoints = mdata.currentMovementPoints;
-            //newMech.dynamicAttributes.actionPoints = mdata.currentActionPoints;
+            newMech.dynamicAttributes = new attributes(mdata.dynamicAtt);
 
             //load base attributes
-            newMech.baseAtt.health = mdata.health;
-            newMech.baseAtt.movementPoints = mdata.movementPoints;
-            //newMech.baseAtt.actionPoints = mdata.actionPoints;
+            newMech.baseAtt.setTo(mdata.baseAtt);
 
             //load mech class info
+            foreach (Guid g in mdata.weaponIds)
+            {
+                mechWeapon w = UniTable.weapondictionary[UniTable.getType(g)].clone();
+                w.parent = newMech;
+                newMech.weapons.Add(w);
+            }
 
             //load unit class info
             newMech.MovementSpeed = mdata.movementSpeed;
             newMech.PlayerNumber = mdata.playerNumber;
 
-            //load abilities
-            foreach (Guid g in mdata.abilityIds)
-            {
-                Debug.Log("making an ability" + g);
-                ability a = UniTable.abilityDictionary[UniTable.getType(g)].clone();
-                Debug.Log(a);
-                a.parent = newMech;
-                newMech.abilities.Add(a);
-            }
-
+            Debug.Log(newMech.dynamicAttributes.movementPoints);
             pManager.pDataManager.playerMechs.Add(newMech);
         }
     }

@@ -26,4 +26,6 @@ public abstract class mechWeapon
     public abstract void onTurnStart();
 
     public abstract void onTurnEnd();
+
+    public abstract mechWeapon clone();
 }

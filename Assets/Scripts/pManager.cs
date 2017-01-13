@@ -37,11 +37,11 @@ public class pManager : MonoBehaviour
         //parts dictionary
         mechPart mp = this.transform.gameObject.AddComponent<mechPart>();
         mp.Initialize();
-        UniTable.partsDictionary.Add(typeof(mechPart), mp);
+        UniTable.partDictionary.Add(typeof(mechPart), mp);
 
         steelCore sc = this.transform.gameObject.AddComponent<steelCore>();
         sc.Initialize();
-        UniTable.partsDictionary.Add(typeof(steelCore), sc);
+        UniTable.partDictionary.Add(typeof(steelCore), sc);
 
         //ability dictionary
         shoot newShoot = new shoot();
@@ -66,31 +66,28 @@ class dataLibrary
     public List<mechdata> playerMechs;
 }
 
+
 [Serializable]
 class mechdata
 {
     public Guid mechId;
 
     public List<Guid> partsIds;
-    // current att
-    public float currentHealth;
-    public int currentMovementPoints;
-    public int currentMainActionPoints;
-    public float currentShieldPoints;
-
-    public float movementSpeed;
-    public int playerNumber;
 
     public List<Guid> abilityIds;
 
+    // dynamic att
+    public attributes dynamicAtt;
+
     //base att
-    public float health;
-    public int movementPoints;
-    public int mainActionPoints;
-    public int bonusActionPoints;
-    public float armor;
-    public float heatReduceRate;
-    public float shieldPoints;
-    public float shieldRegenRate;
-    public float shieldMitigation;
+    public attributes baseAtt;
+
+    //mech class att
+    public List<Guid> weaponIds;
+
+    // unit class att
+    public float movementSpeed;
+    public int playerNumber;
+
+
 }
