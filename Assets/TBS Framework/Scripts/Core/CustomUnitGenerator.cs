@@ -26,27 +26,13 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
         for (int i = 0; i < UnitsParent.childCount; i++)
         {
             var unit = UnitsParent.GetChild(i).GetComponent<Unit>();
-            if (unit != null)
-            {
-                var cell = cells.OrderBy(h => Math.Abs((h.transform.position - unit.transform.position).magnitude)).First();
-                if (!cell.IsTaken)
-                {
-                    cell.IsTaken = true;
-                    unit.Cell = cell;
-                    unit.transform.position = cell.transform.position;
-                    unit.GameInit();
-                    ret.Add(unit);
-                }//Unit gets snapped to the nearest cell
-                else
-                {
-                    Destroy(unit.gameObject);
-                }//If the nearest cell is taken, the unit gets destroyed.
-            }
-            else
-            {
-                Debug.LogError("Invalid object in Units Parent game object");
-            }
 
+            //hack while we still have the temp alien class involved
+            if (null == unit.baseAtt)
+                unit.Initialize();
+
+            if (this.spawnToGrid(unit, cells))
+                ret.Add(unit);
         }
         return ret;
     }
@@ -95,14 +81,38 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
             mech mechTemplate = pManager.pDataManager.playerMechs[index];
             //need to alias all the player classes to prefabs
             //consider having the prefabs override the save files every time on max values?
-            Debug.Log(mechTemplate.GetType());
-            Debug.Log(UniTable.prefabTable);
-            Transform ret = (Transform)Instantiate(UniTable.prefabTable[mechTemplate.GetType()], PlayerSpawns.GetChild(index).position , Quaternion.identity, UnitsParent);
             if (pManager.pDataManager.playerMechs.Count > 0)
             {
+                Transform ret = (Transform)Instantiate(UniTable.prefabTable[mechTemplate.GetType()], PlayerSpawns.GetChild(index).position, Quaternion.identity, UnitsParent);
+                ret.GetComponent<mech>().Initialize();
                 ret.GetComponent<mech>().copyFrom(mechTemplate);
             }
         }
+    }
+
+    private Boolean spawnToGrid(Unit unit, List<Cell> cells)
+    {
+        if (unit != null)
+        {
+            var cell = cells.OrderBy(h => Math.Abs((h.transform.position - unit.transform.position).magnitude)).First();
+            if (!cell.IsTaken)
+            {
+                cell.IsTaken = true;
+                unit.Cell = cell;
+                unit.transform.position = cell.transform.position;
+                unit.GameInit();
+                return true;
+            }//Unit gets snapped to the nearest cell
+            else
+            {
+                Destroy(unit.gameObject);
+            }//If the nearest cell is taken, the unit gets destroyed.
+        }
+        else
+        {
+            Debug.LogError("Invalid object in Units Parent game object");
+        }
+        return false;
     }
 }
 

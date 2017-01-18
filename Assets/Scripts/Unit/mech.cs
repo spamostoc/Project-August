@@ -26,8 +26,25 @@ public class mech : Unit {
     public override void GameInit()
     {
         base.GameInit();
+        //hack to deal with aliens.cs
+        if (this.weapons.Count == 0)
+            return;
+
         this.activeWeapon = this.weapons[0];
         //transform.position += new Vector3(0, 0, -1);
+    }
+
+    public override void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
+    {
+        if (isMoving)
+            return;
+        if (!parseActionCost(mainActionPointsCost, bonusActionPointsCost))
+            return;
+        base.onAttack(other, mainActionPointsCost, bonusActionPointsCost);
+
+        MarkAsAttacking(other);
+        this.activeWeapon.onAttack((mech)other);
+        //do some attacking stuff here
     }
 
     public override bool IsCellMovableTo(Cell cell)
@@ -111,10 +128,22 @@ public class mech : Unit {
     {
         this.baseAtt.setTo(original.baseAtt);
 
-        this.buffs = original.copyBuffs();
+        this.copyAbilitiesFrom(original);
 
-        this.abilities = original.copyAbilities();
+        this.copyBuffsFrom(original);
+
+        this.copyWeaponsFrom(original);
 
         this.MovementSpeed = original.MovementSpeed;
+    }
+
+    public void copyWeaponsFrom(mech m)
+    {
+        foreach (mechWeapon w in m.weapons)
+        {
+            mechWeapon newW = w.clone();
+            newW.parent = this;
+            this.weapons.Add(newW);
+        }
     }
 }

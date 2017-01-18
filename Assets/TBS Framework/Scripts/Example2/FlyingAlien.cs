@@ -6,7 +6,7 @@ public class FlyingAlien : Alien
 {
     public void Initialize()
     {
-        base.GameInit();
+        base.Initialize();
         (Cell as MyOtherHexagon).IsSkyTaken = true;
     }
 

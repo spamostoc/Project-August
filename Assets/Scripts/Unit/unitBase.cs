@@ -5,6 +5,8 @@ using System;
 
 public abstract class unitBase : MonoBehaviour {
 
+    public String displayName;
+
     public attributes baseAtt { get; protected set; }
     //rest of the attributes in here
 
@@ -90,7 +92,7 @@ public abstract class unitBase : MonoBehaviour {
     public List<modifier> copyBuffs()
     {
         List<modifier> newBuff = new List<modifier>();
-        Debug.Log(this.buffs);
+
         foreach (modifier m in this.buffs)
         {
             newBuff.Add(m.clone());

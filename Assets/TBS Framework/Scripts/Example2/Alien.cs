@@ -8,7 +8,7 @@ public class Alien : Unit
 
     public override void GameInit()
     {
-        base.GameInit();
+        base.Initialize();
         transform.position += new Vector3(0, 0, -1);
     }
 

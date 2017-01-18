@@ -134,7 +134,7 @@ class OtherGuiController : MonoBehaviour
         if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
         {
             Debug.Log("loading ability icon");
-            this.AbilityIcon.sprite = (sender as Unit).abilities[0].abilitySprite;
+            this.AbilityIcon.sprite = (sender as Unit).abilities[0].iconSprite;
             this.AbilityButton.interactable = true;
         }
     }

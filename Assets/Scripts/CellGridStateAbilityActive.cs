@@ -51,13 +51,12 @@ public class CellGridStateAbilityActive : CellGridState
 
         //change all this to highlight in ability state only
 
-        Debug.Log(_ability.range);
         foreach (var currentUnit in _cellGrid.Units)
         {
             if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
                 continue;
 
-            if (_unit.isUnitReachable(currentUnit, _ability.range, _unit.Cell))
+            if (_unit.isUnitReachable(currentUnit, _ability.getRange(), _unit.Cell))
             {
                 currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
                 _unitsInRange.Add(currentUnit);

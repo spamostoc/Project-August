@@ -13,34 +13,53 @@ public class controlUtility : MonoBehaviour {
         newMech.Initialize();
 
         //creating new testmech
-        attributes newAtt = new attributes();
 
-        newAtt.health = 10;
-        newAtt.movementPoints = 3;
-        newAtt.mainActionPoints = 1;
+        //transcribe dynamic attributes
 
-        newMech.baseAtt.setTo(newAtt);
+        //transcribe base attributes
+        newMech.baseAtt.health = 100;
+        newMech.baseAtt.maxHealth = 100;
+        newMech.baseAtt.movementPoints = 7;
+        newMech.baseAtt.maxMovementPoints = 7;
+        newMech.baseAtt.mainActionPoints = 1;
+        newMech.baseAtt.maxMainActionPoints = 1;
+        newMech.baseAtt.bonusActionPoints = 1;
+        newMech.baseAtt.maxBonusActionPoints = 1;
+        newMech.baseAtt.armor = 0.15f;
+        newMech.baseAtt.heatReduceRate = 3;
+        newMech.baseAtt.shieldPoints = 100;
+        newMech.baseAtt.maxShieldPoints = 100;
+        newMech.baseAtt.shieldRegenRate = 10;
+        newMech.baseAtt.shieldMitigation = 10;
 
-        newMech.dynamicAttributes = new attributes(newAtt);
+        //transcribe mech class info
 
+        //transcribe unit class info
+        newMech.displayName = "Intercessor";
         newMech.MovementSpeed = 5;
+        newMech.PlayerNumber = 0;
 
+        //weapons
+        newMech.weapons.Add(UniTable.weapondictionary[typeof(flakGunWeapon)].clone());
+        foreach (mechWeapon w in newMech.weapons)
+        {
+            w.parent = newMech;
+        }
 
-        //make test shoot ability
-        shoot newShoot = new shoot();
+        //abilities
+        newMech.abilities.Add(UniTable.abilityDictionary[typeof(shoot)].clone());
+        foreach (ability a in newMech.abilities)
+        {
+            a.parent = newMech;
+        }
 
-        newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        newShoot.setRange(2);
-        newShoot.damage = 1;
-        newShoot.actionPointsCost = 1;
-        newShoot.parent = newMech;
-
-        newMech.abilities.Add(newShoot);
-
+        //parts
         steelCore part = pManager.pDataManager.transform.gameObject.AddComponent<steelCore>();
-        part.Initialize();
-        part.parent = newMech;
+        part.copyFrom(UniTable.partDictionary[typeof(steelCore)]);
         newMech.parts.Add(part);
+        foreach (mechPart mp in newMech.parts) {
+            mp.parent = newMech;
+        }
 
         pManager.pDataManager.playerMechs.Add(newMech);
     }
@@ -82,7 +101,7 @@ public class controlUtility : MonoBehaviour {
             mdata.dynamicAtt = new attributes(pmechj.dynamicAttributes);
 
             //transcribe base attributes
-            mdata.baseAtt = new attributes(pmechj.dynamicAttributes);
+            mdata.baseAtt = new attributes(pmechj.baseAtt);
 
             //transcribe mech class info
             mdata.weaponIds = new List<Guid>();
@@ -94,7 +113,7 @@ public class controlUtility : MonoBehaviour {
             //transcribe unit class info
             mdata.movementSpeed = pmechj.MovementSpeed;
             mdata.playerNumber = pmechj.PlayerNumber;
-
+            mdata.displayName = pmechj.displayName;
 
             dl.playerMechs.Add(mdata);
         }
@@ -163,8 +182,8 @@ public class controlUtility : MonoBehaviour {
             //load unit class info
             newMech.MovementSpeed = mdata.movementSpeed;
             newMech.PlayerNumber = mdata.playerNumber;
+            newMech.displayName = mdata.displayName;
 
-            Debug.Log(newMech.dynamicAttributes.movementPoints);
             pManager.pDataManager.playerMechs.Add(newMech);
         }
     }

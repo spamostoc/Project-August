@@ -69,22 +69,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Ability\ability.cs" />
+    <Compile Include="Assets\Scripts\Ability\shoot.cs" />
     <Compile Include="Assets\Scripts\CellGridStateAbilityActive.cs" />
+    <Compile Include="Assets\Scripts\Part\flakGunWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\mechPart.cs" />
+    <Compile Include="Assets\Scripts\Part\mechWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\steelCore.cs" />
     <Compile Include="Assets\Scripts\UniTable.cs" />
-    <Compile Include="Assets\Scripts\ability.cs" />
+    <Compile Include="Assets\Scripts\Unit\Unit.cs" />
+    <Compile Include="Assets\Scripts\Unit\mech.cs" />
+    <Compile Include="Assets\Scripts\Unit\unitBase.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
     <Compile Include="Assets\Scripts\controlUtility.cs" />
     <Compile Include="Assets\Scripts\hanger.cs" />
     <Compile Include="Assets\Scripts\mainMenuScript.cs" />
-    <Compile Include="Assets\Scripts\mech.cs" />
-    <Compile Include="Assets\Scripts\mechPart.cs" />
-    <Compile Include="Assets\Scripts\mechWeapon.cs" />
     <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\Scripts\pManager.cs" />
-    <Compile Include="Assets\Scripts\shoot.cs" />
-    <Compile Include="Assets\Scripts\steelCore.cs" />
     <Compile Include="Assets\Scripts\typeDictionary.cs" />
-    <Compile Include="Assets\Scripts\unitBase.cs" />
     <Compile Include="Assets\Scripts\vnManager.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\AStarPathfinding.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\BreadthFirstSearch.cs" />
@@ -119,7 +121,6 @@
     <Compile Include="Assets\TBS Framework\Scripts\Core\RectangularSquareGridGenerator.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\Square.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\TriangularHexGridGenerator.cs" />
-    <Compile Include="Assets\TBS Framework\Scripts\Core\Unit.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitState.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitStateMarkedAsFinished.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\UnitStateMarkedAsFriendly.cs" />

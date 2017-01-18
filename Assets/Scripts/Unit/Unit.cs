@@ -60,6 +60,7 @@ public abstract class Unit : unitBase
     public virtual new void Initialize()
     {
         base.Initialize();
+        this.dynamicAttributes = new attributes();
     }
 
     /// <summary>
@@ -121,7 +122,6 @@ public abstract class Unit : unitBase
         base.onAttack(other, mainActionPointsCost, bonusActionPointsCost);
 
         MarkAsAttacking(other);
-
         //do some attacking stuff here
 
     }
@@ -167,7 +167,25 @@ public abstract class Unit : unitBase
         return true;
     }
 
+    public void copyBuffsFrom(Unit unit)
+    {
+        foreach (modifier m in unit.buffs)
+        {
+            modifier newM = m.clone();
+            newM.parent = this;
+            this.buffs.Add(newM);
+        }
+    }
 
+    public void copyAbilitiesFrom(Unit unit)
+    {
+        foreach (ability a in unit.abilities)
+        {
+            ability newA = a.clone();
+            newA.parent = this;
+            this.abilities.Add(newA);
+        }
+    }
 
     protected virtual void OnMouseOver()
     {
@@ -413,6 +431,8 @@ public abstract class Unit : unitBase
             yield return new WaitForSeconds(breakTime);
         }
     }
+
+
 }
 
 public class MovementEventArgs : EventArgs

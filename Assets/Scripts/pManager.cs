@@ -43,19 +43,22 @@ public class pManager : MonoBehaviour
         sc.Initialize();
         UniTable.partDictionary.Add(typeof(steelCore), sc);
 
+        //weapon dictionary
+        flakGunWeapon newFlakGun = new flakGunWeapon();
+        newFlakGun.Initialize();
+        newFlakGun.range = 5;
+        newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        UniTable.weapondictionary.Add(typeof(flakGunWeapon), newFlakGun);
+
         //ability dictionary
         shoot newShoot = new shoot();
-
-        newShoot.abilitySprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        newShoot.setRange(2);
-        newShoot.damage = 1;
-        newShoot.actionPointsCost = 1;
+        newShoot.Initialize();
+        newShoot.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.abilityDictionary.Add(typeof(shoot), newShoot);
 
         //prefabs Table
 
         UniTable.prefabTable.Add(typeof(mech), Resources.Load<Transform>("Alien4") as Transform);
-        Debug.Log(Resources.Load<Transform>("Alien4") as Transform);
     }
 
 }
@@ -86,6 +89,7 @@ class mechdata
     public List<Guid> weaponIds;
 
     // unit class att
+    public String displayName;
     public float movementSpeed;
     public int playerNumber;
 
