@@ -36,18 +36,18 @@ public class controlUtility : MonoBehaviour {
 
         //transcribe unit class info
         newMech.displayName = "Intercessor";
-        newMech.MovementSpeed = 5;
+        newMech.MovementSpeed = 15;
         newMech.PlayerNumber = 0;
 
         //weapons
-        newMech.weapons.Add(UniTable.weapondictionary[typeof(flakGunWeapon)].clone());
+        newMech.weapons.Add(UniTable.weapondictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
         foreach (mechWeapon w in newMech.weapons)
         {
             w.parent = newMech;
         }
 
         //abilities
-        newMech.abilities.Add(UniTable.abilityDictionary[typeof(shoot)].clone());
+        newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(shoot)]].clone());
         foreach (ability a in newMech.abilities)
         {
             a.parent = newMech;
@@ -55,7 +55,7 @@ public class controlUtility : MonoBehaviour {
 
         //parts
         steelCore part = pManager.pDataManager.transform.gameObject.AddComponent<steelCore>();
-        part.copyFrom(UniTable.partDictionary[typeof(steelCore)]);
+        part.copyFrom(UniTable.partDictionary[UniTable.classGuid[typeof(steelCore)]]);
         newMech.parts.Add(part);
         foreach (mechPart mp in newMech.parts) {
             mp.parent = newMech;
@@ -135,7 +135,7 @@ public class controlUtility : MonoBehaviour {
         //initialize game data structure
         foreach (mechdata mdata in dl.playerMechs)
         {
-            Type mechClass = UniTable.getType(mdata.mechId);
+            Type mechClass = UniTable.GetTypeFromGuid(mdata.mechId);
             if (mechClass == null)
             {
                 Debug.Log("no such class found");
@@ -149,18 +149,18 @@ public class controlUtility : MonoBehaviour {
             //load parts
             foreach (Guid g in mdata.partsIds)
             {
-                Type mType = UniTable.getType(g);
+                Type mType = UniTable.GetTypeFromGuid(g);
                 mechPart mp = (mechPart)pManager.pDataManager.transform.gameObject.AddComponent(mType);
                 mp.Initialize();
                 mp.parent = newMech;
-                mp.copyFrom(UniTable.partDictionary[mType]);
+                mp.copyFrom(UniTable.partDictionary[UniTable.classGuid[mType]]);
                 newMech.parts.Add(mp);
             }
 
             //load abilities
             foreach (Guid g in mdata.abilityIds)
             {
-                ability a = UniTable.abilityDictionary[UniTable.getType(g)].clone();
+                ability a = UniTable.abilityDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(g)]].clone();
                 a.parent = newMech;
                 newMech.abilities.Add(a);
             }
@@ -174,7 +174,7 @@ public class controlUtility : MonoBehaviour {
             //load mech class info
             foreach (Guid g in mdata.weaponIds)
             {
-                mechWeapon w = UniTable.weapondictionary[UniTable.getType(g)].clone();
+                mechWeapon w = UniTable.weapondictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(g)]].clone();
                 w.parent = newMech;
                 newMech.weapons.Add(w);
             }

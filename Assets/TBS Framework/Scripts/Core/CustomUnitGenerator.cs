@@ -27,9 +27,16 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
         {
             var unit = UnitsParent.GetChild(i).GetComponent<Unit>();
 
-            //hack while we still have the temp alien class involved
+            //this is still super hacky
             if (null == unit.baseAtt)
+            {
                 unit.Initialize();
+                if (unit.GetType() == typeof(mech) && !String.IsNullOrEmpty(unit.TemplateId))
+                {
+                    Debug.Log(unit.TemplateId);
+                    ((mech)unit).copyFrom((mech)UniTable.unitDictionary[new Guid(unit.TemplateId)]);
+                }
+            }
 
             if (this.spawnToGrid(unit, cells))
                 ret.Add(unit);
@@ -100,6 +107,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                 cell.IsTaken = true;
                 unit.Cell = cell;
                 unit.transform.position = cell.transform.position;
+                //copy values?
                 unit.GameInit();
                 return true;
             }//Unit gets snapped to the nearest cell

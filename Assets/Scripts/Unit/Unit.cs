@@ -35,7 +35,11 @@ public abstract class Unit : unitBase
     }
 
     public attributes dynamicAttributes;
-    
+
+    /// <summary>
+    /// UniTable entry to template from
+    /// </summary>
+    public String TemplateId;
     /// <summary>
     /// Cell that the unit is currently occupying.
     /// </summary>

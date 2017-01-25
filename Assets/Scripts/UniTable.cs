@@ -6,10 +6,11 @@ using System.Collections.Generic;
 public static class UniTable
 {
     //this contain the instanced template classes to clone new objects from
-    public static IDictionary<Type, Unit> unitDictionary = new Dictionary<Type, Unit>();
-    public static IDictionary<Type, mechPart> partDictionary = new Dictionary<Type, mechPart>();
-    public static IDictionary<Type, ability> abilityDictionary = new Dictionary<Type, ability>();
-    public static IDictionary<Type, mechWeapon> weapondictionary = new Dictionary<Type, mechWeapon>();
+    //use guids so that 1 class can serve as multiple templates
+    public static IDictionary<Guid, Unit> unitDictionary = new Dictionary<Guid, Unit>();
+    public static IDictionary<Guid, mechPart> partDictionary = new Dictionary<Guid, mechPart>();
+    public static IDictionary<Guid, ability> abilityDictionary = new Dictionary<Guid, ability>();
+    public static IDictionary<Guid, mechWeapon> weapondictionary = new Dictionary<Guid, mechWeapon>();
 
     public static IDictionary<Type, Transform> prefabTable = new Dictionary<Type, Transform>();
 
@@ -25,7 +26,7 @@ public static class UniTable
         { typeof(steelCore) , new Guid("ce81a106-f7e8-456d-b586-85d33753b3c5") }
     };
 
-    public static Type getType(Guid id)
+    public static Type GetTypeFromGuid(Guid id)
     {
         foreach (KeyValuePair<Type, Guid> classKey in UniTable.classGuid)
         {
