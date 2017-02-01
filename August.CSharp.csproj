@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Ability\ability.cs" />
     <Compile Include="Assets\Scripts\Ability\shoot.cs" />
+    <Compile Include="Assets\Scripts\Ability\switchWeapon.cs" />
     <Compile Include="Assets\Scripts\CellGridStateAbilityActive.cs" />
     <Compile Include="Assets\Scripts\Part\flakGunWeapon.cs" />
     <Compile Include="Assets\Scripts\Part\mechPart.cs" />

@@ -48,6 +48,7 @@ public class controlUtility : MonoBehaviour {
 
         //abilities
         newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(shoot)]].clone());
+        newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(switchWeapon)]].clone());
         foreach (ability a in newMech.abilities)
         {
             a.parent = newMech;

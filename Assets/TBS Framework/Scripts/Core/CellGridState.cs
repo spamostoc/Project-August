@@ -36,4 +36,6 @@ public abstract class CellGridState
     }
 
     public virtual void OnUnitRightClicked(Unit unit) { }
+
+    public virtual void OnAbilityActive(int index) { }
 }

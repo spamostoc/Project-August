@@ -6,6 +6,8 @@ public class ability {
 
     public Unit parent;
     public Sprite iconSprite;
+    public int uiPriority;
+    public Boolean targeted;
     protected int range { get; set; }
 
     //other animation/asset data here
@@ -43,5 +45,6 @@ public class ability {
         tgt.parent = src.parent;
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
         tgt.range = src.range;
+        tgt.targeted = src.targeted;
     }
 }

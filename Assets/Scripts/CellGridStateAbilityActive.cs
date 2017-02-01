@@ -49,6 +49,12 @@ public class CellGridStateAbilityActive : CellGridState
         _unit.OnUnitSelected();
         _unitCell = _unit.Cell;
 
+        if(!_ability.targeted)
+        {
+            _ability.activate(_unit, null);
+            _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
+        }
+
         //change all this to highlight in ability state only
 
         foreach (var currentUnit in _cellGrid.Units)
@@ -80,5 +86,12 @@ public class CellGridStateAbilityActive : CellGridState
         {
             cell.UnMark();
         }
+    }
+
+    public override void OnAbilityActive(int index)
+    {
+        Debug.Log("got ui button");
+        if (index < _unit.abilities.Count)
+            _cellGrid.CellGridState = new CellGridStateAbilityActive(_cellGrid, _unit, _unit.abilities[index]);
     }
 }

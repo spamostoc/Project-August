@@ -35,6 +35,11 @@ public class pManager : MonoBehaviour
         newShoot.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.abilityDictionary.Add(UniTable.classGuid[typeof(shoot)], newShoot);
 
+        switchWeapon newSwitchWeapon = new switchWeapon();
+        newSwitchWeapon.Initialize();
+        newSwitchWeapon.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        UniTable.abilityDictionary.Add(UniTable.classGuid[typeof(switchWeapon)], newSwitchWeapon);
+
         //parts dictionary
         mechPart mp = this.transform.gameObject.AddComponent<mechPart>();
         mp.Initialize();
@@ -104,6 +109,7 @@ public class pManager : MonoBehaviour
 
         //abilities
         newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(shoot)]].clone());
+        newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(switchWeapon)]].clone());
         foreach (ability a in newMech.abilities)
         {
             a.parent = newMech;

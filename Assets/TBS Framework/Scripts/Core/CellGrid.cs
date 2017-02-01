@@ -169,9 +169,6 @@ public class CellGrid : MonoBehaviour
 
     public void OnAbilityButton(int index)
     {
-        if (CellGridState.GetType() == typeof(CellGridStateUnitSelected))
-        {
-            ((CellGridStateUnitSelected)CellGridState).OnAbilityActive(index);
-        }
+        CellGridState.OnAbilityActive(index);
     }
 }

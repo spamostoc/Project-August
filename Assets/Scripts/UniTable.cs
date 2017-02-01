@@ -21,6 +21,7 @@ public static class UniTable
         { typeof(mechWeapon) , new Guid("f52dadd7-4273-49c4-81b0-28972842c745") },
         { typeof(flakGunWeapon) , new Guid("a089fa1b-8991-4df5-8049-5583abdcb740") },
         { typeof(ability) , new Guid("1f24132c-3821-4efa-86ef-953251122115") },
+        { typeof(switchWeapon) , new Guid("1ec7fc5c-d5a1-4de1-8f25-245e3e37f0a6") },
         { typeof(shoot) , new Guid("1addecfc-5cd5-4147-a7d9-a8034c2890d7") },
         { typeof(mechPart), new Guid("08f6a56e-8f9a-4841-b4e3-49daff317ec5") },
         { typeof(steelCore) , new Guid("ce81a106-f7e8-456d-b586-85d33753b3c5") }

@@ -22,6 +22,7 @@ class OtherGuiController : MonoBehaviour
     public Sprite emptySprite;
     public Button AbilityButton;
     public Image AbilityIcon;
+    public Transform AbilityPanel;
 
     private void Start()
     {
@@ -52,9 +53,11 @@ class OtherGuiController : MonoBehaviour
         }
         InfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
 
-
-        this.AbilityIcon.sprite = this.emptySprite;
-        this.AbilityButton.interactable = false;
+        foreach(Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
+        {
+            b.GetComponentInChildren<Image>().sprite = null;
+            b.interactable = false;
+        }
 
         OnTurnEnded(sender,e);
     }
@@ -134,15 +137,31 @@ class OtherGuiController : MonoBehaviour
         if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
         {
             Debug.Log("loading ability icon");
-            this.AbilityIcon.sprite = (sender as Unit).abilities[0].iconSprite;
-            this.AbilityButton.interactable = true;
+
+            Button[] buttons = this.AbilityPanel.GetComponentsInChildren<Button>();
+
+            for (int n = 0; n < Math.Min(buttons.Length, (sender as Unit).abilities.Count); n++)
+            {
+                //have to make sure we're not finding the image in the button itself
+                foreach (Image i in buttons[n].GetComponentsInChildren<Image>())
+                {
+                    if (i.gameObject.transform.parent == buttons[n].transform)
+                    {
+                        i.sprite = (sender as Unit).abilities[n].iconSprite;
+                    }
+                }
+                buttons[n].interactable = true;
+            }
         }
     }
 
     public void OnUnitDeselected(object sender, EventArgs e)
     {
-        this.AbilityIcon.sprite = this.emptySprite;
-        this.AbilityButton.interactable = false;
+        foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
+        {
+            b.GetComponentInChildren<Image>().sprite = null;
+            b.interactable = false;
+        }
     }
 
     public void RestartLevel()

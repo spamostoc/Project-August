@@ -141,7 +141,7 @@ class CellGridStateUnitSelected : CellGridState
         }
     }
 
-    public void OnAbilityActive(int index)
+    public override void OnAbilityActive(int index)
     {
         if (index < _unit.abilities.Count)
         _cellGrid.CellGridState = new CellGridStateAbilityActive(_cellGrid, _unit, _unit.abilities[index]);

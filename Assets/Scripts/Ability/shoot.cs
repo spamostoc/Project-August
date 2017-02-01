@@ -11,6 +11,7 @@ public class shoot : ability
     {
         actionPointsCost = 1;
         bonusActionPointsCost = 0;
+        targeted = true;
     }
 
     public override void activate(Unit self, Unit other)
