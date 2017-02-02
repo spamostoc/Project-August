@@ -53,8 +53,17 @@ public class pManager : MonoBehaviour
         flakGunWeapon newFlakGun = new flakGunWeapon();
         newFlakGun.Initialize();
         newFlakGun.range = 5;
+        newFlakGun.damage = 5;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.weapondictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
+
+
+        lasGunWeapon newLasGun = new lasGunWeapon();
+        newLasGun.Initialize();
+        newLasGun.range = 2;
+        newLasGun.damage = 5;
+        newLasGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        UniTable.weapondictionary.Add(UniTable.classGuid[typeof(lasGunWeapon)], newLasGun);
 
         //units dictionary
         //these rely on the above
@@ -102,6 +111,7 @@ public class pManager : MonoBehaviour
 
         //weapons
         newMech.weapons.Add(UniTable.weapondictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
+        newMech.weapons.Add(UniTable.weapondictionary[UniTable.classGuid[typeof(lasGunWeapon)]].clone());
         foreach (mechWeapon w in newMech.weapons)
         {
             w.parent = newMech;

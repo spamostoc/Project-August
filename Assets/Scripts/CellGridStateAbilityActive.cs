@@ -91,7 +91,6 @@ public class CellGridStateAbilityActive : CellGridState
     public override void OnAbilityActive(int index)
     {
         Debug.Log("got ui button");
-        if (index < _unit.abilities.Count)
-            _cellGrid.CellGridState = new CellGridStateAbilityActive(_cellGrid, _unit, _unit.abilities[index]);
+        _cellGrid.CellGridState = new CellGridStateAbilityActive(_cellGrid, _unit, _unit.abilities[index]);
     }
 }

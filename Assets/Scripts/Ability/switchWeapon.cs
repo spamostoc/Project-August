@@ -23,6 +23,7 @@ public class switchWeapon : ability {
             {
                 Debug.Log("Switching to:" + w);
                 ((mech)self).activeWeapon = w;
+                break;
             }
         }
     }

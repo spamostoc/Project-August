@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Ability\switchWeapon.cs" />
     <Compile Include="Assets\Scripts\CellGridStateAbilityActive.cs" />
     <Compile Include="Assets\Scripts\Part\flakGunWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\lasGunWeapon.cs" />
     <Compile Include="Assets\Scripts\Part\mechPart.cs" />
     <Compile Include="Assets\Scripts\Part\mechWeapon.cs" />
     <Compile Include="Assets\Scripts\Part\steelCore.cs" />
