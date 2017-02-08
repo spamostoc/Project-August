@@ -28,7 +28,7 @@ class OtherGuiController : MonoBehaviour
     {
         CellGrid.GameStarted += OnGameStarted;
         CellGrid.TurnEnded += OnTurnEnded;
-        CellGrid.GameEnded += OnGameEnded;      
+        CellGrid.GameEnded += OnGameEnded;
     }
 
     private void OnUnitAttacked(object sender, AttackEventArgs e)
@@ -53,13 +53,13 @@ class OtherGuiController : MonoBehaviour
         }
         InfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
 
-        foreach(Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
+        foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
         {
             b.GetComponentInChildren<Image>().sprite = null;
             b.interactable = false;
         }
 
-        OnTurnEnded(sender,e);
+        OnTurnEnded(sender, e);
     }
     private void OnGameEnded(object sender, EventArgs e)
     {
@@ -73,40 +73,25 @@ class OtherGuiController : MonoBehaviour
 
     private void OnUnitDehighlighted(object sender, EventArgs e)
     {
-        foreach (Transform marker in AttackText.transform)
-        {
-            Destroy(marker.gameObject);
-        }
 
-        foreach (Transform marker in DefenceText.transform)
-        {
-            Destroy(marker.gameObject);
-        }
-
-        foreach (Transform marker in RangeText.transform)
-        {
-            Destroy(marker.gameObject);
-        }
-
-        foreach (Transform hpBar in HPText.transform)
-        {
-            Destroy(hpBar.gameObject);
-        }
 
     }
+
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
-        var defence = 0;
-        //var range = (sender as Unit).AttackRange;
+        // mouse over stuff
+    }
 
+    public void OnUnitSelected(object sender, EventArgs e)
+    {
         float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 
         Image fullHpBar = Instantiate(FullHPBar);
         Image emptyHpBar = Instantiate(EmptyHPBar);
         fullHpBar.rectTransform.localScale = new Vector3(hpScale, 1, 1);
-        emptyHpBar.rectTransform.SetParent(HPText.rectTransform,false);
+        emptyHpBar.rectTransform.SetParent(HPText.rectTransform, false);
         fullHpBar.rectTransform.SetParent(HPText.rectTransform, false);
-        
+
         for (int i = 0; i < 7; i++)
         {
             /*Image AttackMarker;
@@ -114,29 +99,25 @@ class OtherGuiController : MonoBehaviour
 
                 AttackMarker.rectTransform.SetParent(AttackText.rectTransform,false);
                 AttackMarker.rectTransform.anchorMin = new Vector2(i * 0.14f,0.1f);
-                AttackMarker.rectTransform.anchorMax = new Vector2((i * 0.14f)+0.13f, 0.6f);*/
+                AttackMarker.rectTransform.anchorMax = new Vector2((i * 0.14f)+0.13f, 0.6f);
 
-            Image DefenceMarker;
+            /*Image DefenceMarker;
             DefenceMarker = Instantiate(i < defence ? FullMarkerImage : EmptyMarkerImage);
 
-                DefenceMarker.rectTransform.SetParent(DefenceText.rectTransform, false);
-                DefenceMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
-                DefenceMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);
+            DefenceMarker.rectTransform.SetParent(DefenceText.rectTransform, false);
+            DefenceMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
+            DefenceMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);
 
-           /* Image RangeMarker;
-            RangeMarker = Instantiate(i < range ? FullMarkerImage : EmptyMarkerImage);
+            Image RangeMarker;
+             RangeMarker = Instantiate(i < range ? FullMarkerImage : EmptyMarkerImage);
 
-                RangeMarker.rectTransform.SetParent(RangeText.rectTransform, false);
-                RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
-                RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f); */            
+                 RangeMarker.rectTransform.SetParent(RangeText.rectTransform, false);
+                 RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
+                 RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f); */
         }
-    }
 
-    public void OnUnitSelected(object sender, EventArgs e)
-    {
         if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
         {
-            Debug.Log("loading ability icon");
 
             Button[] buttons = this.AbilityPanel.GetComponentsInChildren<Button>();
 
@@ -157,6 +138,26 @@ class OtherGuiController : MonoBehaviour
 
     public void OnUnitDeselected(object sender, EventArgs e)
     {
+        foreach (Transform marker in AttackText.transform)
+        {
+            Destroy(marker.gameObject);
+        }
+
+        foreach (Transform marker in DefenceText.transform)
+        {
+            Destroy(marker.gameObject);
+        }
+
+        foreach (Transform marker in RangeText.transform)
+        {
+            Destroy(marker.gameObject);
+        }
+ 
+        foreach (Transform hpBar in HPText.transform)
+        {
+            Destroy(hpBar.gameObject);
+        }
+
         foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
         {
             b.GetComponentInChildren<Image>().sprite = null;

@@ -26,10 +26,11 @@ class CellGridStateUnitSelected : CellGridState
             return;
         }
 
-        if (!_pathsInRange.Contains(cell))
+        _cellGrid.CellGridState = new CellGridStateWaitingForInput(_cellGrid);
+        /*if (!_pathsInRange.Contains(cell))
         {
             _cellGrid.CellGridState = new CellGridStateWaitingForInput(_cellGrid);
-        }
+        }*/
     }
 
     public override void OnCellRightClicked(Cell cell)
