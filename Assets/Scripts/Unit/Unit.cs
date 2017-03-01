@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for all units in the game.
@@ -75,6 +76,7 @@ public abstract class Unit : unitBase
         base.GameInit();
         UnitState = new UnitStateNormal(this);
         this.dynamicAttributes = new attributes(this.getSummedAttributes());
+        UpdateHpBar();
     }
 
     /// <summary>
@@ -138,8 +140,15 @@ public abstract class Unit : unitBase
         MarkAsDefending(other);
 
         //defensive parameter parsing
-
+        if(this.dynamicAttributes.shieldPoints > 0)
+        {
+            float shieldDamage = Math.Min(damage, this.dynamicAttributes.shieldPoints);
+            damage -= shieldDamage;
+            this.dynamicAttributes.shieldPoints -= shieldDamage;
+        }
         this.dynamicAttributes.health -= damage;
+
+        UpdateHpBar();
 
         if (UnitAttacked != null)
             UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
@@ -226,6 +235,16 @@ public abstract class Unit : unitBase
         SetState(new UnitStateMarkedAsFriendly(this));
         if (UnitDeselected != null)
             UnitDeselected.Invoke(this, new EventArgs());
+    }
+
+    private void UpdateHpBar()
+    {
+        if (GetComponentInChildren<Image>() != null)
+        {
+            GetComponentInChildren<Image>().transform.localScale = new Vector3((float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth), 1, 1);
+            GetComponentInChildren<Image>().color = Color.Lerp(Color.red, Color.green,
+                (float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth));
+        }
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path)

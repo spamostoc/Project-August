@@ -166,6 +166,7 @@ public class controlUtility : MonoBehaviour {
                 a.parent = newMech;
                 newMech.abilities.Add(a);
             }
+            Debug.Log(newMech.abilities.Count);
 
             //load dynamic attributes
             newMech.dynamicAttributes = new attributes(mdata.dynamicAtt);

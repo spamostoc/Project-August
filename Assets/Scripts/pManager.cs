@@ -51,17 +51,19 @@ public class pManager : MonoBehaviour
 
         //weapon dictionary
         flakGunWeapon newFlakGun = new flakGunWeapon();
+        newFlakGun.name = "Flak Gun";
         newFlakGun.Initialize();
         newFlakGun.range = 5;
-        newFlakGun.damage = 5;
+        newFlakGun.damage = 35;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.weapondictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
 
 
         lasGunWeapon newLasGun = new lasGunWeapon();
+        newLasGun.name = "LasGun";
         newLasGun.Initialize();
         newLasGun.range = 2;
-        newLasGun.damage = 5;
+        newLasGun.damage = 45;
         newLasGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.weapondictionary.Add(UniTable.classGuid[typeof(lasGunWeapon)], newLasGun);
 
@@ -75,7 +77,7 @@ public class pManager : MonoBehaviour
 
         //prefabs Table
 
-        UniTable.prefabTable.Add(typeof(mech), Resources.Load<Transform>("Alien4") as Transform);
+        UniTable.prefabTable.Add(typeof(mech), Resources.Load<Transform>("Mech") as Transform);
     }
 
     private mech makeIntercessorTemplate()

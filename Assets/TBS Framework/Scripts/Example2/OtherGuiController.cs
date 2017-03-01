@@ -12,17 +12,24 @@ class OtherGuiController : MonoBehaviour
     public Image EmptyHPBar;
     public Button NextTurnButton;
 
-    public Text InfoText;
-    public Text HPText;
-    public Text AttackText;
+    public Text SelectedInfoText;
+    public Text SelectedHPText;
+    public Text SelectedShieldText;
     public Text DefenceText;
     public Text RangeText;
 
+    public Text HoverInfoText;
+    public Text HoverHPText;
+    public Text HoverShieldText;
+    public Image HoverPanel;
 
     public Sprite emptySprite;
     public Button AbilityButton;
     public Image AbilityIcon;
     public Transform AbilityPanel;
+
+    private Unit selectedUnit;
+    public Text weaponText;
 
     private void Start()
     {
@@ -43,6 +50,18 @@ class OtherGuiController : MonoBehaviour
     }
     private void OnGameStarted(object sender, EventArgs e)
     {
+        HoverPanel.enabled = false;
+        HoverInfoText.enabled = false;
+        HoverShieldText.enabled = false;
+        HoverHPText.enabled = false;
+
+        foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
+        {
+            b.GetComponentInChildren<Image>().sprite = null;
+            b.enabled = false;
+            b.interactable = false;
+        }
+
         foreach (Transform unit in UnitsParent)
         {
             unit.GetComponent<Unit>().UnitHighlighted += OnUnitHighlighted;
@@ -51,7 +70,7 @@ class OtherGuiController : MonoBehaviour
             unit.GetComponent<Unit>().UnitSelected += OnUnitSelected;
             unit.GetComponent<Unit>().UnitDeselected += OnUnitDeselected;
         }
-        InfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
+        SelectedInfoText.text = "Player " + (CellGrid.CurrentPlayerNumber + 1);
 
         foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
         {
@@ -63,59 +82,86 @@ class OtherGuiController : MonoBehaviour
     }
     private void OnGameEnded(object sender, EventArgs e)
     {
-        InfoText.text = "Player " + ((sender as CellGrid).CurrentPlayerNumber + 1) + " wins!";
+        SelectedInfoText.text = "Player " + ((sender as CellGrid).CurrentPlayerNumber + 1) + " wins!";
     }
     private void OnTurnEnded(object sender, EventArgs e)
     {
         NextTurnButton.interactable = ((sender as CellGrid).CurrentPlayer is HumanPlayer);
-        InfoText.text = "Player " + ((sender as CellGrid).CurrentPlayerNumber + 1);
+        SelectedInfoText.text = "Player " + ((sender as CellGrid).CurrentPlayerNumber + 1);
     }
 
     private void OnUnitDehighlighted(object sender, EventArgs e)
     {
+        HoverPanel.enabled = false;
+        HoverInfoText.enabled = false;
+        HoverShieldText.enabled = false;
+        HoverHPText.enabled = false;
 
+        foreach (Transform shieldBar in HoverShieldText.transform)
+        {
+            Destroy(shieldBar.gameObject);
+        }
+
+        foreach (Transform hpBar in HoverHPText.transform)
+        {
+            Destroy(hpBar.gameObject);
+        }
 
     }
 
     private void OnUnitHighlighted(object sender, EventArgs e)
     {
-        // mouse over stuff
-    }
+        if((sender as Unit) == selectedUnit)
+        {
+            return;
+        }
 
-    public void OnUnitSelected(object sender, EventArgs e)
-    {
+        HoverInfoText.text = "Player " + ((sender as Unit).PlayerNumber + 1);
+
         float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 
         Image fullHpBar = Instantiate(FullHPBar);
         Image emptyHpBar = Instantiate(EmptyHPBar);
         fullHpBar.rectTransform.localScale = new Vector3(hpScale, 1, 1);
-        emptyHpBar.rectTransform.SetParent(HPText.rectTransform, false);
-        fullHpBar.rectTransform.SetParent(HPText.rectTransform, false);
+        emptyHpBar.rectTransform.SetParent(HoverHPText.rectTransform, false);
+        fullHpBar.rectTransform.SetParent(HoverHPText.rectTransform, false);
 
-        for (int i = 0; i < 7; i++)
-        {
-            /*Image AttackMarker;
-            AttackMarker = Instantiate(i<attack ? FullMarkerImage : EmptyMarkerImage);
+        float shieldScale = (sender as Unit).dynamicAttributes.shieldPoints / (sender as Unit).dynamicAttributes.maxShieldPoints;
 
-                AttackMarker.rectTransform.SetParent(AttackText.rectTransform,false);
-                AttackMarker.rectTransform.anchorMin = new Vector2(i * 0.14f,0.1f);
-                AttackMarker.rectTransform.anchorMax = new Vector2((i * 0.14f)+0.13f, 0.6f);
+        Image fullShieldBar = Instantiate(FullHPBar);
+        Image emptyShieldBar = Instantiate(EmptyHPBar);
+        fullShieldBar.rectTransform.localScale = new Vector3(shieldScale, 1, 1);
+        emptyShieldBar.rectTransform.SetParent(HoverShieldText.rectTransform, false);
+        fullShieldBar.rectTransform.SetParent(HoverShieldText.rectTransform, false);
 
-            /*Image DefenceMarker;
-            DefenceMarker = Instantiate(i < defence ? FullMarkerImage : EmptyMarkerImage);
 
-            DefenceMarker.rectTransform.SetParent(DefenceText.rectTransform, false);
-            DefenceMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
-            DefenceMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f);
+        HoverPanel.enabled = true;
+        HoverInfoText.enabled = true;
+        HoverShieldText.enabled = true;
+        HoverHPText.enabled = true;
+    }
 
-            Image RangeMarker;
-             RangeMarker = Instantiate(i < range ? FullMarkerImage : EmptyMarkerImage);
+    public void OnUnitSelected(object sender, EventArgs e)
+    {
+        selectedUnit = (sender as Unit);
+        weaponText.text = (sender as mech).activeWeapon.name;
 
-                 RangeMarker.rectTransform.SetParent(RangeText.rectTransform, false);
-                 RangeMarker.rectTransform.anchorMin = new Vector2(i * 0.14f, 0.1f);
-                 RangeMarker.rectTransform.anchorMax = new Vector2((i * 0.14f) + 0.13f, 0.6f); */
-        }
+        float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 
+        Image fullHpBar = Instantiate(FullHPBar);
+        Image emptyHpBar = Instantiate(EmptyHPBar);
+        fullHpBar.rectTransform.localScale = new Vector3(hpScale, 1, 1);
+        emptyHpBar.rectTransform.SetParent(SelectedHPText.rectTransform, false);
+        fullHpBar.rectTransform.SetParent(SelectedHPText.rectTransform, false);
+
+        float shieldScale = (sender as Unit).dynamicAttributes.shieldPoints / (sender as Unit).dynamicAttributes.maxShieldPoints;
+
+        Image fullShieldBar = Instantiate(FullHPBar);
+        Image emptyShieldBar = Instantiate(EmptyHPBar);
+        fullShieldBar.rectTransform.localScale = new Vector3(shieldScale, 1, 1);
+        emptyShieldBar.rectTransform.SetParent(SelectedShieldText.rectTransform, false);
+        fullShieldBar.rectTransform.SetParent(SelectedShieldText.rectTransform, false);
+        
         if ((sender as Unit).abilities != null && (sender as Unit).abilities.Count > 0)
         {
 
@@ -131,6 +177,7 @@ class OtherGuiController : MonoBehaviour
                         i.sprite = (sender as Unit).abilities[n].iconSprite;
                     }
                 }
+                buttons[n].enabled = true;
                 buttons[n].interactable = true;
             }
         }
@@ -138,9 +185,12 @@ class OtherGuiController : MonoBehaviour
 
     public void OnUnitDeselected(object sender, EventArgs e)
     {
-        foreach (Transform marker in AttackText.transform)
+        selectedUnit = null;
+        weaponText.text = null;
+
+        foreach (Transform shieldBar in SelectedShieldText.transform)
         {
-            Destroy(marker.gameObject);
+            Destroy(shieldBar.gameObject);
         }
 
         foreach (Transform marker in DefenceText.transform)
@@ -153,7 +203,7 @@ class OtherGuiController : MonoBehaviour
             Destroy(marker.gameObject);
         }
  
-        foreach (Transform hpBar in HPText.transform)
+        foreach (Transform hpBar in SelectedHPText.transform)
         {
             Destroy(hpBar.gameObject);
         }
@@ -161,6 +211,7 @@ class OtherGuiController : MonoBehaviour
         foreach (Button b in this.AbilityPanel.GetComponentsInChildren<Button>())
         {
             b.GetComponentInChildren<Image>().sprite = null;
+            b.enabled = false;
             b.interactable = false;
         }
     }

@@ -23,6 +23,8 @@ public class mechWeapon
     public float armorPierce;
     public float shieldBypass;
 
+    public String name;
+
     public virtual void Initialize()
     {
         this.abilities = new List<ability>();
@@ -57,6 +59,7 @@ public class mechWeapon
 
     protected static void copy(mechWeapon src, mechWeapon tgt)
     {
+        tgt.name = src.name;
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
 
         foreach (ability a in src.abilities)
