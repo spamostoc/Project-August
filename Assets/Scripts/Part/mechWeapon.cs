@@ -30,10 +30,21 @@ public class mechWeapon
         this.abilities = new List<ability>();
     }
 
+    public virtual void GameInit()
+    {
+        this.currentAmmo = this.maxAmmo;
+        this.currentHeat = 0;
+    }
+
     public virtual void onAttack(mech target)
     {
         //damage logic
         Debug.Log("do attack logic here");
+        if(this.currentAmmo <= 0)
+        {
+            return;
+        }
+        this.currentAmmo--;
 
         target.onDefend(parent, this.damage);
     }

@@ -55,6 +55,7 @@ public class pManager : MonoBehaviour
         newFlakGun.Initialize();
         newFlakGun.range = 5;
         newFlakGun.damage = 35;
+        newFlakGun.maxAmmo = 8;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
         UniTable.weapondictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
 

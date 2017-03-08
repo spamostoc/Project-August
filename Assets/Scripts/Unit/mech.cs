@@ -30,6 +30,11 @@ public class mech : Unit {
         if (this.weapons.Count == 0)
             return;
 
+        foreach(mechWeapon w in weapons)
+        {
+            w.GameInit();
+        }
+
         this.activeWeapon = this.weapons[0];
         //transform.position += new Vector3(0, 0, -1);
     }

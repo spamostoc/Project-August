@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public abstract class Cell : MonoBehaviour, IGraphNode
 {
@@ -42,9 +43,9 @@ public abstract class Cell : MonoBehaviour, IGraphNode
 
     protected virtual void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && CellClicked != null)
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && CellClicked != null)
             CellClicked.Invoke(this, new EventArgs());
-        if (Input.GetMouseButtonDown(1) && CellRightClicked != null)
+        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject() && CellRightClicked != null)
             CellRightClicked.Invoke(this, new EventArgs());
     }
 

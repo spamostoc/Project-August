@@ -30,6 +30,9 @@ class OtherGuiController : MonoBehaviour
 
     private Unit selectedUnit;
     public Text weaponText;
+    public Text weaponSubText1;
+    public Text weaponSubText2;
+    public Text weaponSubText3;
 
     private void Start()
     {
@@ -145,6 +148,9 @@ class OtherGuiController : MonoBehaviour
     {
         selectedUnit = (sender as Unit);
         weaponText.text = (sender as mech).activeWeapon.name;
+        weaponSubText1.text = "Damage: " + (sender as mech).activeWeapon.damage;
+        weaponSubText2.text = "Range: " + (sender as mech).activeWeapon.range;
+        weaponSubText3.text = "Ammo: " + (sender as mech).activeWeapon.currentAmmo + "/" + (sender as mech).activeWeapon.maxAmmo;
 
         float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 
