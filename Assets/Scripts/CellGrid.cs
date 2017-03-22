@@ -169,7 +169,6 @@ public class CellGrid : MonoBehaviour
 
     public void OnAbilityButton(int index)
     {
-        Debug.Log("button pressed " + index);
         CellGridState.OnAbilityActive(index);
     }
 }

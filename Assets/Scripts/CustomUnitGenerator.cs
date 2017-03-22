@@ -21,7 +21,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
         {
             spawnPlayerUnits();
         }
-
+        Debug.Log("unit parent count is: " + UnitsParent.childCount);
         //spawn from script here
         for (int i = 0; i < UnitsParent.childCount; i++)
         {
@@ -33,7 +33,6 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                 unit.Initialize();
                 if (unit.GetType() == typeof(mech) && !String.IsNullOrEmpty(unit.TemplateId))
                 {
-                    Debug.Log(unit.TemplateId);
                     ((mech)unit).copyFrom((mech)UniTable.unitDictionary[new Guid(unit.TemplateId)]);
                 }
             }
@@ -52,6 +51,8 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
         {
             cells.Add(cell);
         }
+
+
 
         foreach (Transform unit in UnitsParent)
         {

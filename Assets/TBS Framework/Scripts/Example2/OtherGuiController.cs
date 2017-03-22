@@ -34,11 +34,41 @@ class OtherGuiController : MonoBehaviour
     public Text weaponSubText2;
     public Text weaponSubText3;
 
+    public int scrollBuffer;
+    public int scrollSpeed;
+    public Transform mainCamera;
+
     private void Start()
     {
         CellGrid.GameStarted += OnGameStarted;
         CellGrid.TurnEnded += OnTurnEnded;
         CellGrid.GameEnded += OnGameEnded;
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButton(2))
+        {
+
+        }
+
+        if(Input.mousePosition.x < scrollBuffer)
+        {
+            mainCamera.Translate(Vector3.left * scrollSpeed * Time.deltaTime);
+        }
+        else if(Input.mousePosition.x > Screen.width - scrollBuffer)
+        {
+            mainCamera.Translate(Vector3.right * scrollSpeed * Time.deltaTime);
+        }
+
+        if (Input.mousePosition.y < scrollBuffer)
+        {
+            mainCamera.Translate(Vector3.down * scrollSpeed * Time.deltaTime);
+        }
+        else if (Input.mousePosition.y > Screen.height - scrollBuffer)
+        {
+            mainCamera.Translate(Vector3.up * scrollSpeed * Time.deltaTime);
+        }
     }
 
     private void OnUnitAttacked(object sender, AttackEventArgs e)

@@ -29,6 +29,8 @@ public abstract class Unit : unitBase
     public event EventHandler<AttackEventArgs> UnitDestroyed;
     public event EventHandler<MovementEventArgs> UnitMoved;
 
+    public Image healthBar;
+
     public UnitState UnitState { get; set; }
     public void SetState(UnitState state)
     {
@@ -239,12 +241,10 @@ public abstract class Unit : unitBase
 
     private void UpdateHpBar()
     {
-        if (GetComponentInChildren<Image>() != null)
-        {
-            GetComponentInChildren<Image>().transform.localScale = new Vector3((float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth), 1, 1);
-            GetComponentInChildren<Image>().color = Color.Lerp(Color.red, Color.green,
-                (float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth));
-        }
+            if (healthBar != null)
+                healthBar.transform.localScale = new Vector3((float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth), 1, 1);
+           // GetComponentInChildren<Image>().color = Color.Lerp(Color.red, Color.green,
+               // (float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth));
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path)
@@ -261,8 +261,6 @@ public abstract class Unit : unitBase
         Cell.IsTaken = false;
         Cell = destinationCell;
         destinationCell.IsTaken = true;
-
-        Debug.Log("movement speed val: " + this.MovementSpeed);
 
         if (MovementSpeed > 0)
             StartCoroutine(MovementAnimation(path));

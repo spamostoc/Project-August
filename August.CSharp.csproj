@@ -133,6 +133,7 @@
     <Compile Include="Assets\TBS Framework\Scripts\Example2\FlyingAlien.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\MyOtherHexagon.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Example2\OtherGuiController.cs" />
+    <Compile Include="Assets\hangerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
