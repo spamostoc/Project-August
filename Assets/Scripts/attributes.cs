@@ -45,7 +45,7 @@ public class attributes
         this.shieldMitigation = att.shieldMitigation;
     }
 
-    public void addTo(attributes att)
+    public void add(attributes att)
     {
         this.health += att.health;
         this.maxHealth += att.maxHealth;

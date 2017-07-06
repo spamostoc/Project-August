@@ -5,77 +5,27 @@ using System;
 
 public abstract class unitBase : MonoBehaviour {
 
+    //none of this class may be necessary, this lazy inheriting thing doesn't actually help since parts
+    //and mechs don't have that much in common
+
     public String displayName;
 
     public attributes baseAtt { get; protected set; }
     //rest of the attributes in here
-
-    //leave current values for the mech class
-
-    public List<modifier> buffs;
-
-    public List<ability> abilities;
-
-    //list of abilities BIG HUGE
-
+  
     public virtual void Initialize()
     {
         this.baseAtt = new attributes();
-        this.buffs = new List<modifier>();
-        this.abilities = new List<ability>();
-    }
-    
-    public virtual void GameInit()
-    {
     }
 
-    public virtual attributes getSummedAttributes()
-    {
-        attributes ret = new attributes(baseAtt);
-        foreach( modifier m in buffs )
-        {
-            ret.addTo(m.att);
-        }
-        return ret;
-    }
+    public abstract void GameInit();
 
     //cues
-    public virtual void onTurnStart()
-    {
-        foreach(modifier m in buffs)
-        {
-            m.onTurnStart();
-        }
-    }
+    public abstract void onTurnStart();
 
-    public virtual void onTurnEnd() {
-        foreach (modifier m in buffs)
-        {
-            m.onTurnEnd();
-        }
-    }
+    public abstract void onTurnEnd();
 
-    public virtual void onAttack(Unit other, int actionPointsCost, int bonusActionPointsCost)
-    {
-        foreach (modifier m in buffs)
-        {
-            m.onAttack(other);
-        }
-    }
-
-    public virtual void onDefend(Unit other, float damage)
-    {
-        foreach (modifier m in buffs)
-        {
-            m.onDefend(other);
-        }
-    }
-
-    public virtual void onKill(Unit other) { }
-
-    public virtual void onDeath() { }
-    //for abilities
-    public virtual void onActivate() { }
+    public abstract void onDeath();
 
     //utilites
     /// <summary>
@@ -87,30 +37,5 @@ public abstract class unitBase : MonoBehaviour {
             return true;
 
         return false;
-    }
-
-    public List<modifier> copyBuffs()
-    {
-        List<modifier> newBuff = new List<modifier>();
-
-        foreach (modifier m in this.buffs)
-        {
-            newBuff.Add(m.clone());
-        }
-
-        return newBuff;
-    }
-
-
-    public List<ability> copyAbilities()
-    {
-        List<ability> newAbilities = new List<ability>();
-
-        foreach (ability a in this.abilities)
-        {
-            newAbilities.Add(a.clone());
-        }
-
-        return newAbilities;
     }
 }

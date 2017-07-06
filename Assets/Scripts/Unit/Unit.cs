@@ -10,6 +10,10 @@ using UnityEngine.UI;
 /// </summary>
 public abstract class Unit : unitBase
 {
+    /////////////////////////////////
+    //TBS FRAMEWORK EVENT HANDLERS
+    /////////////////////////////////
+
     /// <summary>
     /// UnitClicked event is invoked when user clicks the unit. It requires a collider on the unit game object to work.
     /// </summary>
@@ -29,6 +33,10 @@ public abstract class Unit : unitBase
     public event EventHandler<AttackEventArgs> UnitDestroyed;
     public event EventHandler<MovementEventArgs> UnitMoved;
 
+    /////////////////////////////////
+    //MAP AND UI NEEDED VALUES
+    /////////////////////////////////
+
     public Image healthBar;
 
     public UnitState UnitState { get; set; }
@@ -37,12 +45,6 @@ public abstract class Unit : unitBase
         UnitState.MakeTransition(state);
     }
 
-    public attributes dynamicAttributes;
-
-    /// <summary>
-    /// UniTable entry to template from
-    /// </summary>
-    public String TemplateId;
     /// <summary>
     /// Cell that the unit is currently occupying.
     /// </summary>
@@ -61,6 +63,27 @@ public abstract class Unit : unitBase
     public bool isMoving { get; set; }
     private static IPathfinding _pathfinder = new AStarPathfinding();
 
+    /////////////////////////////////
+    /////////GAME SPECIFIC VALUES
+    /////////////////////////////////
+
+    /// <summary>
+    /// UniTable entry to template from
+    /// </summary>
+    public attributes dynamicAttributes;
+    /// <summary>
+    /// List of abilities available to unit
+    /// </summary>
+    public List<ability> abilities;
+    /// <summary>
+    /// List of active buffs affecting unit
+    /// </summary>
+    public List<modifier> buffs;
+    /// <summary>
+    /// UniTable entry to template from
+    /// </summary>
+    public String TemplateId;
+
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 
     /// </summary>
@@ -68,26 +91,33 @@ public abstract class Unit : unitBase
     {
         base.Initialize();
         this.dynamicAttributes = new attributes();
+        this.abilities = new List<ability>();
+        this.buffs = new List<modifier>();
     }
 
     /// <summary>
     /// Method called at start of grid to calculate initial values
     /// </summary>
-    public virtual new void GameInit()
+    public override void GameInit()
     {
-        base.GameInit();
         UnitState = new UnitStateNormal(this);
         this.dynamicAttributes = new attributes(this.getSummedAttributes());
         UpdateHpBar();
     }
 
+    /////////////////////////////////
+    ////////EVENT CUES
+    /////////////////////////////////
+
     /// <summary>
     /// Method is called at the start of each turn.
     /// </summary>
-    public virtual new void onTurnStart()
+    public override void onTurnStart()
     {
-        //tick all buffs
-        base.onTurnStart();
+        foreach(Buff b in this.buffs)
+        {
+            b.Duration--;
+        }
         //recalculate values
         attributes newVals = this.getSummedAttributes();
         //TODO: reassign some values
@@ -101,18 +131,16 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method is called at the end of each turn.
     /// </summary>
-    public virtual new void onTurnEnd()
+    public override void onTurnEnd()
     {
-        base.onTurnEnd();
-
         SetState(new UnitStateNormal(this));
     }
+
     /// <summary>
     /// Method is called when units HP drops below 1.
     /// </summary>
-    protected virtual new void onDeath()
+    public override void onDeath()
     {
-        base.onDeath();
         Cell.IsTaken = false;
         MarkAsDestroyed();
         Destroy(gameObject);
@@ -121,13 +149,16 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual new void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
+    public virtual void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
     {
         if (isMoving)
             return;
         if (!parseActionCost(mainActionPointsCost, bonusActionPointsCost))
             return;
-        base.onAttack(other, mainActionPointsCost, bonusActionPointsCost);
+        foreach (modifier m in buffs)
+        {
+            m.onAttack(other);
+        }
 
         MarkAsAttacking(other);
         //do some attacking stuff here
@@ -136,9 +167,12 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
-    public virtual new void onDefend(Unit other, float damage)
+    public virtual void onDefend(Unit other, float damage)
     {
-        base.onDefend(other, damage);
+        foreach (modifier m in buffs)
+        {
+            m.onDefend(other);
+        }
         MarkAsDefending(other);
 
         //defensive parameter parsing
@@ -163,6 +197,10 @@ public abstract class Unit : unitBase
         }
     }
 
+    /////////////////////////////////
+    ///////GAME UTILITY FUNCTIONS
+    /////////////////////////////////
+
     /// <summary>
     /// Check action cost to see if action is doable
     /// </summary>
@@ -182,6 +220,24 @@ public abstract class Unit : unitBase
         return true;
     }
 
+    /// <summary>
+    /// Get value of attributes modified by buffs
+    /// </summary>
+    public virtual attributes getSummedAttributes()
+    {
+        attributes newAtt = new attributes();
+        newAtt.setTo(this.baseAtt);
+        foreach (modifier m in this.buffs)
+        {
+            newAtt.add(m.att);
+        }
+
+        return newAtt;
+    }
+
+    /// <summary>
+    /// Get value of attributes modified by buffs
+    /// </summary>
     public void copyBuffsFrom(Unit unit)
     {
         foreach (modifier m in unit.buffs)
@@ -192,6 +248,9 @@ public abstract class Unit : unitBase
         }
     }
 
+    /// <summary>
+    /// Get value of attributes modified by buffs
+    /// </summary>
     public void copyAbilitiesFrom(Unit unit)
     {
         foreach (ability a in unit.abilities)
@@ -201,6 +260,10 @@ public abstract class Unit : unitBase
             this.abilities.Add(newA);
         }
     }
+
+    /////////////////////////////////
+    //////////UI CUES
+    /////////////////////////////////
 
     protected virtual void OnMouseOver()
     {

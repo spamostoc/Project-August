@@ -26,9 +26,6 @@ public class mech : Unit {
     public override void GameInit()
     {
         base.GameInit();
-        //hack to deal with aliens.cs
-        if (this.weapons.Count == 0)
-            return;
 
         foreach(mechWeapon w in weapons)
         {
