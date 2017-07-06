@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class NaiveAiPlayer : Player
 {
-    /* private CellGrid _cellGrid;
+    private CellGrid _cellGrid;
      private System.Random _rnd;
 
      public NaiveAiPlayer()
@@ -31,10 +31,11 @@ public class NaiveAiPlayer : Player
          foreach (var unit in myUnits.OrderByDescending(u => u.Cell.GetNeighbours(_cellGrid.Cells).FindAll(u.IsCellTraversable).Count))
          {
              var enemyUnits = _cellGrid.Units.Except(myUnits).ToList();
+            var shootObj = unit.abilities.Find(a => a.GetType().Equals(typeof(shoot)));
              var unitsInRange = new List<Unit>();
              foreach (var enemyUnit in enemyUnits)
              {
-                 if (unit.isUnitReachable(enemyUnit, unit.AttackRange, unit.Cell))
+                 if (unit.isUnitReachable(enemyUnit, shootObj.getRange(), unit.Cell))
                  {
                      unitsInRange.Add(enemyUnit);
                  }
@@ -42,7 +43,7 @@ public class NaiveAiPlayer : Player
              if (unitsInRange.Count != 0)
              {
                  var index = _rnd.Next(0, unitsInRange.Count);
-                 unit.onAttack(unitsInRange[index], 1);
+                shootObj.activate(shootObj.parent, unitsInRange[index]);
                  yield return new WaitForSeconds(0.5f);
                  continue;
              }//If there is an enemy in range, attack it.
@@ -51,10 +52,10 @@ public class NaiveAiPlayer : Player
 
              foreach (var enemyUnit in enemyUnits)
              {
-                 potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.isUnitReachable(enemyUnit, unit.AttackRange, c))); 
+                 potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.isUnitReachable(enemyUnit, shootObj.getRange(), c))); 
              }//Making a list of cells that the unit can attack from.
 
-             var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.currentAtt.movementPoints);
+             var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.baseAtt.maxMovementPoints);
              potentialDestinations = potentialDestinations.Except(notInRange).ToList();
 
              if (potentialDestinations.Count == 0 && notInRange.Count !=0)
@@ -71,7 +72,7 @@ public class NaiveAiPlayer : Player
                      shortestPath = path;
 
                  var pathCost = path.Sum(h => h.MovementCost);
-                 if (pathCost > 0 && pathCost <= unit.currentAtt.movementPoints)
+                 if (pathCost > 0 && pathCost <= unit.baseAtt.maxMovementPoints)
                  {
                      unit.Move(potentialDestination, path);
                      while (unit.isMoving)
@@ -88,7 +89,7 @@ public class NaiveAiPlayer : Player
                  {
                      var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
                      var pathCost = path.Sum(h => h.MovementCost);
-                     if (pathCost > 0 && pathCost <= unit.currentAtt.movementPoints)
+                     if (pathCost > 0 && pathCost <= unit.baseAtt.maxMovementPoints)
                      {
                          unit.Move(potentialDestination, path);
                          while (unit.isMoving)
@@ -102,18 +103,14 @@ public class NaiveAiPlayer : Player
              foreach (var enemyUnit in enemyUnits)
              {
                  var enemyCell = enemyUnit.Cell;
-                 if (unit.isUnitReachable(enemyUnit, unit.AttackRange ,unit.Cell))
+                 if (unit.isUnitReachable(enemyUnit, shootObj.getRange() ,unit.Cell))
                  { 
-                     unit.onAttack(enemyUnit, 1);
+                    shootObj.activate(shootObj.parent, enemyUnit);
                      yield return new WaitForSeconds(0.5f);
                      break;
                  }
              }//Look for enemies in range and attack.
          }    
          _cellGrid.EndTurn();     
-     }*/
-    public override void Play(CellGrid cellGrid)
-    {
-        throw new NotImplementedException();
-    }
+     }
 }
