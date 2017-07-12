@@ -69,6 +69,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ForgeController.cs" />
     <Compile Include="Assets\Scripts\Ability\ability.cs" />
     <Compile Include="Assets\Scripts\Ability\shoot.cs" />
     <Compile Include="Assets\Scripts\Ability\switchWeapon.cs" />
@@ -80,23 +81,24 @@
     <Compile Include="Assets\Scripts\CellGridStateUnitSelected.cs" />
     <Compile Include="Assets\Scripts\CellGridStateWaitingForInput.cs" />
     <Compile Include="Assets\Scripts\CustomUnitGenerator.cs" />
+    <Compile Include="Assets\Scripts\Menus\UniTable.cs" />
+    <Compile Include="Assets\Scripts\Menus\controlUtility.cs" />
+    <Compile Include="Assets\Scripts\Menus\hanger.cs" />
+    <Compile Include="Assets\Scripts\Menus\mainMenuScript.cs" />
+    <Compile Include="Assets\Scripts\Menus\masterInventory.cs" />
+    <Compile Include="Assets\Scripts\Menus\pManager.cs" />
+    <Compile Include="Assets\Scripts\Menus\typeDictionary.cs" />
+    <Compile Include="Assets\Scripts\Menus\vnManager.cs" />
     <Compile Include="Assets\Scripts\Part\flakGunWeapon.cs" />
     <Compile Include="Assets\Scripts\Part\lasGunWeapon.cs" />
-    <Compile Include="Assets\Scripts\Part\mechPart.cs" />
     <Compile Include="Assets\Scripts\Part\mechWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\part.cs" />
     <Compile Include="Assets\Scripts\Part\steelCore.cs" />
-    <Compile Include="Assets\Scripts\UniTable.cs" />
     <Compile Include="Assets\Scripts\Unit\Unit.cs" />
     <Compile Include="Assets\Scripts\Unit\mech.cs" />
     <Compile Include="Assets\Scripts\Unit\unitBase.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
-    <Compile Include="Assets\Scripts\controlUtility.cs" />
-    <Compile Include="Assets\Scripts\hanger.cs" />
-    <Compile Include="Assets\Scripts\mainMenuScript.cs" />
     <Compile Include="Assets\Scripts\modifier.cs" />
-    <Compile Include="Assets\Scripts\pManager.cs" />
-    <Compile Include="Assets\Scripts\typeDictionary.cs" />
-    <Compile Include="Assets\Scripts\vnManager.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\AStarPathfinding.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\BreadthFirstSearch.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\Buff.cs" />

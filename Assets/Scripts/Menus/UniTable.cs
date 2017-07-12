@@ -8,9 +8,8 @@ public static class UniTable
     //this contain the instanced template classes to clone new objects from
     //use guids so that 1 class can serve as multiple templates
     public static IDictionary<Guid, Unit> unitDictionary = new Dictionary<Guid, Unit>();
-    public static IDictionary<Guid, mechPart> partDictionary = new Dictionary<Guid, mechPart>();
+    public static IDictionary<Guid, part> partDictionary = new Dictionary<Guid, part>();
     public static IDictionary<Guid, ability> abilityDictionary = new Dictionary<Guid, ability>();
-    public static IDictionary<Guid, mechWeapon> weapondictionary = new Dictionary<Guid, mechWeapon>();
 
     public static IDictionary<Type, Transform> prefabTable = new Dictionary<Type, Transform>();
 
@@ -24,7 +23,7 @@ public static class UniTable
         { typeof(ability) , new Guid("1f24132c-3821-4efa-86ef-953251122115") },
         { typeof(switchWeapon) , new Guid("1ec7fc5c-d5a1-4de1-8f25-245e3e37f0a6") },
         { typeof(shoot) , new Guid("1addecfc-5cd5-4147-a7d9-a8034c2890d7") },
-        { typeof(mechPart), new Guid("08f6a56e-8f9a-4841-b4e3-49daff317ec5") },
+        { typeof(part), new Guid("08f6a56e-8f9a-4841-b4e3-49daff317ec5") },
         { typeof(steelCore) , new Guid("ce81a106-f7e8-456d-b586-85d33753b3c5") }
     };
 

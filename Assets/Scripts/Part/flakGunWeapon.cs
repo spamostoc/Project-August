@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class flakGunWeapon : mechWeapon
 {
-    public override mechWeapon clone()
+    public override part clone()
     {
         flakGunWeapon ret = new flakGunWeapon();
         ret.Initialize();

@@ -41,12 +41,13 @@ public class pManager : MonoBehaviour
         UniTable.abilityDictionary.Add(UniTable.classGuid[typeof(switchWeapon)], newSwitchWeapon);
 
         //parts dictionary
-        mechPart mp = this.transform.gameObject.AddComponent<mechPart>();
+        part mp = new part();
         mp.Initialize();
-        UniTable.partDictionary.Add(UniTable.classGuid[typeof(mechPart)], mp);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(part)], mp);
 
-        steelCore sc = this.transform.gameObject.AddComponent<steelCore>();
+        steelCore sc = new steelCore();
         sc.Initialize();
+        sc.slots.Add(part.slot.core);
         UniTable.partDictionary.Add(UniTable.classGuid[typeof(steelCore)], sc);
 
         //weapon dictionary
@@ -57,7 +58,7 @@ public class pManager : MonoBehaviour
         newFlakGun.damage = 35;
         newFlakGun.maxAmmo = 8;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        UniTable.weapondictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
 
 
         lasGunWeapon newLasGun = new lasGunWeapon();
@@ -66,7 +67,7 @@ public class pManager : MonoBehaviour
         newLasGun.range = 2;
         newLasGun.damage = 45;
         newLasGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        UniTable.weapondictionary.Add(UniTable.classGuid[typeof(lasGunWeapon)], newLasGun);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(lasGunWeapon)], newLasGun);
 
         //units dictionary
         //these rely on the above
@@ -112,14 +113,6 @@ public class pManager : MonoBehaviour
         newMech.displayName = "Intercessor";
         newMech.MovementSpeed = 15;
 
-        //weapons
-        newMech.weapons.Add(UniTable.weapondictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
-        newMech.weapons.Add(UniTable.weapondictionary[UniTable.classGuid[typeof(lasGunWeapon)]].clone());
-        foreach (mechWeapon w in newMech.weapons)
-        {
-            w.parent = newMech;
-        }
-
         //abilities
         newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(shoot)]].clone());
         newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(switchWeapon)]].clone());
@@ -128,14 +121,18 @@ public class pManager : MonoBehaviour
             a.parent = newMech;
         }
 
-        //parts
-        steelCore part = pManager.pDataManager.transform.gameObject.AddComponent<steelCore>();
-        part.copyFrom(UniTable.partDictionary[UniTable.classGuid[typeof(steelCore)]]);
-        newMech.parts.Add(part);
-        foreach (mechPart mp in newMech.parts)
+
+        //weapons
+        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
+        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(lasGunWeapon)]].clone());
+        foreach (part w in newMech.weapons)
         {
-            mp.parent = newMech;
+            w.setOwner(newMech);
         }
+
+        //parts
+        part part = masterInventory.createPart(typeof(steelCore));
+        newMech.addPartAs(part, part.slots[0]);
         return newMech;
     }
 

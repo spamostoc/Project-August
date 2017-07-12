@@ -8,9 +8,7 @@ using System.IO;
 
 public class mech : Unit {
 
-    public List<mechPart> parts;
-
-    public List<mechWeapon> weapons;
+    public List<part> weapons;
 
     public mechWeapon activeWeapon;
 
@@ -19,21 +17,37 @@ public class mech : Unit {
     public override void Initialize()
     {
         base.Initialize();
-        this.parts = new List<mechPart>();
-        this.weapons = new List<mechWeapon>();
+        this.weapons = new List<part>();
     }
 
     public override void GameInit()
     {
         base.GameInit();
 
-        foreach(mechWeapon w in weapons)
+        foreach(part w in weapons)
         {
-            w.GameInit();
+            try
+            {
+                w.GameInit();
+            }
+            catch (Exception e)
+            {
+                Debug.Log("this is a part object");
+            }
         }
 
-        this.activeWeapon = this.weapons[0];
+        this.activeWeapon = (mechWeapon) (this.weapons[0]);
         //transform.position += new Vector3(0, 0, -1);
+    }
+
+    public override bool addPartAs(part part, part.slot slot)
+    {
+        return base.addPartAs(part, slot);
+    }
+
+    public override bool removePart(part part)
+    {
+        throw new NotImplementedException();
     }
 
     public override void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
@@ -141,10 +155,10 @@ public class mech : Unit {
 
     public void copyWeaponsFrom(mech m)
     {
-        foreach (mechWeapon w in m.weapons)
+        foreach (part w in m.weapons)
         {
-            mechWeapon newW = w.clone();
-            newW.parent = this;
+            part newW = w.clone();
+            newW.setOwner(this);
             this.weapons.Add(newW);
         }
     }

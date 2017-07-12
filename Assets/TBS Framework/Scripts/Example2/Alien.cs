@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,16 @@ public class Alien : Unit
     {
         base.Initialize();
         transform.position += new Vector3(0, 0, -1);
+    }
+
+    public override bool addPartAs(part part, part.slot slot)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override bool removePart(part part)
+    {
+        throw new NotImplementedException();
     }
 
     public override bool IsCellMovableTo(Cell cell)

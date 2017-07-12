@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class mechWeapon
+public class mechWeapon : part
 {
 
-    public mech parent;
-    public List<ability> abilities;
     public Sprite iconSprite;
 
     public float damage;
@@ -25,12 +23,12 @@ public class mechWeapon
 
     public String name;
 
-    public virtual void Initialize()
+    public override void Initialize()
     {
-        this.abilities = new List<ability>();
+        base.Initialize();
     }
 
-    public virtual void GameInit()
+    public override void GameInit()
     {
         this.currentAmmo = this.maxAmmo;
         this.currentHeat = 0;
@@ -46,21 +44,21 @@ public class mechWeapon
         }
         this.currentAmmo--;
 
-        target.onDefend(parent, this.damage);
+        target.onDefend(owner, this.damage);
     }
 
-    public virtual void onTurnStart()
+    public override void onTurnStart()
     {
         if (this.currentHeat > 0)
-            this.currentHeat = Math.Max(0, this.currentHeat - this.parent.dynamicAttributes.heatReduceRate);
+            this.currentHeat = Math.Max(0, this.currentHeat - this.owner.dynamicAttributes.heatReduceRate);
     }
 
-    public virtual void onTurnEnd()
+    public override void onTurnEnd()
     {
 
     }
 
-    public virtual mechWeapon clone()
+    public override part clone()
     {
         mechWeapon ret = new mechWeapon();
         ret.Initialize();
@@ -70,15 +68,10 @@ public class mechWeapon
 
     protected static void copy(mechWeapon src, mechWeapon tgt)
     {
+        Debug.Log("this is mechWeapon.copy");
+        part.copy(src, tgt);
         tgt.name = src.name;
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
-
-        foreach (ability a in src.abilities)
-        {
-            ability newA = a.clone();
-            newA.parent = tgt.parent;
-            tgt.abilities.Add(newA);
-        }
 
         tgt.damage = src.damage;
         tgt.shieldDamage = src.shieldDamage;
