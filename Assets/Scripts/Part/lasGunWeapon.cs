@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class lasGunWeapon : mechWeapon {
+public class LasGunWeapon : MechWeapon {
 
-    public override part clone()
+    public override Part clone()
     {
-        lasGunWeapon ret = new lasGunWeapon();
+        LasGunWeapon ret = new LasGunWeapon();
         ret.Initialize();
-        mechWeapon.copy(this, ret);
+        MechWeapon.copy(this, ret);
         return ret;
     }
 }

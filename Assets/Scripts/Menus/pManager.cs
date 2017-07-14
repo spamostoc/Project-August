@@ -41,33 +41,33 @@ public class pManager : MonoBehaviour
         UniTable.abilityDictionary.Add(UniTable.classGuid[typeof(switchWeapon)], newSwitchWeapon);
 
         //parts dictionary
-        part mp = new part();
+        Part mp = new Part();
         mp.Initialize();
-        UniTable.partDictionary.Add(UniTable.classGuid[typeof(part)], mp);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(Part)], mp);
 
-        steelCore sc = new steelCore();
+        SteelCore sc = new SteelCore();
         sc.Initialize();
-        sc.slots.Add(part.slot.core);
-        UniTable.partDictionary.Add(UniTable.classGuid[typeof(steelCore)], sc);
+        sc.slots.Add(Part.slot.core);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(SteelCore)], sc);
 
         //weapon dictionary
-        flakGunWeapon newFlakGun = new flakGunWeapon();
+        FlakGunWeapon newFlakGun = new FlakGunWeapon();
         newFlakGun.name = "Flak Gun";
         newFlakGun.Initialize();
         newFlakGun.range = 5;
         newFlakGun.damage = 35;
         newFlakGun.maxAmmo = 8;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        UniTable.partDictionary.Add(UniTable.classGuid[typeof(flakGunWeapon)], newFlakGun);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(FlakGunWeapon)], newFlakGun);
 
 
-        lasGunWeapon newLasGun = new lasGunWeapon();
+        LasGunWeapon newLasGun = new LasGunWeapon();
         newLasGun.name = "LasGun";
         newLasGun.Initialize();
         newLasGun.range = 2;
         newLasGun.damage = 45;
         newLasGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
-        UniTable.partDictionary.Add(UniTable.classGuid[typeof(lasGunWeapon)], newLasGun);
+        UniTable.partDictionary.Add(UniTable.classGuid[typeof(LasGunWeapon)], newLasGun);
 
         //units dictionary
         //these rely on the above
@@ -123,15 +123,11 @@ public class pManager : MonoBehaviour
 
 
         //weapons
-        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
-        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(lasGunWeapon)]].clone());
-        foreach (part w in newMech.weapons)
-        {
-            w.setOwner(newMech);
-        }
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(FlakGunWeapon)]].clone(), Part.slot.weapon1);
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(LasGunWeapon)]].clone(), Part.slot.weapon2);
 
         //parts
-        part part = masterInventory.createPart(typeof(steelCore));
+        Part part = masterInventory.createPart(typeof(SteelCore));
         newMech.addPartAs(part, part.slots[0]);
         return newMech;
     }

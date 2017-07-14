@@ -3,13 +3,13 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class flakGunWeapon : mechWeapon
+public class FlakGunWeapon : MechWeapon
 {
-    public override part clone()
+    public override Part clone()
     {
-        flakGunWeapon ret = new flakGunWeapon();
+        FlakGunWeapon ret = new FlakGunWeapon();
         ret.Initialize();
-        mechWeapon.copy(this, ret);
+        MechWeapon.copy(this, ret);
         return ret;
     }
 }

@@ -5,23 +5,23 @@ using System;
 
 public class masterInventory {
 
-    private static IDictionary<part.slot, List<part>> allparts = new Dictionary<part.slot, List<part>>(); 
+    private static IDictionary<Part.slot, List<Part>> allparts = new Dictionary<Part.slot, List<Part>>(); 
 
-    public static part createPart(Type partType)
+    public static Part createPart(Type partType)
     {
-        if (!partType.IsSubclassOf(typeof(part))) {
+        if (!partType.IsSubclassOf(typeof(Part))) {
             throw new InvalidOperationException();
         }
-        part newPart = UniTable.partDictionary[UniTable.classGuid[partType]].clone();
-        foreach ( part.slot s in newPart.slots )
+        Part newPart = UniTable.partDictionary[UniTable.classGuid[partType]].clone();
+        foreach ( Part.slot s in newPart.slots )
         {
             if( !allparts.ContainsKey(s) )
             {
-                allparts.Add(s, new List<part>());
+                allparts.Add(s, new List<Part>());
             }
             if (allparts[s].Contains(newPart))
             {
-                throw new Exception("part somehow already exists");
+                throw new Exception("Part somehow already exists");
             }
             allparts[s].Add(newPart);
         }
@@ -29,11 +29,11 @@ public class masterInventory {
 
     }
 
-    public List<part> getParts()
+    public List<Part> getParts()
     {
-        List<part> ret = new List<part>();
+        List<Part> ret = new List<Part>();
 
-        foreach (KeyValuePair<part.slot, List<part>> k in allparts)
+        foreach (KeyValuePair<Part.slot, List<Part>> k in allparts)
         {
             ret.AddRange(k.Value);
         }
@@ -41,7 +41,7 @@ public class masterInventory {
         return ret;
     }
 
-    public List<part> getParts(part.slot slot)
+    public List<Part> getParts(Part.slot slot)
     {
         return allparts[slot];
     }

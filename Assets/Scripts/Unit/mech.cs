@@ -8,44 +8,44 @@ using System.IO;
 
 public class mech : Unit {
 
-    public List<part> weapons;
-
-    public mechWeapon activeWeapon;
+    public MechWeapon activeWeapon;
 
     Coroutine PulseCoroutine;
 
     public override void Initialize()
     {
         base.Initialize();
-        this.weapons = new List<part>();
+        this.parts.Add(Part.slot.weapon1, null);
+        this.parts.Add(Part.slot.weapon2, null);
+        this.parts.Add(Part.slot.core, null);
     }
 
     public override void GameInit()
     {
         base.GameInit();
 
-        foreach(part w in weapons)
+        foreach(KeyValuePair<Part.slot, Part> p in parts)
         {
             try
             {
-                w.GameInit();
+                p.Value.GameInit();
             }
             catch (Exception e)
             {
-                Debug.Log("this is a part object");
+                Debug.Log("this is a Part object");
             }
         }
 
-        this.activeWeapon = (mechWeapon) (this.weapons[0]);
+        this.activeWeapon = (MechWeapon) this.parts[Part.slot.weapon1];
         //transform.position += new Vector3(0, 0, -1);
     }
 
-    public override bool addPartAs(part part, part.slot slot)
+    public override bool addPartAs(Part part, Part.slot slot)
     {
         return base.addPartAs(part, slot);
     }
 
-    public override bool removePart(part part)
+    public override bool removePart(Part part)
     {
         throw new NotImplementedException();
     }
@@ -155,11 +155,7 @@ public class mech : Unit {
 
     public void copyWeaponsFrom(mech m)
     {
-        foreach (part w in m.weapons)
-        {
-            part newW = w.clone();
-            newW.setOwner(this);
-            this.weapons.Add(newW);
-        }
+        this.parts[Part.slot.weapon1] = m.parts[Part.slot.weapon1].clone();
+        this.parts[Part.slot.weapon2] = m.parts[Part.slot.weapon2].clone();
     }
 }

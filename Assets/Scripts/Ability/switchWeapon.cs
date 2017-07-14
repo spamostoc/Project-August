@@ -17,14 +17,14 @@ public class switchWeapon : ability {
     {
         //deduct stuff from primary weapon
         Debug.Log("Switching weapons");
-        foreach(mechWeapon w in ((mech)self).weapons)
+
+        if(((mech)self).activeWeapon == ((mech)self).parts[Part.slot.weapon1])
         {
-            if (w != ((mech)self).activeWeapon)
-            {
-                Debug.Log("Switching to:" + w);
-                ((mech)self).activeWeapon = w;
-                break;
-            }
+            ((mech)self).activeWeapon = (MechWeapon) ((mech)self).parts[Part.slot.weapon2];
+        }
+        else
+        {
+            ((mech)self).activeWeapon = (MechWeapon)((mech)self).parts[Part.slot.weapon1];
         }
     }
 

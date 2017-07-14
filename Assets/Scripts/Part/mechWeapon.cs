@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class mechWeapon : part
+public class MechWeapon : Part
 {
 
     public Sprite iconSprite;
@@ -58,18 +58,18 @@ public class mechWeapon : part
 
     }
 
-    public override part clone()
+    public override Part clone()
     {
-        mechWeapon ret = new mechWeapon();
+        MechWeapon ret = new MechWeapon();
         ret.Initialize();
-        mechWeapon.copy(this, ret);
+        MechWeapon.copy(this, ret);
         return ret;
     }
 
-    protected static void copy(mechWeapon src, mechWeapon tgt)
+    protected static void copy(MechWeapon src, MechWeapon tgt)
     {
         Debug.Log("this is mechWeapon.copy");
-        part.copy(src, tgt);
+        Part.copy(src, tgt);
         tgt.name = src.name;
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
 

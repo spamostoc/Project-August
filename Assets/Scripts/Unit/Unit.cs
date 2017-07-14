@@ -84,7 +84,7 @@ public abstract class Unit : unitBase
     /// </summary>
     public String TemplateId;
 
-    public IDictionary<part.slot, part> parts { get; private set; }
+    public IDictionary<Part.slot, Part> parts { get; private set; }
 
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 
@@ -95,7 +95,7 @@ public abstract class Unit : unitBase
         this.dynamicAttributes = new attributes();
         this.abilities = new List<ability>();
         this.buffs = new List<modifier>();
-        this.parts = new Dictionary<part.slot, part>();
+        this.parts = new Dictionary<Part.slot, Part>();
     }
 
     /// <summary>
@@ -264,7 +264,7 @@ public abstract class Unit : unitBase
         }
     }
 
-    public virtual bool addPartAs(part part, part.slot slot)
+    public virtual bool addPartAs(Part part, Part.slot slot)
     {
         if (this.parts.ContainsKey(slot) && this.parts[slot] == null)
         {
@@ -275,9 +275,9 @@ public abstract class Unit : unitBase
         return false;
     }
 
-    public virtual bool removePart(part part)
+    public virtual bool removePart(Part part)
     {
-        foreach (part.slot s in part.slots)
+        foreach (Part.slot s in part.slots)
         {
             if(this.parts[s] == part)
             {

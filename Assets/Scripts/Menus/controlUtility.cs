@@ -40,12 +40,8 @@ public class controlUtility : MonoBehaviour {
         newMech.PlayerNumber = 0;
 
         //weapons
-        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(flakGunWeapon)]].clone());
-        newMech.weapons.Add(UniTable.partDictionary[UniTable.classGuid[typeof(lasGunWeapon)]].clone());
-        foreach (mechWeapon w in newMech.weapons)
-        {
-            w.setOwner(newMech);
-        }
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(FlakGunWeapon)]].clone(), Part.slot.weapon1);
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(LasGunWeapon)]].clone(), Part.slot.weapon2);
 
         //abilities
         newMech.abilities.Add(UniTable.abilityDictionary[UniTable.classGuid[typeof(shoot)]].clone());
@@ -56,7 +52,7 @@ public class controlUtility : MonoBehaviour {
         }
 
         //parts
-        part part = masterInventory.createPart(typeof(steelCore));
+        Part part = masterInventory.createPart(typeof(SteelCore));
         newMech.addPartAs(part, part.slots[0]);
 
         pManager.pDataManager.playerMechs.Add(newMech);
@@ -103,9 +99,13 @@ public class controlUtility : MonoBehaviour {
 
             //transcribe mech class info
             mdata.weaponIds = new List<Guid>();
-            foreach (mechWeapon w in pmechj.weapons)
+            if(pmechj.parts[Part.slot.weapon1] != null)
             {
-                mdata.weaponIds.Add(UniTable.classGuid[w.GetType()]);
+                mdata.weaponIds.Add(UniTable.classGuid[pmechj.parts[Part.slot.weapon1].GetType()]);
+            }
+            if (pmechj.parts[Part.slot.weapon2] != null)
+            {
+                mdata.weaponIds.Add(UniTable.classGuid[pmechj.parts[Part.slot.weapon2].GetType()]);
             }
 
             //transcribe unit class info
@@ -171,11 +171,13 @@ public class controlUtility : MonoBehaviour {
             newMech.baseAtt.setTo(mdata.baseAtt);
 
             //load mech class info
-            foreach (Guid g in mdata.weaponIds)
+            if (mdata.weaponIds.Count > 0)
             {
-                part w = UniTable.partDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(g)]].clone();
-                w.setOwner(newMech);
-                newMech.weapons.Add(w);
+                newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(mdata.weaponIds[0])]].clone(), Part.slot.weapon1);
+                if (mdata.weaponIds.Count > 1)
+                {
+                    newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(mdata.weaponIds[1])]].clone(), Part.slot.weapon2);
+                }
             }
 
             //load unit class info

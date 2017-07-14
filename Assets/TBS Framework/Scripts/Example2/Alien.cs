@@ -13,12 +13,12 @@ public class Alien : Unit
         transform.position += new Vector3(0, 0, -1);
     }
 
-    public override bool addPartAs(part part, part.slot slot)
+    public override bool addPartAs(Part part, Part.slot slot)
     {
         throw new NotImplementedException();
     }
 
-    public override bool removePart(part part)
+    public override bool removePart(Part part)
     {
         throw new NotImplementedException();
     }

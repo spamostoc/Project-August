@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class part {
+public class Part {
 
     public String displayName;
 
@@ -28,7 +28,7 @@ public class part {
         this.owner = newOwner;
     }
 
-    public void copyFrom(part original)
+    public void copyFrom(Part original)
     {
         this.baseAtt = new attributes(original.baseAtt);
     }
@@ -53,24 +53,24 @@ public class part {
         throw new NotImplementedException();
     }
 
-    public virtual part clone()
+    public virtual Part clone()
     {
-        part ret = new part();
+        Part ret = new Part();
         ret.Initialize();
-        part.copy(this, ret);
+        Part.copy(this, ret);
         return ret;
     }
 
-    protected static void copy(part src, part tgt)
+    protected static void copy(Part src, Part tgt)
     {
-        Debug.Log("this is part.copy");
+        Debug.Log("this is Part.copy");
         tgt.displayName = src.displayName;
 
         tgt.baseAtt.setTo(src.baseAtt);
 
         foreach (slot s in src.slots)
         {
-            tgt.slots.Add((part.slot)((int)s));
+            tgt.slots.Add((Part.slot)((int)s));
         }
 
         foreach (ability a in src.abilities)

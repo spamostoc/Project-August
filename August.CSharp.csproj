@@ -89,11 +89,11 @@
     <Compile Include="Assets\Scripts\Menus\pManager.cs" />
     <Compile Include="Assets\Scripts\Menus\typeDictionary.cs" />
     <Compile Include="Assets\Scripts\Menus\vnManager.cs" />
-    <Compile Include="Assets\Scripts\Part\flakGunWeapon.cs" />
-    <Compile Include="Assets\Scripts\Part\lasGunWeapon.cs" />
-    <Compile Include="Assets\Scripts\Part\mechWeapon.cs" />
-    <Compile Include="Assets\Scripts\Part\part.cs" />
-    <Compile Include="Assets\Scripts\Part\steelCore.cs" />
+    <Compile Include="Assets\Scripts\Part\FlakGunWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\LasGunWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\MechWeapon.cs" />
+    <Compile Include="Assets\Scripts\Part\Part.cs" />
+    <Compile Include="Assets\Scripts\Part\SteelCore.cs" />
     <Compile Include="Assets\Scripts\Unit\Unit.cs" />
     <Compile Include="Assets\Scripts\Unit\mech.cs" />
     <Compile Include="Assets\Scripts\Unit\unitBase.cs" />

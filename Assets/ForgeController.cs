@@ -15,12 +15,12 @@ public class ForgeController : MonoBehaviour {
 
     public void spawnPart()
     {
-        masterInventory.createPart(typeof(steelCore));
+        masterInventory.createPart(typeof(SteelCore));
     }
 
     public void spawnWeapon()
     {
-        masterInventory.createPart(typeof(lasGunWeapon));
+        masterInventory.createPart(typeof(LasGunWeapon));
     }
 
     public void spawnMech()

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class steelCore : part
+public class SteelCore : Part
 {
 
 }
