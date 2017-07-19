@@ -31,9 +31,9 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
             if (null == unit.baseAtt)
             {
                 unit.Initialize();
-                if (unit.GetType() == typeof(mech) && !String.IsNullOrEmpty(unit.TemplateId))
+                if (unit.GetType() == typeof(Mech) && !String.IsNullOrEmpty(unit.TemplateId))
                 {
-                    ((mech)unit).copyFrom((mech)UniTable.unitDictionary[new Guid(unit.TemplateId)]);
+                    ((Mech)unit).copyFrom((Mech)UniTable.unitDictionary[new Guid(unit.TemplateId)]);
                 }
             }
 
@@ -86,14 +86,14 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
 
         for (int index = 0; index < PlayerSpawns.childCount; index++)
         {
-            mech mechTemplate = pManager.pDataManager.playerMechs[index];
+            Mech mechTemplate = pManager.pDataManager.playerMechs.Values.ToList<Mech>()[index];
             //need to alias all the player classes to prefabs
             //consider having the prefabs override the save files every time on max values?
             if (pManager.pDataManager.playerMechs.Count > 0)
             {
                 Transform ret = (Transform)Instantiate(UniTable.prefabTable[mechTemplate.GetType()], PlayerSpawns.GetChild(index).position, Quaternion.identity, UnitsParent);
-                ret.GetComponent<mech>().Initialize();
-                ret.GetComponent<mech>().copyFrom(mechTemplate);
+                ret.GetComponent<Mech>().Initialize();
+                ret.GetComponent<Mech>().copyFrom(mechTemplate);
             }
         }
     }

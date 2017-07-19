@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Base class for all units in the game.
 /// </summary>
-public abstract class Unit : unitBase
+public abstract class Unit : MonoBehaviour
 {
     /////////////////////////////////
     //TBS FRAMEWORK EVENT HANDLERS
@@ -68,9 +68,21 @@ public abstract class Unit : unitBase
     /////////////////////////////////
 
     /// <summary>
-    /// UniTable entry to template from
+    /// UI display name
     /// </summary>
-    public attributes dynamicAttributes;
+    public String displayName;
+    /// <summary>
+    /// unique identifier for this instance
+    /// </summary>
+    public Guid unitId;
+    /// <summary>
+    /// list of basic attributes
+    /// </summary>
+    public attributes baseAtt { get; protected set; }
+    /// <summary>
+    /// list of dynamic attributes
+    /// </summary>
+    public attributes dynamicAttributes { get; protected set; }
     /// <summary>
     /// List of abilities available to unit
     /// </summary>
@@ -89,9 +101,9 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 
     /// </summary>
-    public virtual new void Initialize()
+    public virtual void Initialize()
     {
-        base.Initialize();
+        this.baseAtt = new attributes();
         this.dynamicAttributes = new attributes();
         this.abilities = new List<ability>();
         this.buffs = new List<modifier>();
@@ -101,7 +113,7 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method called at start of grid to calculate initial values
     /// </summary>
-    public override void GameInit()
+    public virtual void GameInit()
     {
         UnitState = new UnitStateNormal(this);
         this.dynamicAttributes = new attributes(this.getSummedAttributes());
@@ -115,7 +127,7 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method is called at the start of each turn.
     /// </summary>
-    public override void onTurnStart()
+    public virtual void onTurnStart()
     {
         foreach(Buff b in this.buffs)
         {
@@ -134,7 +146,7 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method is called at the end of each turn.
     /// </summary>
-    public override void onTurnEnd()
+    public virtual void onTurnEnd()
     {
         SetState(new UnitStateNormal(this));
     }
@@ -142,7 +154,7 @@ public abstract class Unit : unitBase
     /// <summary>
     /// Method is called when units HP drops below 1.
     /// </summary>
-    public override void onDeath()
+    public virtual void onDeath()
     {
         Cell.IsTaken = false;
         MarkAsDestroyed();
@@ -266,6 +278,10 @@ public abstract class Unit : unitBase
 
     public virtual bool addPartAs(Part part, Part.slot slot)
     {
+        if (Part.slot.Undefined == slot)
+        {
+            throw new KeyNotFoundException("part " + part + " slot is initialized as undefined");
+        }
         if (this.parts.ContainsKey(slot) && this.parts[slot] == null)
         {
             this.parts[slot] = part;
@@ -329,12 +345,28 @@ public abstract class Unit : unitBase
             UnitDeselected.Invoke(this, new EventArgs());
     }
 
+    /////////////////////////////////
+    ////////MAP AND TBS UTILITY
+    /////////////////////////////////
+
+
     private void UpdateHpBar()
     {
-            if (healthBar != null)
-                healthBar.transform.localScale = new Vector3((float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth), 1, 1);
-           // GetComponentInChildren<Image>().color = Color.Lerp(Color.red, Color.green,
-               // (float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth));
+        if (healthBar != null)
+            healthBar.transform.localScale = new Vector3((float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth), 1, 1);
+        // GetComponentInChildren<Image>().color = Color.Lerp(Color.red, Color.green,
+        // (float)(this.dynamicAttributes.health / this.dynamicAttributes.maxHealth));
+    }
+
+    /// <summary>
+    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
+    /// </summary>
+    public virtual bool isUnitReachable(Unit other, int range, Cell sourceCell)
+    {
+        if (sourceCell.GetDistance(other.Cell) <= range)
+            return true;
+
+        return false;
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path)

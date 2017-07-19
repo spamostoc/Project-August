@@ -9,7 +9,7 @@ public class pManager : MonoBehaviour
 {
     public static pManager pDataManager;
 
-    public List<mech> playerMechs;
+    public IDictionary<Guid, Mech> playerMechs;
 
     // Use this for initialization
     void Awake()
@@ -18,7 +18,7 @@ public class pManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
             pDataManager = this;
-            playerMechs = new List<mech>();
+            playerMechs = new Dictionary<Guid, Mech>();
             startUp();
         }
         else if (pDataManager != this)
@@ -42,49 +42,49 @@ public class pManager : MonoBehaviour
 
         //parts dictionary
         Part mp = new Part();
-        mp.Initialize();
         UniTable.partDictionary.Add(UniTable.classGuid[typeof(Part)], mp);
 
         SteelCore sc = new SteelCore();
-        sc.Initialize();
         sc.slots.Add(Part.slot.core);
         UniTable.partDictionary.Add(UniTable.classGuid[typeof(SteelCore)], sc);
 
         //weapon dictionary
         FlakGunWeapon newFlakGun = new FlakGunWeapon();
-        newFlakGun.name = "Flak Gun";
-        newFlakGun.Initialize();
+        newFlakGun.displayName = "Flak Gun";
         newFlakGun.range = 5;
         newFlakGun.damage = 35;
         newFlakGun.maxAmmo = 8;
         newFlakGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        newFlakGun.slots.Add(Part.slot.weapon1);
+        newFlakGun.slots.Add(Part.slot.weapon2);
         UniTable.partDictionary.Add(UniTable.classGuid[typeof(FlakGunWeapon)], newFlakGun);
 
 
         LasGunWeapon newLasGun = new LasGunWeapon();
-        newLasGun.name = "LasGun";
-        newLasGun.Initialize();
+        newLasGun.displayName = "LasGun";
         newLasGun.range = 2;
         newLasGun.damage = 45;
         newLasGun.iconSprite = Resources.Load<Sprite>("BoostAttackIcon") as Sprite;
+        newLasGun.slots.Add(Part.slot.weapon1);
+        newLasGun.slots.Add(Part.slot.weapon2);
         UniTable.partDictionary.Add(UniTable.classGuid[typeof(LasGunWeapon)], newLasGun);
 
         //units dictionary
         //these rely on the above
-        mech m = this.transform.gameObject.AddComponent<mech>();
+        Mech m = this.transform.gameObject.AddComponent<Mech>();
         m.Initialize();
-        UniTable.unitDictionary.Add(UniTable.classGuid[typeof(mech)], m);
-        mech inter = this.makeIntercessorTemplate();
+        UniTable.unitDictionary.Add(UniTable.classGuid[typeof(Mech)], m);
+        Mech inter = this.makeIntercessorTemplate();
         UniTable.unitDictionary.Add(new Guid("a36f8211-608f-4afc-be6f-27f5b6143019"), inter);
 
         //prefabs Table
 
-        UniTable.prefabTable.Add(typeof(mech), Resources.Load<Transform>("Mech") as Transform);
+        UniTable.prefabTable.Add(typeof(Mech), Resources.Load<Transform>("Mech") as Transform);
     }
 
-    private mech makeIntercessorTemplate()
+    private Mech makeIntercessorTemplate()
     {
-        mech newMech = this.transform.gameObject.AddComponent<mech>();
+        Mech newMech = this.transform.gameObject.AddComponent<Mech>();
         newMech.Initialize();
 
         //creating new testmech
@@ -131,38 +131,5 @@ public class pManager : MonoBehaviour
         newMech.addPartAs(part, part.slots[0]);
         return newMech;
     }
-
-}
-
-[Serializable]
-class dataLibrary
-{
-    public List<mechdata> playerMechs;
-}
-
-
-[Serializable]
-class mechdata
-{
-    public Guid mechId;
-
-    public List<Guid> partsIds;
-
-    public List<Guid> abilityIds;
-
-    // dynamic att
-    public attributes dynamicAtt;
-
-    //base att
-    public attributes baseAtt;
-
-    //mech class att
-    public List<Guid> weaponIds;
-
-    // unit class att
-    public String displayName;
-    public float movementSpeed;
-    public int playerNumber;
-
 
 }

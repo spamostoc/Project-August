@@ -18,13 +18,13 @@ public class switchWeapon : ability {
         //deduct stuff from primary weapon
         Debug.Log("Switching weapons");
 
-        if(((mech)self).activeWeapon == ((mech)self).parts[Part.slot.weapon1])
+        if(((Mech)self).activeWeapon == ((Mech)self).parts[Part.slot.weapon1])
         {
-            ((mech)self).activeWeapon = (MechWeapon) ((mech)self).parts[Part.slot.weapon2];
+            ((Mech)self).activeWeapon = (MechWeapon) ((Mech)self).parts[Part.slot.weapon2];
         }
         else
         {
-            ((mech)self).activeWeapon = (MechWeapon)((mech)self).parts[Part.slot.weapon1];
+            ((Mech)self).activeWeapon = (MechWeapon)((Mech)self).parts[Part.slot.weapon1];
         }
     }
 

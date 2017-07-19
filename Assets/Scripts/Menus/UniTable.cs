@@ -16,7 +16,7 @@ public static class UniTable
     //this provide the guids that the save data is converted into
     public static readonly IDictionary<Type, Guid> classGuid = new Dictionary<Type, Guid>
     {
-        { typeof(mech) , new Guid("5b00675d-621a-42d9-9ba9-1a570502c921")  },
+        { typeof(Mech) , new Guid("5b00675d-621a-42d9-9ba9-1a570502c921")  },
         { typeof(MechWeapon) , new Guid("f52dadd7-4273-49c4-81b0-28972842c745") },
         { typeof(FlakGunWeapon) , new Guid("a089fa1b-8991-4df5-8049-5583abdcb740") },
         { typeof(LasGunWeapon) , new Guid("27b87369-233b-4df5-8ebd-83ada582b7a2") },

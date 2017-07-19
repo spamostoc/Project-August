@@ -5,18 +5,17 @@ using System;
 
 public class Part {
 
+    public enum slot { Undefined, weapon1, weapon2, core };
+
     public String displayName;
-
-    public attributes baseAtt { get; protected set; }
-
-    public enum slot { weapon1, weapon2, core };
-
+    public Guid partId;
+    public Unit owner { get; private set; }
     public List<slot> slots { get; private set; }
 
-    public Unit owner { get; private set; }
+    public attributes baseAtt { get; protected set; }
     public List<ability> abilities { get; private set; }
 
-    public virtual void Initialize()
+    public Part()
     {
         this.slots = new List<slot>();
         this.baseAtt = new attributes();
@@ -56,7 +55,6 @@ public class Part {
     public virtual Part clone()
     {
         Part ret = new Part();
-        ret.Initialize();
         Part.copy(this, ret);
         return ret;
     }
@@ -65,6 +63,8 @@ public class Part {
     {
         Debug.Log("this is Part.copy");
         tgt.displayName = src.displayName;
+
+        tgt.partId = Guid.NewGuid();
 
         tgt.baseAtt.setTo(src.baseAtt);
 

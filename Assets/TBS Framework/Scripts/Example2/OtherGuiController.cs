@@ -177,10 +177,10 @@ class OtherGuiController : MonoBehaviour
     public void OnUnitSelected(object sender, EventArgs e)
     {
         selectedUnit = (sender as Unit);
-        weaponText.text = (sender as mech).activeWeapon.name;
-        weaponSubText1.text = "Damage: " + (sender as mech).activeWeapon.damage;
-        weaponSubText2.text = "Range: " + (sender as mech).activeWeapon.range;
-        weaponSubText3.text = "Ammo: " + (sender as mech).activeWeapon.currentAmmo + "/" + (sender as mech).activeWeapon.maxAmmo;
+        weaponText.text = (sender as Mech).activeWeapon.displayName;
+        weaponSubText1.text = "Damage: " + (sender as Mech).activeWeapon.damage;
+        weaponSubText2.text = "Range: " + (sender as Mech).activeWeapon.range;
+        weaponSubText3.text = "Ammo: " + (sender as Mech).activeWeapon.currentAmmo + "/" + (sender as Mech).activeWeapon.maxAmmo;
 
         float hpScale = (sender as Unit).dynamicAttributes.health / (sender as Unit).dynamicAttributes.maxHealth;
 

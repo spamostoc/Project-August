@@ -94,9 +94,8 @@
     <Compile Include="Assets\Scripts\Part\MechWeapon.cs" />
     <Compile Include="Assets\Scripts\Part\Part.cs" />
     <Compile Include="Assets\Scripts\Part\SteelCore.cs" />
+    <Compile Include="Assets\Scripts\Unit\Mech.cs" />
     <Compile Include="Assets\Scripts\Unit\Unit.cs" />
-    <Compile Include="Assets\Scripts\Unit\mech.cs" />
-    <Compile Include="Assets\Scripts\Unit\unitBase.cs" />
     <Compile Include="Assets\Scripts\attributes.cs" />
     <Compile Include="Assets\Scripts\modifier.cs" />
     <Compile Include="Assets\TBS Framework\Scripts\Core\AStarPathfinding.cs" />

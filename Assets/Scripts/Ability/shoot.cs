@@ -32,6 +32,6 @@ public class shoot : ability
 
     public override int getRange()
     {
-        return ((mech)parent).activeWeapon.range;
+        return ((Mech)parent).activeWeapon.range;
     }
 }

@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 
-public class mech : Unit {
+public class Mech : Unit {
 
     public MechWeapon activeWeapon;
 
@@ -19,7 +19,7 @@ public class mech : Unit {
         this.parts.Add(Part.slot.weapon2, null);
         this.parts.Add(Part.slot.core, null);
     }
-
+    
     public override void GameInit()
     {
         base.GameInit();
@@ -59,7 +59,7 @@ public class mech : Unit {
         base.onAttack(other, mainActionPointsCost, bonusActionPointsCost);
 
         MarkAsAttacking(other);
-        this.activeWeapon.onAttack((mech)other);
+        this.activeWeapon.onAttack((Mech)other);
         //do some attacking stuff here
     }
 
@@ -140,7 +140,7 @@ public class mech : Unit {
         }
     }
 
-    public void copyFrom(mech original)
+    public void copyFrom(Mech original)
     {
         this.baseAtt.setTo(original.baseAtt);
 
@@ -153,7 +153,7 @@ public class mech : Unit {
         this.MovementSpeed = original.MovementSpeed;
     }
 
-    public void copyWeaponsFrom(mech m)
+    public void copyWeaponsFrom(Mech m)
     {
         this.parts[Part.slot.weapon1] = m.parts[Part.slot.weapon1].clone();
         this.parts[Part.slot.weapon2] = m.parts[Part.slot.weapon2].clone();

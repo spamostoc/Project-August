@@ -39,6 +39,7 @@ public class hangerController : MonoBehaviour {
         if (activePanel != rootPanel)
         {
             rootPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
+            cleanPanel(activePanel);
             this.activePanel = rootPanel;
             spawnPanelButtons(rootPanel, panelFunc.first);
         }
@@ -58,6 +59,7 @@ public class hangerController : MonoBehaviour {
         if (activePanel != secondaryPanel)
         {
             secondaryPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
+            cleanPanel(activePanel);
             this.activePanel = secondaryPanel;
             spawnPanelButtons(secondaryPanel, panelFunc.second);
         }
@@ -77,6 +79,7 @@ public class hangerController : MonoBehaviour {
         if (activePanel != tertiaryPanel)
         {
             tertiaryPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
+            cleanPanel(activePanel);
             this.activePanel = tertiaryPanel;
             spawnPanelButtons(tertiaryPanel, panelFunc.second);
         }
@@ -100,6 +103,8 @@ public class hangerController : MonoBehaviour {
 
     private void cleanPanel(Transform activeP)
     {
+        if (activeP == null)
+            return;
         foreach (Button b in activeP.GetComponentsInChildren<Button>())
         {
             if (b.tag.Equals(dynamicTag))

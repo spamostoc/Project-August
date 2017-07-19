@@ -21,12 +21,7 @@ public class MechWeapon : Part
     public float armorPierce;
     public float shieldBypass;
 
-    public String name;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
+    public MechWeapon() : base() { }
 
     public override void GameInit()
     {
@@ -34,7 +29,7 @@ public class MechWeapon : Part
         this.currentHeat = 0;
     }
 
-    public virtual void onAttack(mech target)
+    public virtual void onAttack(Mech target)
     {
         //damage logic
         Debug.Log("do attack logic here");
@@ -61,7 +56,6 @@ public class MechWeapon : Part
     public override Part clone()
     {
         MechWeapon ret = new MechWeapon();
-        ret.Initialize();
         MechWeapon.copy(this, ret);
         return ret;
     }
@@ -70,7 +64,6 @@ public class MechWeapon : Part
     {
         Debug.Log("this is mechWeapon.copy");
         Part.copy(src, tgt);
-        tgt.name = src.name;
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
 
         tgt.damage = src.damage;

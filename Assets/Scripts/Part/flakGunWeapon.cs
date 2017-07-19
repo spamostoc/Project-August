@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 public class FlakGunWeapon : MechWeapon
 {
+    public FlakGunWeapon () : base() { }
+
     public override Part clone()
     {
         FlakGunWeapon ret = new FlakGunWeapon();
-        ret.Initialize();
         MechWeapon.copy(this, ret);
         return ret;
     }
