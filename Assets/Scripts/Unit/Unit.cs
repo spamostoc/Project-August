@@ -278,11 +278,15 @@ public abstract class Unit : MonoBehaviour
 
     public virtual bool addPartAs(Part part, Part.slot slot)
     {
-        if (Part.slot.Undefined == slot)
+        if (!part.slots.Contains(slot))
         {
-            throw new KeyNotFoundException("part " + part + " slot is initialized as undefined");
+            throw new KeyNotFoundException("part " + part + " does not contain slot " + slot);
         }
-        if (this.parts.ContainsKey(slot) && this.parts[slot] == null)
+        if (!this.parts.ContainsKey(slot))
+        {
+            throw new KeyNotFoundException("unit " + this + " does not contain slot " + slot);
+        }
+        if (this.parts[slot] == null)
         {
             this.parts[slot] = part;
             part.setOwner(this);
@@ -291,15 +295,31 @@ public abstract class Unit : MonoBehaviour
         return false;
     }
 
-    public virtual bool removePart(Part part)
+    public virtual void removePart(Part part)
     {
         foreach (Part.slot s in part.slots)
         {
-            if(this.parts[s] == part)
+            if (this.parts[s] == part)
             {
+                this.parts[s].setOwner(null);
                 this.parts[s] = null;
-                return true;
+                return;
             }
+        }
+        throw new MissingReferenceException("unit " + this + " does not contain part " + part);
+    }
+
+    public virtual bool removePart(Part.slot slot)
+    {
+        if (!this.parts.ContainsKey(slot))
+        {
+            throw new KeyNotFoundException("unit " + this + " does not contain slot " + slot);
+        }
+        if (null != this.parts[slot])
+        {
+            this.parts[slot].setOwner(null);
+            this.parts[slot] = null;
+            return true;
         }
         return false;
     }

@@ -121,7 +121,6 @@ public class pManager : MonoBehaviour
             a.parent = newMech;
         }
 
-
         //weapons
         newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(FlakGunWeapon)]].clone(), Part.slot.weapon1);
         newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(LasGunWeapon)]].clone(), Part.slot.weapon2);

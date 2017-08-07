@@ -43,7 +43,7 @@ public class NaiveAiPlayer : Player
              if (unitsInRange.Count != 0)
              {
                  var index = _rnd.Next(0, unitsInRange.Count);
-                shootObj.activate(shootObj.parent, unitsInRange[index]);
+                shootObj.activate(unitsInRange[index]);
                  yield return new WaitForSeconds(0.5f);
                  continue;
              }//If there is an enemy in range, attack it.
@@ -105,7 +105,7 @@ public class NaiveAiPlayer : Player
                  var enemyCell = enemyUnit.Cell;
                  if (unit.isUnitReachable(enemyUnit, shootObj.getRange() ,unit.Cell))
                  { 
-                    shootObj.activate(shootObj.parent, enemyUnit);
+                    shootObj.activate(enemyUnit);
                      yield return new WaitForSeconds(0.5f);
                      break;
                  }

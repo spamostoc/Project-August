@@ -13,19 +13,21 @@ public class switchWeapon : ability {
         targeted = false;
     }
 
-    public override void activate(Unit self, Unit other)
+    public override void activate(Unit other)
     {
         //deduct stuff from primary weapon
         Debug.Log("Switching weapons");
 
-        if(((Mech)self).activeWeapon == ((Mech)self).parts[Part.slot.weapon1])
+        Mech selfMech = (Mech)this.parent;
+        if (null != selfMech.parts[Part.slot.weapon1] && selfMech.activeWeapon == selfMech.parts[Part.slot.weapon2])
         {
-            ((Mech)self).activeWeapon = (MechWeapon) ((Mech)self).parts[Part.slot.weapon2];
+            selfMech.activeWeapon = (MechWeapon)selfMech.parts[Part.slot.weapon1];
         }
-        else
+        else if (null != selfMech.parts[Part.slot.weapon2] && selfMech.activeWeapon == selfMech.parts[Part.slot.weapon1])
         {
-            ((Mech)self).activeWeapon = (MechWeapon)((Mech)self).parts[Part.slot.weapon1];
+            selfMech.activeWeapon = (MechWeapon)selfMech.parts[Part.slot.weapon2];
         }
+
     }
 
     public override ability clone()

@@ -17,7 +17,7 @@ public class ability {
 
     }
 
-    public virtual void activate(Unit self, Unit other)
+    public virtual void activate(Unit other)
     {
         throw new NotImplementedException();
     }

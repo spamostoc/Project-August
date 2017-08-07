@@ -14,10 +14,10 @@ public class shoot : ability
         targeted = true;
     }
 
-    public override void activate(Unit self, Unit other)
+    public override void activate(Unit other)
     {
         //deduct stuff from primary weapon
-        self.onAttack(other, actionPointsCost, bonusActionPointsCost);
+        this.parent.onAttack(other, actionPointsCost, bonusActionPointsCost);
     }
 
     public override ability clone()

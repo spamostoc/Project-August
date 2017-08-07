@@ -32,7 +32,7 @@ public class CellGridStateAbilityActive : CellGridState
 
         if (_unitsInRange.Contains(unit))
         {
-            _ability.activate(_unit, unit);
+            _ability.activate(unit);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
 
@@ -51,7 +51,7 @@ public class CellGridStateAbilityActive : CellGridState
 
         if(!_ability.targeted)
         {
-            _ability.activate(_unit, null);
+            _ability.activate(null);
             _cellGrid.CellGridState = new CellGridStateUnitSelected(_cellGrid, _unit);
         }
 

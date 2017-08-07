@@ -36,18 +36,23 @@ public class Mech : Unit {
             }
         }
 
-        this.activeWeapon = (MechWeapon) this.parts[Part.slot.weapon1];
-        //transform.position += new Vector3(0, 0, -1);
+        if (null != this.parts[Part.slot.weapon1])
+        {
+            this.activeWeapon = (MechWeapon)this.parts[Part.slot.weapon1];
+        }
+        else if (null != this.parts[Part.slot.weapon2])
+        {
+            this.activeWeapon = (MechWeapon)this.parts[Part.slot.weapon2];
+        }
+        else
+        {
+            throw new IndexOutOfRangeException("no weapons found for mech " + this);
+        }
     }
 
     public override bool addPartAs(Part part, Part.slot slot)
     {
         return base.addPartAs(part, slot);
-    }
-
-    public override bool removePart(Part part)
-    {
-        throw new NotImplementedException();
     }
 
     public override void onAttack(Unit other, int mainActionPointsCost, int bonusActionPointsCost)
@@ -155,7 +160,10 @@ public class Mech : Unit {
 
     public void copyWeaponsFrom(Mech m)
     {
-        this.parts[Part.slot.weapon1] = m.parts[Part.slot.weapon1].clone();
-        this.parts[Part.slot.weapon2] = m.parts[Part.slot.weapon2].clone();
+        if (null != m.parts[Part.slot.weapon1])
+            this.parts[Part.slot.weapon1] = m.parts[Part.slot.weapon1].clone();
+
+        if (null != m.parts[Part.slot.weapon2])
+            this.parts[Part.slot.weapon2] = m.parts[Part.slot.weapon2].clone();
     }
 }
