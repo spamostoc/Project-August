@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Example Scene 4.unity
+- path: Assets/Scenes/Hanger.unity
   isLoaded: 1
   isActive: 1

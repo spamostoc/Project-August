@@ -10,26 +10,35 @@ public class hangerController : MonoBehaviour {
     private enum panelFunc { first, second, third };
 
     public RectTransform rootPanel;
-    public RectTransform secondPanel;
-    public RectTransform thirdPanel;
-
     private ScrollPanel rootScroll;
+    public RectTransform rootTop;
+    public Button rootEdgeButton;
+
+    public RectTransform secondPanel;
     private ScrollPanel secondScroll;
+    public RectTransform secondTop;
+    public Button secondEdgeButton;
+
+    public RectTransform thirdPanel;
     private ScrollPanel thirdScroll;
+    public RectTransform thirdTop;
+    public Button thirdEdgeButton;
 
     private Transform activePanel;
 
-    public GameObject buttonPrefab;
+    public GameObject mechButtonPrefab;
+    public GameObject slotButtonPrefab;
+    public GameObject partButtonPrefab;
     public GameObject innerPanelPrefab;
 
     private Mech activeMech;
     private Part.slot activeSlot;
 
-    public static int minimizedPanelSize = 50;
+    public static int minimizedPanelSize = 0;
     public static int maximizedPanelSize = 500;
     public static float innerPanelXScale = 0.8f;
     public static float innerPanelYScale = 0.8f;
-    public static float buttonHeight = 50;
+    public static float buttonHeight = 70;
 
     public string dynamicTag = "dynamicUI";
     
@@ -37,10 +46,17 @@ public class hangerController : MonoBehaviour {
 	void Start () {
         rootScroll = new ScrollPanel(rootPanel);
         rootScroll.scrollPanel.gameObject.SetActive(false);
+        rootPanel.Find("Top Panel").gameObject.SetActive(false);
+
         secondScroll = new ScrollPanel(secondPanel);
         secondScroll.scrollPanel.gameObject.SetActive(false);
+        secondPanel.Find("Top Panel").gameObject.SetActive(false);
+        secondEdgeButton.interactable = false;
+
         thirdScroll = new ScrollPanel(thirdPanel);
         thirdScroll.scrollPanel.gameObject.SetActive(false);
+        thirdPanel.Find("Top Panel").gameObject.SetActive(false);
+        thirdEdgeButton.interactable = false;
     }
 	
 	// Update is called once per frame
@@ -50,57 +66,61 @@ public class hangerController : MonoBehaviour {
 
     //panel population
 
-    private void spawnMechPanelButton(ScrollPanel scroll)
+    private void activateMechPanel()
     {
+
         int i = 0;
         foreach (Mech m in pManager.pDataManager.playerMechs.Values)
         {
-            GameObject newButton = (GameObject)Instantiate(buttonPrefab);
-            newButton.transform.SetParent(scroll.contentPanel);
+            GameObject newButton = (GameObject)Instantiate(mechButtonPrefab);
+            newButton.transform.SetParent(rootScroll.contentPanel);
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             RectTransform buttonTransform = newButton.GetComponent<RectTransform>();
-            buttonTransform.anchorMin = new Vector2(0.48f, 1f);
-            buttonTransform.anchorMax = new Vector2(0.48f, 1f);
+            buttonTransform.anchorMin = new Vector2(.03f, 1f);
+            buttonTransform.anchorMax = new Vector2(0.97f, 1f);
             buttonTransform.anchoredPosition = new Vector2(0, (-0.55f - i) * buttonHeight);
-            buttonTransform.sizeDelta = new Vector2(scroll.contentPanel.rect.width * 0.90f, buttonHeight);
+            buttonTransform.sizeDelta = new Vector2(rootScroll.contentPanel.rect.width * 0.90f, buttonHeight);
             buttonTransform.tag = dynamicTag;
 
             Button buttonComponent = newButton.GetComponent<Button>();
-            MechButton MB = new MechButton(m, buttonComponent);
+            MechButtonLink MB = new MechButtonLink(m, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectMech(MB.mech));
-            buttonComponent.GetComponentInChildren<Text>().text = m.displayName;
+            buttonComponent.GetComponent<Text>().text = m.displayName;
 
             i++;
         }
 
-        if (Mathf.Abs(i * buttonHeight) > Mathf.Abs(scroll.viewport.rect.y))
+        if (Mathf.Abs(i * buttonHeight) > Mathf.Abs(rootScroll.viewport.rect.y))
         {
-            Debug.Log(i * buttonHeight);
-            Debug.Log(scroll.viewport.rect.y);
-            Debug.Log(Mathf.Abs(scroll.viewport.rect.y) - Mathf.Abs(i * buttonHeight));
-            scroll.contentPanel.sizeDelta = new Vector2(scroll.contentPanel.rect.x,  Mathf.Abs((i + 0.55f) * buttonHeight) - Mathf.Abs(scroll.viewport.rect.y));
+            rootScroll.contentPanel.sizeDelta = new Vector2(rootScroll.contentPanel.rect.x,  Mathf.Abs((i + 0.55f) * buttonHeight) - Mathf.Abs(rootScroll.viewport.rect.y));
         }
+
+        rootPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
+
+        rootPanel.Find("Top Panel").gameObject.SetActive(true);
+
+        rootScroll.scrollPanel.gameObject.SetActive(true);
     }
 
-    private void spawnComponentsPanelButton(ScrollPanel scroll, Mech mech)
+    private void activateComponentsPanel(ScrollPanel scroll, Mech mech)
     {
         int i = 0;
         foreach (Part.slot s in mech.parts.Keys)
         {
-            GameObject newButton = (GameObject)Instantiate(buttonPrefab);
+            GameObject newButton = (GameObject)Instantiate(slotButtonPrefab);
             newButton.transform.SetParent(scroll.contentPanel);
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             RectTransform buttonTransform = newButton.GetComponent<RectTransform>();
-            buttonTransform.anchorMin = new Vector2(0.48f, 1f);
-            buttonTransform.anchorMax = new Vector2(0.48f, 1f);
+            buttonTransform.anchorMin = new Vector2(.03f, 1f);
+            buttonTransform.anchorMax = new Vector2(0.97f, 1f);
             buttonTransform.anchoredPosition = new Vector2(0, (-0.55f - i) * buttonHeight);
             buttonTransform.sizeDelta = new Vector2(scroll.contentPanel.rect.width * 0.90f, buttonHeight);
             buttonTransform.tag = dynamicTag;
 
             Button buttonComponent = newButton.GetComponent<Button>();
-            SlotButton SB = new SlotButton(s, buttonComponent);
+            SlotButtonLink SB = new SlotButtonLink(s, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectSlot(SB.slot));
             buttonComponent.GetComponentInChildren<Text>().text = s.ToString();
 
@@ -109,31 +129,32 @@ public class hangerController : MonoBehaviour {
 
         if (Mathf.Abs(i * buttonHeight) > Mathf.Abs(scroll.viewport.rect.y))
         {
-            Debug.Log(i * buttonHeight);
-            Debug.Log(scroll.viewport.rect.y);
-            Debug.Log(Mathf.Abs(scroll.viewport.rect.y) - Mathf.Abs(i * buttonHeight));
             scroll.contentPanel.sizeDelta = new Vector2(scroll.contentPanel.rect.x, Mathf.Abs((i + 0.55f) * buttonHeight) - Mathf.Abs(scroll.viewport.rect.y));
         }
+
+        secondPanel.Find("Top Panel").gameObject.SetActive(true);
+
+        secondScroll.scrollPanel.gameObject.SetActive(true);
     }
 
-    private void spawnPartsPanelButton(ScrollPanel scroll, Part.slot slot)
+    private void ActivatePartsPanel(ScrollPanel scroll, Part.slot slot)
     {
         int i = 0;
         foreach (Part p in masterInventory.getParts(slot))
         {
-            GameObject newButton = (GameObject)Instantiate(buttonPrefab);
+            GameObject newButton = (GameObject)Instantiate(partButtonPrefab);
             newButton.transform.SetParent(scroll.contentPanel);
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
             RectTransform buttonTransform = newButton.GetComponent<RectTransform>();
-            buttonTransform.anchorMin = new Vector2(0.48f, 1f);
-            buttonTransform.anchorMax = new Vector2(0.48f, 1f);
+            buttonTransform.anchorMin = new Vector2(.03f, 1f);
+            buttonTransform.anchorMax = new Vector2(0.97f, 1f);
             buttonTransform.anchoredPosition = new Vector2(0, (-0.55f - i) * buttonHeight);
             buttonTransform.sizeDelta = new Vector2(scroll.contentPanel.rect.width * 0.90f, buttonHeight);
             buttonTransform.tag = dynamicTag;
 
             Button buttonComponent = newButton.GetComponent<Button>();
-            PartButton PB = new PartButton(p, buttonComponent);
+            PartButtonLink PB = new PartButtonLink(p, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectPart(PB.part));
             buttonComponent.GetComponentInChildren<Text>().text = p.displayName;
 
@@ -142,14 +163,17 @@ public class hangerController : MonoBehaviour {
 
         if (Mathf.Abs(i * buttonHeight) > Mathf.Abs(scroll.viewport.rect.y))
         {
-            Debug.Log(i * buttonHeight);
-            Debug.Log(scroll.viewport.rect.y);
-            Debug.Log(Mathf.Abs(scroll.viewport.rect.y) - Mathf.Abs(i * buttonHeight));
             scroll.contentPanel.sizeDelta = new Vector2(scroll.contentPanel.rect.x, Mathf.Abs((i + 0.55f) * buttonHeight) - Mathf.Abs(scroll.viewport.rect.y));
         }
+
+        thirdPanel.Find("Top Panel").gameObject.SetActive(true);
+
+        thirdScroll.scrollPanel.gameObject.SetActive(true);
     }
 
-    //panel switching
+    /// <summary>
+    /// panel selection arbitration
+    /// </summary>
 
     public void selectPanel(RectTransform selectedPanel)
     {
@@ -158,6 +182,12 @@ public class hangerController : MonoBehaviour {
         {
             activePanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(minimizedPanelSize, 0);
             cleanPanel(activePanel);
+
+            rootScroll.scrollPanel.gameObject.SetActive(false);
+            secondScroll.scrollPanel.gameObject.SetActive(false);
+            thirdScroll.scrollPanel.gameObject.SetActive(false);
+
+            activePanel.Find("Top Panel").gameObject.SetActive(false);
         }
 
         if (null == activeMech || rootPanel == selectedPanel)
@@ -183,18 +213,12 @@ public class hangerController : MonoBehaviour {
     {
         if (activePanel != rootPanel)
         {
-            spawnMechPanelButton(rootScroll);
+            activateMechPanel();
             this.activePanel = rootPanel;
-            rootPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
-
-            rootScroll.scrollPanel.gameObject.SetActive(true);
-            secondScroll.scrollPanel.gameObject.SetActive(false);
-            thirdScroll.scrollPanel.gameObject.SetActive(false);
         }
         else
         {
-                rootScroll.scrollPanel.gameObject.SetActive(false);
-                this.activePanel = null;
+            this.activePanel = null;
         }
     }
 
@@ -202,18 +226,13 @@ public class hangerController : MonoBehaviour {
     {
         if (activePanel != secondPanel)
         {
-            spawnComponentsPanelButton(secondScroll, activeMech);
+            activateComponentsPanel(secondScroll, activeMech);
             this.activePanel = secondPanel;
             secondPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
-
-            rootScroll.scrollPanel.gameObject.SetActive(false);
-            secondScroll.scrollPanel.gameObject.SetActive(true);
-            thirdScroll.scrollPanel.gameObject.SetActive(false);
         }
         else
         {
-                secondScroll.scrollPanel.gameObject.SetActive(false);
-                this.activePanel = null;
+            this.activePanel = null;
         }
     }
 
@@ -221,18 +240,13 @@ public class hangerController : MonoBehaviour {
     {
         if (activePanel != thirdPanel)
         {
-            spawnPartsPanelButton(thirdScroll, activeSlot);
+            ActivatePartsPanel(thirdScroll, activeSlot);
             this.activePanel = thirdPanel;
             thirdPanel.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(maximizedPanelSize, 0);
-
-            rootScroll.scrollPanel.gameObject.SetActive(false);
-            secondScroll.scrollPanel.gameObject.SetActive(false);
-            thirdScroll.scrollPanel.gameObject.SetActive(true);
         }
         else
         {
-                thirdScroll.scrollPanel.gameObject.SetActive(false);
-                this.activePanel = null;
+            this.activePanel = null;
         }
     }
 
@@ -240,21 +254,16 @@ public class hangerController : MonoBehaviour {
     {
         if (activeP == null)
             return;
-        /*foreach (Button b in activeP.GetComponentsInChildren<Button>())
-        {
-            if (b.tag.Equals(dynamicTag))
-                GameObject.DestroyObject(b.gameObject);
-        }*/
         foreach (RectTransform r in activeP.GetComponentsInChildren<RectTransform>())
         {
             if (r.tag.Equals(dynamicTag))
                 GameObject.DestroyObject(r.gameObject);
         }
     }
-
-
-
-
+    
+    /// <summary>
+    /// button bind functions
+    /// </summary>
 
     public void testclick(System.Object o)
     {
@@ -265,12 +274,14 @@ public class hangerController : MonoBehaviour {
     {
         this.activeMech = m;
         selectPanel(secondPanel);
+        secondEdgeButton.interactable = true;
     }
 
     public void selectSlot(Part.slot s)
     {
         this.activeSlot = s;
         selectPanel(thirdPanel);
+        thirdEdgeButton.interactable = true;
     }
 
     public void selectPart(Part p)
@@ -281,38 +292,39 @@ public class hangerController : MonoBehaviour {
         }
         this.activeMech.removePart(this.activeSlot);
         this.activeMech.addPartAs(p, this.activeSlot);
+        selectPanel(secondPanel);
     }
 
-    class MechButton
+    class MechButtonLink
     {
         public Mech mech;
         public Button button;
 
-        public MechButton(Mech m, Button b)
+        public MechButtonLink(Mech m, Button b)
         {
             mech = m;
             button = b;
         }
     }
 
-    class SlotButton
+    class SlotButtonLink
     {
         public Part.slot slot;
         public Button button;
 
-        public SlotButton(Part.slot s, Button b)
+        public SlotButtonLink(Part.slot s, Button b)
         {
             slot = s;
             button = b;
         }
     }
 
-    class PartButton
+    class PartButtonLink
     {
         public Part part;
         public Button button;
 
-        public PartButton(Part p, Button b)
+        public PartButtonLink(Part p, Button b)
         {
             part = p;
             button = b;
@@ -331,10 +343,10 @@ public class hangerController : MonoBehaviour {
             RectTransform newInnerPanel = (RectTransform)basePanel.Find("Scroll Panel");
 
             scrollPanel = newInnerPanel.GetComponent<RectTransform>();
-            scrollPanel.anchorMin = new Vector2(0.45f, 0.5f);
-            scrollPanel.anchorMax = new Vector2(0.45f, 0.5f);
+            scrollPanel.anchorMin = new Vector2(.03f, 0.03f);
+            scrollPanel.anchorMax = new Vector2(.97f, .88f);
             scrollPanel.anchoredPosition = new Vector2(0, 0);
-            scrollPanel.sizeDelta = new Vector2(maximizedPanelSize * innerPanelXScale, basePanel.rect.height * innerPanelYScale);
+            scrollPanel.sizeDelta = new Vector2(0, 0);
 
             viewport = (RectTransform)scrollPanel.Find("Viewport");
             viewport.anchorMin = new Vector2(0, 0);
