@@ -74,6 +74,8 @@ public class pManager : MonoBehaviour
         Mech m = this.transform.gameObject.AddComponent<Mech>();
         m.Initialize();
         UniTable.unitDictionary.Add(UniTable.classGuid[typeof(Mech)], m);
+
+        //define template rules regarding parts ownership and templated parts
         Mech inter = this.makeIntercessorTemplate();
         UniTable.unitDictionary.Add(new Guid("a36f8211-608f-4afc-be6f-27f5b6143019"), inter);
 
@@ -122,8 +124,8 @@ public class pManager : MonoBehaviour
         }
 
         //weapons
-        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(FlakGunWeapon)]].clone(), Part.slot.weapon1);
-        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(LasGunWeapon)]].clone(), Part.slot.weapon2);
+        newMech.addPartAs(masterInventory.createPart(typeof(FlakGunWeapon)), Part.slot.weapon1);
+        newMech.addPartAs(masterInventory.createPart(typeof(LasGunWeapon)), Part.slot.weapon2);
 
         //parts
         Part part = masterInventory.createPart(typeof(SteelCore));

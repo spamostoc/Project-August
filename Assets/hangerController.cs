@@ -38,7 +38,7 @@ public class hangerController : MonoBehaviour {
     public static int maximizedPanelSize = 500;
     public static float innerPanelXScale = 0.8f;
     public static float innerPanelYScale = 0.8f;
-    public static float buttonHeight = 70;
+    public static float buttonHeight = 100;
 
     public string dynamicTag = "dynamicUI";
     
@@ -64,8 +64,10 @@ public class hangerController : MonoBehaviour {
 	
 	}
 
-    //panel population
-
+    /// <summary>
+    /// panel population
+    /// </summary>
+    #region
     private void activateMechPanel()
     {
 
@@ -86,8 +88,16 @@ public class hangerController : MonoBehaviour {
             Button buttonComponent = newButton.GetComponent<Button>();
             MechButtonLink MB = new MechButtonLink(m, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectMech(MB.mech));
-            buttonComponent.GetComponent<Text>().text = m.displayName;
 
+            buttonTransform.Find("Mech Name").GetComponent<Text>().text = m.displayName;
+            buttonTransform.Find("Attribute1").Find("Name").GetComponent<Text>().text = "Health";
+            buttonTransform.Find("Attribute1").Find("Value").GetComponent<Text>().text = m.baseAtt.maxHealth.ToString();
+
+            buttonTransform.Find("Attribute2").Find("Name").GetComponent<Text>().text = "Shields";
+            buttonTransform.Find("Attribute2").Find("Value").GetComponent<Text>().text = m.baseAtt.maxShieldPoints.ToString();
+
+            buttonTransform.Find("Attribute3").Find("Name").GetComponent<Text>().text = "Movement";
+            buttonTransform.Find("Attribute3").Find("Value").GetComponent<Text>().text = m.baseAtt.maxMovementPoints.ToString();
             i++;
         }
 
@@ -122,8 +132,23 @@ public class hangerController : MonoBehaviour {
             Button buttonComponent = newButton.GetComponent<Button>();
             SlotButtonLink SB = new SlotButtonLink(s, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectSlot(SB.slot));
-            buttonComponent.GetComponentInChildren<Text>().text = s.ToString();
 
+            Part p = this.activeMech.parts[s];
+            if (null != p)
+            {
+                buttonTransform.Find("Mech Name").GetComponent<Text>().text = p.displayName;
+
+                //part display information here
+            }
+            else
+            {
+                foreach (Text t in buttonTransform.GetComponentsInChildren<Text>())
+                {
+                    t.text = "";
+                }
+            }
+
+            buttonTransform.Find("Slot Overlay").GetComponentInChildren<Text>().text = s.ToString();
             i++;
         }
 
@@ -156,7 +181,16 @@ public class hangerController : MonoBehaviour {
             Button buttonComponent = newButton.GetComponent<Button>();
             PartButtonLink PB = new PartButtonLink(p, buttonComponent);
             buttonComponent.onClick.AddListener(() => selectPart(PB.part));
-            buttonComponent.GetComponentInChildren<Text>().text = p.displayName;
+
+            buttonTransform.Find("Part Name").GetComponent<Text>().text = p.displayName;
+            if (null != p.owner)
+            {
+                buttonTransform.Find("Owner Panel").GetComponentInChildren<Text>().text = p.owner.displayName;
+            }
+            else
+            {
+                buttonTransform.Find("Owner Panel").gameObject.SetActive(false);
+            }
 
             i++;
         }
@@ -170,11 +204,12 @@ public class hangerController : MonoBehaviour {
 
         thirdScroll.scrollPanel.gameObject.SetActive(true);
     }
+    #endregion
 
     /// <summary>
     /// panel selection arbitration
     /// </summary>
-
+    #region
     public void selectPanel(RectTransform selectedPanel)
     {
         Debug.Log("selected panel is " + selectedPanel);
@@ -260,11 +295,12 @@ public class hangerController : MonoBehaviour {
                 GameObject.DestroyObject(r.gameObject);
         }
     }
-    
+    #endregion
+
     /// <summary>
     /// button bind functions
     /// </summary>
-
+    #region
     public void testclick(System.Object o)
     {
         Debug.Log("button is clicked with object " + o);
@@ -294,7 +330,12 @@ public class hangerController : MonoBehaviour {
         this.activeMech.addPartAs(p, this.activeSlot);
         selectPanel(secondPanel);
     }
+    #endregion
 
+    /// <summary>
+    /// UI object initialization and linking
+    /// </summary>
+    #region
     class MechButtonLink
     {
         public Mech mech;
@@ -361,5 +402,6 @@ public class hangerController : MonoBehaviour {
             buttonList = new ArrayList<Button>();
         }
     }
+    #endregion
 }
 
