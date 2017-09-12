@@ -35,6 +35,7 @@ public class MechWeapon : Part
         Debug.Log("do attack logic here");
         if(this.currentAmmo <= 0)
         {
+            Debug.Log("figure out unlimited ammo situations");
             return;
         }
         this.currentAmmo--;
