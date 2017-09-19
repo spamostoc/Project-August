@@ -399,7 +399,7 @@ public class hangerController : MonoBehaviour {
             contentPanel.anchorMax = new Vector2(1, 1);
             contentPanel.anchoredPosition = new Vector2(0, 0);
 
-            buttonList = new ArrayList<Button>();
+            buttonList = new List<Button>();
         }
     }
     #endregion

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 public static class UniTable
 {
+    /// <summary>
+    /// game object tables
+    /// </summary>
+
     //this contain the instanced template classes to clone new objects from
     //use guids so that 1 class can serve as multiple templates
     public static IDictionary<Guid, Unit> unitDictionary = new Dictionary<Guid, Unit>();

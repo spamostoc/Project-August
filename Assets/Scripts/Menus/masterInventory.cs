@@ -5,7 +5,7 @@ using System;
 
 public class masterInventory {
 
-    private static IDictionary<Part.slot, List<Part>> allparts = new Dictionary<Part.slot, List<Part>>(); 
+    private static IDictionary<Part.slot, List<Part>> allParts = new Dictionary<Part.slot, List<Part>>(); 
 
     public static Part createPart(Type partType)
     {
@@ -20,15 +20,15 @@ public class masterInventory {
         }
         foreach ( Part.slot s in newPart.slots )
         {
-            if( !allparts.ContainsKey(s) )
+            if( !allParts.ContainsKey(s) )
             {
-                allparts.Add(s, new List<Part>());
+                allParts.Add(s, new List<Part>());
             }
-            if (allparts[s].Contains(newPart))
+            if (allParts[s].Contains(newPart))
             {
                 throw new Exception("Part somehow already exists");
             }
-            allparts[s].Add(newPart);
+            allParts[s].Add(newPart);
         }
         return newPart;
 
@@ -38,7 +38,7 @@ public class masterInventory {
     {
         List<Part> ret = new List<Part>();
 
-        foreach (KeyValuePair<Part.slot, List<Part>> k in allparts)
+        foreach (KeyValuePair<Part.slot, List<Part>> k in allParts)
         {
             ret.AddRange(k.Value);
         }
@@ -48,13 +48,13 @@ public class masterInventory {
 
     public static List<Part> getParts(Part.slot slot)
     {
-        return allparts[slot];
+        return allParts[slot];
     }
 
     public static Part getPart(Guid guid)
     {
         Part ret;
-        foreach (Part.slot slot in allparts.Keys)
+        foreach (Part.slot slot in allParts.Keys)
         {
             ret = getPart(guid, slot);
             if (null != ret)
@@ -67,11 +67,11 @@ public class masterInventory {
 
     public static Part getPart(Guid guid, Part.slot slot)
     {
-        return allparts[slot].Find(p => p.partId == guid);
+        return allParts[slot].Find(p => p.partId == guid);
     }
 
     public static void clearInventory()
     {
-        allparts = new Dictionary<Part.slot, List<Part>>();
+        allParts = new Dictionary<Part.slot, List<Part>>();
     }
 }
