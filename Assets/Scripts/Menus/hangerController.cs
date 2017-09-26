@@ -72,7 +72,7 @@ public class hangerController : MonoBehaviour {
     {
 
         int i = 0;
-        foreach (Mech m in pManager.pDataManager.playerMechs.Values)
+        foreach (Mech m in masterInventory.getMechs())
         {
             GameObject newButton = (GameObject)Instantiate(mechButtonPrefab);
             newButton.transform.SetParent(rootScroll.contentPanel);

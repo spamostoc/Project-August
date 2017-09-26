@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Construction {
     //this class is used to manage an ongoing construction
 
-    private List<CraftingComponent> stage1Components;
-    private List<CraftingComponent> stage2Components;
-    private List<CraftingComponent> stage3Components;
-    private List<CraftingComponent> stage4Components;
+    private List<CraftingComponent> components = new List<CraftingComponent>();
 
-    private float progress;
-    private float totalCost;
+    private float currentComponentProgress;
+    private int currentComponentIndex;
 
     public void updateComponent()
     {
@@ -19,8 +17,21 @@ public class Construction {
         //update cost
     }
 
+
     public float getProgressRatio()
     {
+        float progress = 0f;
+        for (int i = 0; i < currentComponentIndex; i++)
+        {
+            progress += components[i].getCost();
+        }
+
+        float totalCost = 0f;
+        foreach (CraftingComponent c in components)
+        {
+            totalCost += c.getCost();
+        }
+
         return progress / totalCost;
     }
 

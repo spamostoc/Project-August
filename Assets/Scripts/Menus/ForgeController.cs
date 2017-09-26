@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class ForgeController : MonoBehaviour {
 
@@ -49,6 +51,11 @@ public class ForgeController : MonoBehaviour {
         this.managementPanel.SetParent(line);
         this.managementPanel.anchoredPosition = new Vector2(0, 0);
         this.managementPanel.gameObject.SetActive(true);
+
+        if (stageIndex == 0)
+        {
+            populateOptions(this.managementPanel.Find("optionDropdown1").GetComponent<Dropdown>(), null);
+        }
     }
 
     public void setLineIndex(int index)
@@ -59,5 +66,19 @@ public class ForgeController : MonoBehaviour {
     public void setStageIndex(int index)
     {
         this.stageIndex = index;
+    }
+
+    private void populateOptions(Dropdown drop, List<CraftingComponent> options)
+    {
+        drop.ClearOptions();
+
+        List<Dropdown.OptionData> optList = new List<Dropdown.OptionData>();
+        
+        foreach (CraftingComponent c in options)
+        {
+            optList.Add(new Dropdown.OptionData(c.getName()));
+        }
+
+        drop.AddOptions(optList);
     }
 }

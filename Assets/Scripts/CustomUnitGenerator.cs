@@ -17,7 +17,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
     {
         List<Unit> ret = new List<Unit>();
 
-        if (pManager.pDataManager.playerMechs != null && pManager.pDataManager.playerMechs.Count > 0)
+        if (masterInventory.getMechs() != null && masterInventory.getMechs().Count > 0)
         {
             spawnPlayerUnits();
         }
@@ -79,17 +79,17 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
 
     private void spawnPlayerUnits()
     {
-        if (pManager.pDataManager.playerMechs.Count > PlayerSpawns.childCount)
+        if (masterInventory.getMechs().Count > PlayerSpawns.childCount)
         {
             throw new IndexOutOfRangeException("too many mechs or too few spawn points");
         }
 
         for (int index = 0; index < PlayerSpawns.childCount; index++)
         {
-            Mech mechTemplate = pManager.pDataManager.playerMechs.Values.ToList<Mech>()[index];
+            Mech mechTemplate = masterInventory.getMechs()[index];
             //need to alias all the player classes to prefabs
             //consider having the prefabs override the save files every time on max values?
-            if (pManager.pDataManager.playerMechs.Count > 0)
+            if (masterInventory.getMechs().Count > 0)
             {
                 Transform ret = (Transform)Instantiate(UniTable.prefabTable[mechTemplate.GetType()], PlayerSpawns.GetChild(index).position, Quaternion.identity, UnitsParent);
                 ret.GetComponent<Mech>().Initialize();

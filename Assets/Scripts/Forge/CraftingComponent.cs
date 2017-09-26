@@ -11,6 +11,8 @@ public class CraftingComponent {
 
     private craftingCategories category;
 
+    private int stage;
+
     //crafting table and detailed parts information kept here?
 
     public enum craftingCategories
@@ -35,4 +37,7 @@ public class CraftingComponent {
 
     public void setCategory(craftingCategories c) { category = c; }
 
+    public int getStage() { return stage; }
+
+    public void setStage(int s) { stage = s; }
 }

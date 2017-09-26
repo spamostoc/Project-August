@@ -14,6 +14,7 @@ public static class UniTable
     public static IDictionary<Guid, Unit> unitDictionary = new Dictionary<Guid, Unit>();
     public static IDictionary<Guid, Part> partDictionary = new Dictionary<Guid, Part>();
     public static IDictionary<Guid, ability> abilityDictionary = new Dictionary<Guid, ability>();
+    public static IDictionary<Guid, CraftingComponent> componentDictionary = new Dictionary<Guid, CraftingComponent>();
 
     public static IDictionary<Type, Transform> prefabTable = new Dictionary<Type, Transform>();
 

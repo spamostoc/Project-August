@@ -9,8 +9,6 @@ public class pManager : MonoBehaviour
 {
     public static pManager pDataManager;
 
-    public IDictionary<Guid, Mech> playerMechs;
-
     // Use this for initialization
     void Awake()
     {
@@ -18,7 +16,6 @@ public class pManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
             pDataManager = this;
-            playerMechs = new Dictionary<Guid, Mech>();
             startUp();
         }
         else if (pDataManager != this)
@@ -80,7 +77,6 @@ public class pManager : MonoBehaviour
         UniTable.unitDictionary.Add(new Guid("a36f8211-608f-4afc-be6f-27f5b6143019"), inter);
 
         //prefabs Table
-
         UniTable.prefabTable.Add(typeof(Mech), Resources.Load<Transform>("Mech") as Transform);
     }
 
@@ -124,12 +120,13 @@ public class pManager : MonoBehaviour
         }
 
         //weapons
-        newMech.addPartAs(masterInventory.createPart(typeof(FlakGunWeapon)), Part.slot.weapon1);
-        newMech.addPartAs(masterInventory.createPart(typeof(LasGunWeapon)), Part.slot.weapon2);
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(FlakGunWeapon)]].clone(), Part.slot.weapon1);
+        newMech.addPartAs(UniTable.partDictionary[UniTable.classGuid[typeof(LasGunWeapon)]].clone(), Part.slot.weapon2);
 
         //parts
-        Part part = masterInventory.createPart(typeof(SteelCore));
+        Part part = UniTable.partDictionary[UniTable.classGuid[typeof(SteelCore)]].clone();
         newMech.addPartAs(part, part.slots[0]);
+
         return newMech;
     }
 

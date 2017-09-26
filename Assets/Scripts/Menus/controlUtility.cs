@@ -55,14 +55,14 @@ public class controlUtility : MonoBehaviour {
         //parts
         newMech.addPartAs(masterInventory.createPart(typeof(SteelCore)), Part.slot.core);
 
-        pManager.pDataManager.playerMechs.Add(newMech.unitId, newMech);
+        masterInventory.addMech(newMech.unitId, newMech);
     }
 
     public void save()
     {
         BinaryFormatter bf = new BinaryFormatter();
 
-        if (pManager.pDataManager.playerMechs.Count <= 0)
+        if (masterInventory.getMechs().Count <= 0)
         {
             throw new IndexOutOfRangeException("no player mechs to save");
         }
@@ -72,7 +72,7 @@ public class controlUtility : MonoBehaviour {
         dl.playerMechs = new List<MechData>();
 
         //transfer active data to save structure
-        foreach (Mech pmechj in pManager.pDataManager.playerMechs.Values)
+        foreach (Mech pmechj in masterInventory.getMechs())
         {
             dl.playerMechs.Add(transcribeMech(pmechj));
         }
@@ -98,8 +98,7 @@ public class controlUtility : MonoBehaviour {
         file.Close();
 
         //clear current values
-        masterInventory.clearInventory();
-        pManager.pDataManager.playerMechs = new Dictionary<Guid, Mech>();
+        masterInventory.clearParts();
 
         //initialize game data structure
 
@@ -111,7 +110,7 @@ public class controlUtility : MonoBehaviour {
         foreach (MechData mdata in dl.playerMechs)
         {
             Mech newMech = loadMechData(mdata);
-            pManager.pDataManager.playerMechs.Add(newMech.unitId, newMech);
+            masterInventory.addMech(newMech.unitId, newMech);
             Debug.Log("adding new mech guid: " + newMech.unitId);
         }
     }
