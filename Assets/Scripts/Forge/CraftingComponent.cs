@@ -17,11 +17,12 @@ public class CraftingComponent {
 
     public enum craftingCategories
     {
-        laser, missile, gun
+        weapon, laser, missile, gun
     }
 
     public static readonly IDictionary<craftingCategories, List<craftingCategories>> categoryMappings = new Dictionary<craftingCategories, List<craftingCategories>> {
-        { craftingCategories.laser, new List<craftingCategories>(new craftingCategories[] { craftingCategories.missile }) }
+        { craftingCategories.laser, new List<craftingCategories>(new craftingCategories[] { craftingCategories.missile }) },
+        { craftingCategories.weapon, new List<craftingCategories>(new craftingCategories[] { craftingCategories.laser, craftingCategories.missile }) }
         };
 
 

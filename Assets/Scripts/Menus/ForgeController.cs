@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -52,10 +53,24 @@ public class ForgeController : MonoBehaviour {
         this.managementPanel.anchoredPosition = new Vector2(0, 0);
         this.managementPanel.gameObject.SetActive(true);
 
-        if (stageIndex == 0)
-        {
-            populateOptions(this.managementPanel.Find("optionDropdown1").GetComponent<Dropdown>(), null);
-        }
+        updateOptions();
+    }
+
+    public void updateOptions()
+    {
+        Dropdown firstDrop = this.managementPanel.Find("optionDropdown1").GetComponent<Dropdown>();
+        List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.craftingCategories.weapon);
+        populateOptions(firstDrop, firstOption);
+
+        Dropdown secondDrop = this.managementPanel.Find("optionDropdown2").GetComponent<Dropdown>();
+        CraftingComponent.craftingCategories firstCat = (CraftingComponent.craftingCategories) Enum.Parse(typeof(CraftingComponent.craftingCategories), firstDrop.options[firstDrop.value].text);
+        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.categoryMappings[firstCat]);
+        populateOptions(secondDrop, secondOption);
+
+        Dropdown thirdDrop = this.managementPanel.Find("optionDropdown3").GetComponent<Dropdown>();
+        CraftingComponent.craftingCategories secondCat = (CraftingComponent.craftingCategories) Enum.Parse(typeof(CraftingComponent.craftingCategories), secondDrop.options[secondDrop.value].text);
+        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.categoryMappings[secondCat]);
+        populateOptions(thirdDrop, thirdOption);
     }
 
     public void setLineIndex(int index)
@@ -70,15 +85,22 @@ public class ForgeController : MonoBehaviour {
 
     private void populateOptions(Dropdown drop, List<CraftingComponent> options)
     {
+        //allow populate null list to clear list
         drop.ClearOptions();
 
-        List<Dropdown.OptionData> optList = new List<Dropdown.OptionData>();
-        
-        foreach (CraftingComponent c in options)
-        {
-            optList.Add(new Dropdown.OptionData(c.getName()));
-        }
+        try {
+            List<Dropdown.OptionData> optList = new List<Dropdown.OptionData>();
 
-        drop.AddOptions(optList);
+            foreach (CraftingComponent c in options)
+            {
+                optList.Add(new Dropdown.OptionData(c.getName()));
+            }
+
+            drop.AddOptions(optList);
+        }
+        catch (NullReferenceException ex)
+        {
+            Debug.Log("no drop options, clearing list for drop: " + drop);
+        }
     }
 }

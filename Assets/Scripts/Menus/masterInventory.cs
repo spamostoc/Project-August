@@ -9,8 +9,6 @@ public static class masterInventory {
 
     private static IDictionary<Part.slot, List<Part>> allParts = new Dictionary<Part.slot, List<Part>>();
 
-    private static List<CraftingComponent> allComponents = new List<CraftingComponent>();
-
     private static IDictionary<Guid, Mech> playerMechs = new Dictionary<Guid, Mech>();
 
     public static Part createPart(Type partType)
@@ -79,30 +77,6 @@ public static class masterInventory {
     public static void clearParts()
     {
         allParts = new Dictionary<Part.slot, List<Part>>();
-    }
-
-    /// <summary>
-    /// component functions
-    /// </summary>
-
-    public static void addComponent(CraftingComponent c)
-    {
-        allComponents.Add(c);
-    }
-
-    public static void removeComponent(CraftingComponent c)
-    {
-        allComponents.Remove(c);
-    }
-
-    public static List<CraftingComponent> getComponents()
-    {
-        return allComponents;
-    }
-
-    public static List<CraftingComponent> getComponents(CraftingComponent.craftingCategories c)
-    {
-        return allComponents.FindAll(comp => comp.getCategory() == c);
     }
 
     public static void addMech(Guid guid, Mech m)

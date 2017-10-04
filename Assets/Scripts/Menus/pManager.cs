@@ -9,6 +9,42 @@ public class pManager : MonoBehaviour
 {
     public static pManager pDataManager;
 
+    private List<CraftingComponent> allComponents = new List<CraftingComponent>();
+
+    /// <summary>
+    /// component functions
+    /// </summary>
+
+    public void addCraftingComponent(CraftingComponent c)
+    {
+        allComponents.Add(c);
+    }
+
+    public void removeCraftingComponent(CraftingComponent c)
+    {
+        allComponents.Remove(c);
+    }
+
+    public List<CraftingComponent> getCraftingComponents()
+    {
+        return allComponents;
+    }
+
+    public List<CraftingComponent> getCraftingComponents(CraftingComponent.craftingCategories c)
+    {
+        return allComponents.FindAll(comp => comp.getCategory() == c);
+    }
+
+    public List<CraftingComponent> getCraftingComponents(List<CraftingComponent.craftingCategories> c)
+    {
+        List<CraftingComponent> ret = new List<CraftingComponent>();
+        foreach (CraftingComponent.craftingCategories comp in c)
+        {
+            ret.AddRange(allComponents.FindAll(allComp => allComp.getCategory() == comp));
+        }
+        return ret;
+    }
+
     // Use this for initialization
     void Awake()
     {
@@ -78,6 +114,37 @@ public class pManager : MonoBehaviour
 
         //prefabs Table
         UniTable.prefabTable.Add(typeof(Mech), Resources.Load<Transform>("Mech") as Transform);
+
+        initCrafting();
+    }
+
+    private void initCrafting()
+    {
+        //crafting components
+
+        CraftingComponent weaponComp = new CraftingComponent();
+        weaponComp.setCategory(CraftingComponent.craftingCategories.weapon);
+        weaponComp.setStage(0);
+        weaponComp.setName("weapon");
+        weaponComp.setCost(1f);
+
+        this.addCraftingComponent(weaponComp);
+
+        CraftingComponent laserComp = new CraftingComponent();
+        laserComp.setCategory(CraftingComponent.craftingCategories.laser);
+        laserComp.setStage(1);
+        laserComp.setName("laser");
+        laserComp.setCost(1f);
+
+        this.addCraftingComponent(laserComp);
+
+        CraftingComponent gunComp = new CraftingComponent();
+        gunComp.setCategory(CraftingComponent.craftingCategories.gun);
+        gunComp.setStage(2);
+        gunComp.setName("gun");
+        gunComp.setCost(1f);
+
+        this.addCraftingComponent(gunComp);
     }
 
     private Mech makeIntercessorTemplate()
