@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\CellGridStateWaitingForInput.cs" />
     <Compile Include="Assets\Scripts\CustomUnitGenerator.cs" />
     <Compile Include="Assets\Scripts\Forge\Construction.cs" />
+    <Compile Include="Assets\Scripts\Forge\CraftStage.cs" />
     <Compile Include="Assets\Scripts\Forge\CraftingComponent.cs" />
     <Compile Include="Assets\Scripts\Menus\ForgeController.cs" />
     <Compile Include="Assets\Scripts\Menus\MechButton.cs" />

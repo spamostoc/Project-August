@@ -9,20 +9,19 @@ public class CraftingComponent {
 
     private float cost;
 
-    private craftingCategories category;
-
-    private int stage;
+    private componentCategory category;
 
     //crafting table and detailed parts information kept here?
 
-    public enum craftingCategories
+    public enum componentCategory
     {
-        weapon, laser, missile, gun
+        none, barrel, stock, casing, box
     }
 
-    public static readonly IDictionary<craftingCategories, List<craftingCategories>> categoryMappings = new Dictionary<craftingCategories, List<craftingCategories>> {
-        { craftingCategories.laser, new List<craftingCategories>(new craftingCategories[] { craftingCategories.missile }) },
-        { craftingCategories.weapon, new List<craftingCategories>(new craftingCategories[] { craftingCategories.laser, craftingCategories.missile }) }
+    //placeholder
+    public static readonly IDictionary<componentCategory, List<componentCategory>> mappings = new Dictionary<componentCategory, List<componentCategory>> {
+        { componentCategory.box, new List<componentCategory>(new componentCategory[] { componentCategory.casing }) },
+        { componentCategory.barrel, new List<componentCategory>(new componentCategory[] { componentCategory.stock, componentCategory.box }) }
         };
 
 
@@ -34,11 +33,7 @@ public class CraftingComponent {
 
     public void setCost(float c) { cost = c; }
 
-    public craftingCategories getCategory() { return category; }
+    public componentCategory getCategory() { return category; }
 
-    public void setCategory(craftingCategories c) { category = c; }
-
-    public int getStage() { return stage; }
-
-    public void setStage(int s) { stage = s; }
+    public void setCategory(componentCategory c) { category = c; }
 }

@@ -30,15 +30,15 @@ public class pManager : MonoBehaviour
         return allComponents;
     }
 
-    public List<CraftingComponent> getCraftingComponents(CraftingComponent.craftingCategories c)
+    public List<CraftingComponent> getCraftingComponents(CraftingComponent.componentCategory c)
     {
         return allComponents.FindAll(comp => comp.getCategory() == c);
     }
 
-    public List<CraftingComponent> getCraftingComponents(List<CraftingComponent.craftingCategories> c)
+    public List<CraftingComponent> getCraftingComponents(List<CraftingComponent.componentCategory> c)
     {
         List<CraftingComponent> ret = new List<CraftingComponent>();
-        foreach (CraftingComponent.craftingCategories comp in c)
+        foreach (CraftingComponent.componentCategory comp in c)
         {
             ret.AddRange(allComponents.FindAll(allComp => allComp.getCategory() == comp));
         }
@@ -122,29 +122,33 @@ public class pManager : MonoBehaviour
     {
         //crafting components
 
-        CraftingComponent weaponComp = new CraftingComponent();
-        weaponComp.setCategory(CraftingComponent.craftingCategories.weapon);
-        weaponComp.setStage(0);
-        weaponComp.setName("weapon");
-        weaponComp.setCost(1f);
+        CraftingComponent barrelComp = new CraftingComponent();
+        barrelComp.setCategory(CraftingComponent.componentCategory.barrel);
+        barrelComp.setName("barrel");
+        barrelComp.setCost(1f);
 
-        this.addCraftingComponent(weaponComp);
+        this.addCraftingComponent(barrelComp);
 
-        CraftingComponent laserComp = new CraftingComponent();
-        laserComp.setCategory(CraftingComponent.craftingCategories.laser);
-        laserComp.setStage(1);
-        laserComp.setName("laser");
-        laserComp.setCost(1f);
+        CraftingComponent stockComp = new CraftingComponent();
+        stockComp.setCategory(CraftingComponent.componentCategory.stock);
+        stockComp.setName("stock");
+        stockComp.setCost(1f);
 
-        this.addCraftingComponent(laserComp);
+        this.addCraftingComponent(stockComp);
 
-        CraftingComponent gunComp = new CraftingComponent();
-        gunComp.setCategory(CraftingComponent.craftingCategories.gun);
-        gunComp.setStage(2);
-        gunComp.setName("gun");
-        gunComp.setCost(1f);
+        CraftingComponent casingComp = new CraftingComponent();
+        casingComp.setCategory(CraftingComponent.componentCategory.casing);
+        casingComp.setName("casing");
+        casingComp.setCost(1f);
 
-        this.addCraftingComponent(gunComp);
+        this.addCraftingComponent(casingComp);
+
+        CraftingComponent boxComp = new CraftingComponent();
+        boxComp.setCategory(CraftingComponent.componentCategory.box);
+        boxComp.setName("box");
+        boxComp.setCost(1f);
+
+        this.addCraftingComponent(boxComp);
     }
 
     private Mech makeIntercessorTemplate()
