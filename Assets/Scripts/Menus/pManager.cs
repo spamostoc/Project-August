@@ -122,33 +122,36 @@ public class pManager : MonoBehaviour
     {
         //crafting components
 
-        CraftingComponent barrelComp = new CraftingComponent();
-        barrelComp.setCategory(CraftingComponent.componentCategory.barrel);
-        barrelComp.setName("barrel");
-        barrelComp.setCost(1f);
+        CraftingComponent comp1 = new CraftingComponent();
+        comp1.setCategory(CraftingComponent.componentCategory.root);
+        comp1.setName("mech");
+        this.addCraftingComponent(comp1);
 
-        this.addCraftingComponent(barrelComp);
+        CraftingComponent comp2 = new CraftingComponent();
+        comp2.setCategory(CraftingComponent.componentCategory.root);
+        comp2.setName("weapon");
+        this.addCraftingComponent(comp2);
 
-        CraftingComponent stockComp = new CraftingComponent();
-        stockComp.setCategory(CraftingComponent.componentCategory.stock);
-        stockComp.setName("stock");
-        stockComp.setCost(1f);
+        CraftingComponent comp3 = new CraftingComponent();
+        comp3.setCategory(CraftingComponent.componentCategory.root);
+        comp3.setName("tool");
+        this.addCraftingComponent(comp3);
 
-        this.addCraftingComponent(stockComp);
+        CraftingComponent comp4 = new CraftingComponent();
+        comp4.setCategory(CraftingComponent.componentCategory.core);
+        comp4.setName("nuclear");
+        this.addCraftingComponent(comp4);
 
-        CraftingComponent casingComp = new CraftingComponent();
-        casingComp.setCategory(CraftingComponent.componentCategory.casing);
-        casingComp.setName("casing");
-        casingComp.setCost(1f);
+        CraftingComponent comp5 = new CraftingComponent();
+        comp5.setCategory(CraftingComponent.componentCategory.core);
+        comp5.setName("electic");
+        this.addCraftingComponent(comp5);
 
-        this.addCraftingComponent(casingComp);
+        CraftingComponent comp6 = new CraftingComponent();
+        comp6.setCategory(CraftingComponent.componentCategory.core);
+        comp6.setName("ice");
+        this.addCraftingComponent(comp6);
 
-        CraftingComponent boxComp = new CraftingComponent();
-        boxComp.setCategory(CraftingComponent.componentCategory.box);
-        boxComp.setName("box");
-        boxComp.setCost(1f);
-
-        this.addCraftingComponent(boxComp);
     }
 
     private Mech makeIntercessorTemplate()

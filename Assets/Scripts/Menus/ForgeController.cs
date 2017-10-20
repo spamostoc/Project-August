@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class ForgeController : MonoBehaviour {
 
@@ -11,6 +12,15 @@ public class ForgeController : MonoBehaviour {
     private const string ROOTLINE3 = "rootLine3";
     private const string ROOTLINE4 = "rootLine4";
     private const string ROOTLINE5 = "rootLine5";
+
+    public string dynamicTag = "dynamicUI";
+    public const int buttonHeight = 30;
+
+    public GameObject optionButtonPrefab;
+
+    public RectTransform managementOptions1;
+    public RectTransform managementOptions2;
+    public RectTransform managementOptions3;
 
     public RectTransform managementPanel;
     private int lineIndex;
@@ -70,21 +80,40 @@ public class ForgeController : MonoBehaviour {
 
     public void updateOptions()
     {
-        Debug.Log("index is " + stageIndex);
-        Dropdown firstDrop = this.managementPanel.Find("optionDropdown1").GetComponent<Dropdown>();
-        List<CraftingComponent.componentCategory> optionCategories = CraftStage.componentMappings[activeConstruct.stages[stageIndex].category];
+        List<CraftingComponent.componentCategory> optionCategories = new List<CraftingComponent.componentCategory>();
+        if (stageIndex == 0)
+        {
+            optionCategories.Add(CraftingComponent.componentCategory.root);
+        }
+        else
+        {
+            foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].components)
+            {
+                List<CraftingComponent.componentCategory> categories = CraftingComponent.stageMappings[c.getCategory()];
+                if (optionCategories.Count == 0)
+                {
+                    optionCategories.AddRange(categories);
+                }
+                else if (null == categories || categories.Count == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    optionCategories = (List<CraftingComponent.componentCategory>) optionCategories.Intersect(categories);
+                }
+            }
+        }
         List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(optionCategories);
-        populateOptions(firstDrop, firstOption);
+        populateOptions(managementOptions1, 0, firstOption);
 
-        Dropdown secondDrop = this.managementPanel.Find("optionDropdown2").GetComponent<Dropdown>();
-        CraftingComponent.componentCategory firstCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), firstDrop.options[firstDrop.value].text);
-        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.mappings[firstCat]);
-        populateOptions(secondDrop, secondOption);
+        /*CraftingComponent.componentCategory firstCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), firstDrop.options[firstDrop.value].text);
+        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.componentMappings[firstCat]);
+        populateOptions(managementOptions2, 1, secondOption);
 
-        Dropdown thirdDrop = this.managementPanel.Find("optionDropdown3").GetComponent<Dropdown>();
-        CraftingComponent.componentCategory secondCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), secondDrop.options[secondDrop.value].text);
-        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.mappings[secondCat]);
-        populateOptions(thirdDrop, thirdOption);
+       /// CraftingComponent.componentCategory secondCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), secondDrop.options[secondDrop.value].text);
+        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.componentMappings[secondCat]);
+        populateOptions(managementOptions3, 2, thirdOption);*/
     }
 
     public void setLineIndex(int index)
@@ -97,24 +126,52 @@ public class ForgeController : MonoBehaviour {
         this.stageIndex = index;
     }
 
-    private void populateOptions(Dropdown drop, List<CraftingComponent> options)
+    private void populateOptions(RectTransform optionTransform, int optionIndex, List<CraftingComponent> options)
     {
         //allow populate null list to clear list
-        drop.ClearOptions();
+        cleanPanel(optionTransform);
 
-        try {
-            List<Dropdown.OptionData> optList = new List<Dropdown.OptionData>();
-
-            foreach (CraftingComponent c in options)
-            {
-                optList.Add(new Dropdown.OptionData(c.getName()));
-            }
-
-            drop.AddOptions(optList);
-        }
-        catch (NullReferenceException ex)
+        if (null == options || options.Count == 0)
         {
-            Debug.Log("no drop options, clearing list for drop: " + drop);
+            Debug.Log("no drop options, clearing list for drop: " + optionTransform);
+            return;
+        }
+
+        int i = 0;
+        foreach (CraftingComponent c in options)
+        {
+            GameObject newButton = (GameObject)Instantiate(optionButtonPrefab);
+            newButton.transform.SetParent(optionTransform);
+            newButton.transform.localScale = new Vector3(1, 1, 1);
+
+            RectTransform buttonTransform = newButton.GetComponent<RectTransform>();
+            buttonTransform.anchorMin = new Vector2(.03f, 1f);
+            buttonTransform.anchorMax = new Vector2(0.97f, 1f);
+            buttonTransform.anchoredPosition = new Vector2(0, (-0.55f - i) * buttonHeight);
+            buttonTransform.sizeDelta = new Vector2(optionTransform.rect.width * 0.90f, buttonHeight);
+            buttonTransform.tag = dynamicTag;
+
+            Button buttonComponent = newButton.GetComponent<Button>();
+            buttonComponent.onClick.AddListener(() => selectOption(optionIndex, c));
+
+            buttonTransform.Find("Option Name").GetComponent<Text>().text = c.getName();
+            i++;
+        }
+    }
+
+    public void selectOption(int componentIndex, CraftingComponent component)
+    {
+        activeConstruct.stages[stageIndex].components[componentIndex] = component;
+    }
+
+    private void cleanPanel(Transform activeP)
+    {
+        if (activeP == null)
+            return;
+        foreach (RectTransform r in activeP.GetComponentsInChildren<RectTransform>())
+        {
+            if (r.tag.Equals(dynamicTag))
+                GameObject.DestroyObject(r.gameObject);
         }
     }
 }
