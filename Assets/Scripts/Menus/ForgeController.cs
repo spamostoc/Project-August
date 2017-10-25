@@ -80,6 +80,8 @@ public class ForgeController : MonoBehaviour {
 
     public void updateOptions()
     {
+        cleanPanels();
+
         List<CraftingComponent.componentCategory> optionCategories = new List<CraftingComponent.componentCategory>();
         if (stageIndex == 0)
         {
@@ -89,14 +91,14 @@ public class ForgeController : MonoBehaviour {
         {
             foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].components)
             {
-                List<CraftingComponent.componentCategory> categories = CraftingComponent.stageMappings[c.getCategory()];
-                if (optionCategories.Count == 0)
-                {
-                    optionCategories.AddRange(categories);
-                }
-                else if (null == categories || categories.Count == 0)
+                List<CraftingComponent.componentCategory> categories = c.getNextStage();
+                if (null == categories || categories.Count == 0)
                 {
                     continue;
+                }
+                else if (optionCategories.Count == 0)
+                {
+                    optionCategories.AddRange(categories);
                 }
                 else
                 {
@@ -107,13 +109,12 @@ public class ForgeController : MonoBehaviour {
         List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(optionCategories);
         populateOptions(managementOptions1, 0, firstOption);
 
-        /*CraftingComponent.componentCategory firstCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), firstDrop.options[firstDrop.value].text);
-        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.componentMappings[firstCat]);
+        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[0].getNextCategory());
         populateOptions(managementOptions2, 1, secondOption);
 
-       /// CraftingComponent.componentCategory secondCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), secondDrop.options[secondDrop.value].text);
-        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(CraftingComponent.componentMappings[secondCat]);
-        populateOptions(managementOptions3, 2, thirdOption);*/
+        /// CraftingComponent.componentCategory secondCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), secondDrop.options[secondDrop.value].text);
+        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[1].getNextCategory());
+        populateOptions(managementOptions3, 2, thirdOption);
     }
 
     public void setLineIndex(int index)
@@ -128,9 +129,6 @@ public class ForgeController : MonoBehaviour {
 
     private void populateOptions(RectTransform optionTransform, int optionIndex, List<CraftingComponent> options)
     {
-        //allow populate null list to clear list
-        cleanPanel(optionTransform);
-
         if (null == options || options.Count == 0)
         {
             Debug.Log("no drop options, clearing list for drop: " + optionTransform);
@@ -152,7 +150,10 @@ public class ForgeController : MonoBehaviour {
             buttonTransform.tag = dynamicTag;
 
             Button buttonComponent = newButton.GetComponent<Button>();
-            buttonComponent.onClick.AddListener(() => selectOption(optionIndex, c));
+
+            int newIndexArg = optionIndex;
+            CraftingComponent newCompArg = c;
+            buttonComponent.onClick.AddListener(() => selectOption(newIndexArg, newCompArg));
 
             buttonTransform.Find("Option Name").GetComponent<Text>().text = c.getName();
             i++;
@@ -161,14 +162,23 @@ public class ForgeController : MonoBehaviour {
 
     public void selectOption(int componentIndex, CraftingComponent component)
     {
-        activeConstruct.stages[stageIndex].components[componentIndex] = component;
+        activeConstruct.setComponent(stageIndex, componentIndex, component);
+        this.updateOptions();
     }
 
-    private void cleanPanel(Transform activeP)
+    private void cleanPanels()
     {
-        if (activeP == null)
-            return;
-        foreach (RectTransform r in activeP.GetComponentsInChildren<RectTransform>())
+        foreach (RectTransform r in managementOptions1.GetComponentsInChildren<RectTransform>())
+        {
+            if (r.tag.Equals(dynamicTag))
+                GameObject.DestroyObject(r.gameObject);
+        }
+        foreach (RectTransform r in managementOptions2.GetComponentsInChildren<RectTransform>())
+        {
+            if (r.tag.Equals(dynamicTag))
+                GameObject.DestroyObject(r.gameObject);
+        }
+        foreach (RectTransform r in managementOptions3.GetComponentsInChildren<RectTransform>())
         {
             if (r.tag.Equals(dynamicTag))
                 GameObject.DestroyObject(r.gameObject);

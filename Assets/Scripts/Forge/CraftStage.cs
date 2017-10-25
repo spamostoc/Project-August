@@ -12,6 +12,20 @@ public class CraftStage {
     public CraftStage(int s)
     {
         stage = s;
-        components = new List<CraftingComponent>() { new CraftingComponent(), new CraftingComponent(), new CraftingComponent() };
+        components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+    }
+
+    public void setComponent(int componentIndex, CraftingComponent component)
+    {
+        components[componentIndex] = component;
+        for (int i = componentIndex + 1; i < components.Count; i++)
+        {
+            components[i] = CraftingComponent.noneComponent;
+        }
+    }
+
+    public void clearComponents()
+    {
+        components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent, CraftingComponent.noneComponent };
     }
 }

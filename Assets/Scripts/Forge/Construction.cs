@@ -23,4 +23,13 @@ public class Construction {
         lineName = name;
     }
 
+    public void setComponent(int stageIndex, int componentIndex, CraftingComponent component)
+    {
+        stages[stageIndex].setComponent(componentIndex, component);
+        for (int i = stageIndex + 1; i < stages.Count; i++)
+        {
+            stages[i].clearComponents();
+        }
+    }
+
 }

@@ -37,6 +37,10 @@ public class pManager : MonoBehaviour
 
     public List<CraftingComponent> getCraftingComponents(List<CraftingComponent.componentCategory> c)
     {
+        if (null ==c || c.Count == 0)
+        {
+            return null;
+        }
         List<CraftingComponent> ret = new List<CraftingComponent>();
         foreach (CraftingComponent.componentCategory comp in c)
         {
@@ -122,35 +126,37 @@ public class pManager : MonoBehaviour
     {
         //crafting components
 
-        CraftingComponent comp1 = new CraftingComponent();
-        comp1.setCategory(CraftingComponent.componentCategory.root);
-        comp1.setName("mech");
-        this.addCraftingComponent(comp1);
+        this.addCraftingComponent(new CraftingComponent("mech", CraftingComponent.componentCategory.root,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.powerplant })));
+        this.addCraftingComponent(new CraftingComponent("weapon", CraftingComponent.componentCategory.root,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.core })));
+        this.addCraftingComponent(new CraftingComponent("tool", CraftingComponent.componentCategory.root,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.core })));
 
-        CraftingComponent comp2 = new CraftingComponent();
-        comp2.setCategory(CraftingComponent.componentCategory.root);
-        comp2.setName("weapon");
-        this.addCraftingComponent(comp2);
+        this.addCraftingComponent(new CraftingComponent("nuclear", CraftingComponent.componentCategory.powerplant,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.chassis })));
 
-        CraftingComponent comp3 = new CraftingComponent();
-        comp3.setCategory(CraftingComponent.componentCategory.root);
-        comp3.setName("tool");
-        this.addCraftingComponent(comp3);
+        this.addCraftingComponent(new CraftingComponent("electric", CraftingComponent.componentCategory.core,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.coreSupplement }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.gun, CraftingComponent.componentCategory.laser, CraftingComponent.componentCategory.missile})));
+        this.addCraftingComponent(new CraftingComponent("ice", CraftingComponent.componentCategory.core,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.coreSupplement }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.gun, CraftingComponent.componentCategory.laser, CraftingComponent.componentCategory.missile })));
 
-        CraftingComponent comp4 = new CraftingComponent();
-        comp4.setCategory(CraftingComponent.componentCategory.core);
-        comp4.setName("nuclear");
-        this.addCraftingComponent(comp4);
+        this.addCraftingComponent(new CraftingComponent("concentrator", CraftingComponent.componentCategory.coreSupplement,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>()));
 
-        CraftingComponent comp5 = new CraftingComponent();
-        comp5.setCategory(CraftingComponent.componentCategory.core);
-        comp5.setName("electic");
-        this.addCraftingComponent(comp5);
-
-        CraftingComponent comp6 = new CraftingComponent();
-        comp6.setCategory(CraftingComponent.componentCategory.core);
-        comp6.setName("ice");
-        this.addCraftingComponent(comp6);
+        this.addCraftingComponent(new CraftingComponent("gun", CraftingComponent.componentCategory.gun,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.mod, CraftingComponent.componentCategory.pack })));
+        this.addCraftingComponent(new CraftingComponent("laser", CraftingComponent.componentCategory.laser,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.mod, CraftingComponent.componentCategory.pack })));
 
     }
 
