@@ -152,12 +152,26 @@ public class pManager : MonoBehaviour
             new List<CraftingComponent.componentCategory>()));
 
         this.addCraftingComponent(new CraftingComponent("gun", CraftingComponent.componentCategory.gun,
-            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.gunAction }),
             new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.mod, CraftingComponent.componentCategory.pack })));
         this.addCraftingComponent(new CraftingComponent("laser", CraftingComponent.componentCategory.laser,
             new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
             new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.mod, CraftingComponent.componentCategory.pack })));
 
+        this.addCraftingComponent(new CraftingComponent("rotary action", CraftingComponent.componentCategory.gunAction,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.gunSubAction }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none })));
+
+        this.addCraftingComponent(new CraftingComponent("long barrel", CraftingComponent.componentCategory.gunSubAction,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none })));
+
+        this.addCraftingComponent(new CraftingComponent("mod", CraftingComponent.componentCategory.mod,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none })));
+        this.addCraftingComponent(new CraftingComponent("pack", CraftingComponent.componentCategory.pack,
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none }),
+            new List<CraftingComponent.componentCategory>(new CraftingComponent.componentCategory[] { CraftingComponent.componentCategory.none })));
     }
 
     private Mech makeIntercessorTemplate()

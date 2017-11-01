@@ -12,7 +12,9 @@ public class CraftStage {
     public CraftStage(int s)
     {
         stage = s;
-        components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+
+        clearComponents();
+
     }
 
     public void setComponent(int componentIndex, CraftingComponent component)
@@ -26,6 +28,53 @@ public class CraftStage {
 
     public void clearComponents()
     {
-        components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+        switch (stage)
+        {
+            case 0:
+                components = new List<CraftingComponent>() { CraftingComponent.noneComponent };
+                break;
+            case 1:
+                components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+                break;
+            case 2:
+                components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+                break;
+            case 3:
+                components = new List<CraftingComponent>() { CraftingComponent.noneComponent, CraftingComponent.noneComponent };
+                break;
+            default:
+                components = new List<CraftingComponent>() { };
+                break;
+        }
+    }
+
+    public string getDescriptionText()
+    {
+        string ret = "";
+        foreach (CraftingComponent c in components)
+        {
+            ret += c.getName() + " ";
+        }
+        return ret.Trim();
+    }
+
+    public bool nextStageAvailable()
+    {
+        if (components.Count == 0)
+        {
+            Debug.Log("error condition");
+            return false;
+        }
+
+        foreach (CraftingComponent c in components)
+        {
+            Debug.Log("stage number " + stage + " component name " + c.getName());
+            if (c.getCategory() == CraftingComponent.componentCategory.none)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

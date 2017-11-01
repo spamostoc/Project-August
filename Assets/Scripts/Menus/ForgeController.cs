@@ -22,6 +22,16 @@ public class ForgeController : MonoBehaviour {
     public RectTransform managementOptions2;
     public RectTransform managementOptions3;
 
+    public Button managementStageButton1;
+    public Button managementStageButton2;
+    public Button managementStageButton3;
+    public Button managementStageButton4;
+
+    public Text managementStageText1;
+    public Text managementStageText2;
+    public Text managementStageText3;
+    public Text managementStageText4;
+
     public RectTransform managementPanel;
     private int lineIndex;
     private int stageIndex;
@@ -32,8 +42,10 @@ public class ForgeController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+        managementStageButton2.interactable = false;
+        managementStageButton3.interactable = false;
+        managementStageButton4.interactable = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -92,7 +104,7 @@ public class ForgeController : MonoBehaviour {
             foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].components)
             {
                 List<CraftingComponent.componentCategory> categories = c.getNextStage();
-                if (null == categories || categories.Count == 0)
+                if (null == categories || categories.Count == 0 || categories[0] == CraftingComponent.componentCategory.none)
                 {
                     continue;
                 }
@@ -102,19 +114,34 @@ public class ForgeController : MonoBehaviour {
                 }
                 else
                 {
-                    optionCategories = (List<CraftingComponent.componentCategory>) optionCategories.Intersect(categories);
+                    optionCategories = optionCategories.Intersect(categories).ToList<CraftingComponent.componentCategory>();
                 }
             }
         }
         List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(optionCategories);
         populateOptions(managementOptions1, 0, firstOption);
 
-        List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[0].getNextCategory());
-        populateOptions(managementOptions2, 1, secondOption);
+        if (activeConstruct.stages[stageIndex].components.Count > 1)
+        {
+            List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[0].getNextCategory());
+            populateOptions(managementOptions2, 1, secondOption);
+        }
+        
+        if(activeConstruct.stages[stageIndex].components.Count > 2)
+        {
+            List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[1].getNextCategory());
+            populateOptions(managementOptions3, 2, thirdOption);
+        }
 
-        /// CraftingComponent.componentCategory secondCat = (CraftingComponent.componentCategory) Enum.Parse(typeof(CraftingComponent.componentCategory), secondDrop.options[secondDrop.value].text);
-        List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[1].getNextCategory());
-        populateOptions(managementOptions3, 2, thirdOption);
+        managementStageButton2.interactable = activeConstruct.stages[0].nextStageAvailable();
+        managementStageButton3.interactable = activeConstruct.stages[1].nextStageAvailable();
+        managementStageButton4.interactable = activeConstruct.stages[2].nextStageAvailable();
+
+        //populate button text
+        managementStageText1.text = activeConstruct.stages[0].getDescriptionText();
+        managementStageText2.text = activeConstruct.stages[1].getDescriptionText();
+        managementStageText3.text = activeConstruct.stages[2].getDescriptionText();
+        managementStageText4.text = activeConstruct.stages[3].getDescriptionText();
     }
 
     public void setLineIndex(int index)
@@ -127,18 +154,18 @@ public class ForgeController : MonoBehaviour {
         this.stageIndex = index;
     }
 
-    private void populateOptions(RectTransform optionTransform, int optionIndex, List<CraftingComponent> options)
+    private bool populateOptions(RectTransform optionTransform, int optionIndex, List<CraftingComponent> options)
     {
         if (null == options || options.Count == 0)
         {
             Debug.Log("no drop options, clearing list for drop: " + optionTransform);
-            return;
+            return false;
         }
 
         int i = 0;
         foreach (CraftingComponent c in options)
         {
-            GameObject newButton = (GameObject)Instantiate(optionButtonPrefab);
+            GameObject newButton = Instantiate(optionButtonPrefab);
             newButton.transform.SetParent(optionTransform);
             newButton.transform.localScale = new Vector3(1, 1, 1);
 
@@ -158,6 +185,7 @@ public class ForgeController : MonoBehaviour {
             buttonTransform.Find("Option Name").GetComponent<Text>().text = c.getName();
             i++;
         }
+        return true;
     }
 
     public void selectOption(int componentIndex, CraftingComponent component)
