@@ -3,23 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+[Serializable]
 public class CraftingComponent {
-
-    public static CraftingComponent noneComponent = new CraftingComponent();
-
     //component data
-    public Guid componentGuid;
 
+    [SerializeField]
     private string name;
 
+    [SerializeField]
+    public String componentGuid = Guid.NewGuid().ToString();
+
+    [SerializeField]
     private float cost;
 
+    [SerializeField]
     private componentCategory category;
 
+    [SerializeField]
     private List<componentCategory> nextCategory;
 
+    [SerializeField]
     private List<componentCategory> nextStage;
 
+    public static CraftingComponent noneComponent = new CraftingComponent();
     //crafting table and detailed parts information kept here?
 
     public enum componentCategory
@@ -68,4 +74,9 @@ public class CraftingComponent {
     public List<componentCategory> getNextCategory() { return nextCategory; }
 
     public void setNextCategory(List<componentCategory> c) { nextCategory = c; }
+
+    public bool isEmpty()
+    {
+        return (this.category == componentCategory.none);
+    }
 }

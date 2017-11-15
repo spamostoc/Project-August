@@ -32,11 +32,14 @@ public class ForgeController : MonoBehaviour {
     public Text managementStageText3;
     public Text managementStageText4;
 
+    public RectTransform rootline1;
+    public RectTransform rootline2;
+    public RectTransform rootline3;
+    public RectTransform rootline4;
+
     public RectTransform managementPanel;
     private int lineIndex;
     private int stageIndex;
-
-    private List<Construction> constructions = new List<Construction>();
 
     public Construction activeConstruct { get; private set; }
 
@@ -45,6 +48,12 @@ public class ForgeController : MonoBehaviour {
         managementStageButton2.interactable = false;
         managementStageButton3.interactable = false;
         managementStageButton4.interactable = false;
+
+        //root 1
+        initLine(rootline1);
+        initLine(rootline2);
+        initLine(rootline3);
+        initLine(rootline4);
     }
 	
 	// Update is called once per frame
@@ -76,7 +85,15 @@ public class ForgeController : MonoBehaviour {
         line.Find("lineButton").gameObject.SetActive(false);
         line.Find("forgeLine").gameObject.SetActive(true);
 
-        constructions.Add(new Construction(line.name));
+        pManager.pDataManager.pConstructions.Add(new Construction(line.name));
+    }
+
+    public void deleteLine(RectTransform line)
+    {
+        line.Find("lineButton").gameObject.SetActive(true);
+        line.Find("forgeLine").gameObject.SetActive(false);
+
+        pManager.pDataManager.pConstructions.Remove(pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name));
     }
 
     public void selectLine(RectTransform line)
@@ -86,7 +103,7 @@ public class ForgeController : MonoBehaviour {
         this.managementPanel.anchoredPosition = new Vector2(0, 0);
         this.managementPanel.gameObject.SetActive(true);
 
-        activeConstruct = constructions.Find(construct => construct.lineName == line.name);
+        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name);
         updateOptions();
     }
 
@@ -101,7 +118,7 @@ public class ForgeController : MonoBehaviour {
         }
         else
         {
-            foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].components)
+            foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].getComponents())
             {
                 List<CraftingComponent.componentCategory> categories = c.getNextStage();
                 if (null == categories || categories.Count == 0 || categories[0] == CraftingComponent.componentCategory.none)
@@ -121,15 +138,15 @@ public class ForgeController : MonoBehaviour {
         List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(optionCategories);
         populateOptions(managementOptions1, 0, firstOption);
 
-        if (activeConstruct.stages[stageIndex].components.Count > 1)
+        if (activeConstruct.stages[stageIndex].getComponents().Count > 1)
         {
-            List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[0].getNextCategory());
+            List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].getComponents(0).getNextCategory());
             populateOptions(managementOptions2, 1, secondOption);
         }
         
-        if(activeConstruct.stages[stageIndex].components.Count > 2)
+        if(activeConstruct.stages[stageIndex].getComponents().Count > 2)
         {
-            List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].components[1].getNextCategory());
+            List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].getComponents(1).getNextCategory());
             populateOptions(managementOptions3, 2, thirdOption);
         }
 
@@ -192,6 +209,17 @@ public class ForgeController : MonoBehaviour {
     {
         activeConstruct.setComponent(stageIndex, componentIndex, component);
         this.updateOptions();
+    }
+
+    public void initLine(RectTransform line)
+    {
+        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name);
+        if (null != activeConstruct && !activeConstruct.isEmpty())
+        {
+            line.Find("lineButton").gameObject.SetActive(false);
+            line.Find("forgeLine").gameObject.SetActive(true);
+            updateOptions();
+        }
     }
 
     private void cleanPanels()

@@ -9,6 +9,8 @@ public class pManager : MonoBehaviour
 {
     public static pManager pDataManager;
 
+    public List<Construction> pConstructions = new List<Construction>();
+
     private List<CraftingComponent> allComponents = new List<CraftingComponent>();
 
     /// <summary>

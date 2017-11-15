@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class CraftStage {
 
-    public List<CraftingComponent> components { get; private set; }
-    public int stage { get; private set; }
+    [SerializeField]
+    private List<CraftingComponent> components;
+
+    [SerializeField]
+    private int stage;
 
     public float progress;
 
@@ -25,6 +30,17 @@ public class CraftStage {
             components[i] = CraftingComponent.noneComponent;
         }
     }
+
+    public List<CraftingComponent> getComponents()
+    {
+        return components;
+    }
+
+    public CraftingComponent getComponents(int i)
+    {
+        return components[i];
+    }
+
 
     public void clearComponents()
     {
@@ -75,6 +91,23 @@ public class CraftStage {
             }
         }
 
+        return true;
+    }
+
+    public int getStage()
+    {
+        return stage;
+    }
+
+    public bool isEmpty()
+    {
+        foreach(CraftingComponent c in components)
+        {
+            if(!c.isEmpty())
+            {
+                return false;
+            }
+        }
         return true;
     }
 }

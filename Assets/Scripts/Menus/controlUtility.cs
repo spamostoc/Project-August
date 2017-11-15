@@ -86,6 +86,11 @@ public class controlUtility : MonoBehaviour {
 
         bf.Serialize(file, dl);
         file.Close();
+
+        String constructions = JsonUtility.ToJson(pManager.pDataManager.pConstructions[0]);
+        Debug.Log(constructions);
+        File.WriteAllText(Application.persistentDataPath + "/playerData.json", constructions);
+
         Debug.Log(Application.persistentDataPath);
     }
 
@@ -113,6 +118,12 @@ public class controlUtility : MonoBehaviour {
             masterInventory.addMech(newMech.unitId, newMech);
             Debug.Log("adding new mech guid: " + newMech.unitId);
         }
+
+        String constructions = File.ReadAllText(Application.persistentDataPath + "/playerData.json");
+        Construction newConst = JsonUtility.FromJson<Construction>(constructions);
+        Debug.Log(constructions);
+        pManager.pDataManager.pConstructions.Add(newConst);
+
     }
 
     private MechData transcribeMech(Mech mech)

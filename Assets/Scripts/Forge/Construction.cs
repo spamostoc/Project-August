@@ -2,21 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
+[Serializable]
 public class Construction {
     //this class is used to manage an ongoing construction
+
+    [SerializeField]
+    private string lineName;
+
+    public List<CraftStage> stages = new List<CraftStage>()
+    {
+        new CraftStage(0), new CraftStage(1), new CraftStage(2), new CraftStage(3)
+    };
 
     public Construction(string name)
     {
         this.lineName = name;
     }
 
-    public List<CraftStage> stages = new List<CraftStage>()
+    public string getLineName()
     {
-        new CraftStage(0), new CraftStage(1), new CraftStage(2), new CraftStage(3)
-    };
-    
-    public string lineName { get; private set; }
+        return lineName;
+    }
 
     public void setIndex(string name)
     {
@@ -32,4 +40,15 @@ public class Construction {
         }
     }
 
+    public bool isEmpty()
+    {
+        foreach (CraftStage s in stages)
+        {
+            if (!s.isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
