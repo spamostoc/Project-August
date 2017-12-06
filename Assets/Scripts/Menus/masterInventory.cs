@@ -93,4 +93,9 @@ public static class masterInventory {
     {
         return playerMechs[guid];
     }
+
+    public static void clearMechs()
+    {
+        playerMechs = new Dictionary<Guid, Mech>();
+    }
 }

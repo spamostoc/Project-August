@@ -7,6 +7,9 @@ using System;
 
 public class controlUtility : MonoBehaviour {
 
+    private string GAME_DATA_LIBRARY = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/GitHub/August/Assets/Resources" + "/gameData.dat";
+    private string PLAYER_DATA_LIBRARY = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/GitHub/August/Assets/Resources" + "/playerData.dat";
+
     public void makeTestMech()
     {
         Mech newMech = pManager.pDataManager.transform.gameObject.AddComponent<Mech>();
@@ -58,99 +61,100 @@ public class controlUtility : MonoBehaviour {
         masterInventory.addMech(newMech.unitId, newMech);
     }
 
-    public void save()
+    public void savePlayerData()
     {
-        BinaryFormatter bf = new BinaryFormatter();
+        playerDataLibrary pdl = new playerDataLibrary();
 
-        if (masterInventory.getMechs().Count <= 0)
-        {
-            throw new IndexOutOfRangeException("no player mechs to save");
-        }
-        //initialize save data structure
-        FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Create);
-        dataLibrary dl = new dataLibrary();
-        dl.playerMechs = new List<MechData>();
-
-        //transfer active data to save structure
         foreach (Mech pmechj in masterInventory.getMechs())
         {
-            dl.playerMechs.Add(transcribeMech(pmechj));
+            pdl.playerMechs.Add(transcribeMech(pmechj));
         }
-
-        dl.masterInventory = new List<PartData>();
 
         foreach (Part part in masterInventory.getParts())
         {
-            dl.masterInventory.Add(transcribePart(part));
+            pdl.masterInventory.Add(transcribePart(part));
         }
 
-        bf.Serialize(file, dl);
-        file.Close();
+        pdl.playerConstructions = pManager.pDataManager.pConstructions;
 
-        String constructions = JsonUtility.ToJson(pManager.pDataManager.pConstructions[0]);
-        Debug.Log(constructions);
-        File.WriteAllText(Application.persistentDataPath + "/playerData.json", constructions);
-
-        Debug.Log(Application.persistentDataPath);
+        File.WriteAllText(PLAYER_DATA_LIBRARY, JsonUtility.ToJson(pdl));
     }
 
-    public void load()
+    public void saveGameData()
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        //read from file
-        FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Open);
-        dataLibrary dl = (dataLibrary)bf.Deserialize(file);
-        file.Close();
+        gameDataLibrary gdl = new gameDataLibrary();
 
-        //clear current values
+        gdl.craftingRecipes = pManager.pDataManager.getCraftingComponents();
+
+        File.WriteAllText(GAME_DATA_LIBRARY, JsonUtility.ToJson(gdl));
+    }
+
+    public void loadPlayerData()
+    {
+        string jsonString = File.ReadAllText(PLAYER_DATA_LIBRARY);
+        playerDataLibrary pdl = JsonUtility.FromJson<playerDataLibrary>(jsonString);
+        
         masterInventory.clearParts();
-
-        //initialize game data structure
-
-        foreach (PartData partdata in dl.masterInventory)
+        foreach (PartData partdata in pdl.masterInventory)
         {
             loadPartData(partdata);
         }
 
-        foreach (MechData mdata in dl.playerMechs)
+        masterInventory.clearMechs();
+        foreach (MechData mdata in pdl.playerMechs)
         {
             Mech newMech = loadMechData(mdata);
             masterInventory.addMech(newMech.unitId, newMech);
-            Debug.Log("adding new mech guid: " + newMech.unitId);
         }
 
-        String constructions = File.ReadAllText(Application.persistentDataPath + "/playerData.json");
-        Construction newConst = JsonUtility.FromJson<Construction>(constructions);
-        Debug.Log(constructions);
-        pManager.pDataManager.pConstructions.Add(newConst);
+        foreach (Construction c in pdl.playerConstructions)
+        {
+            pManager.pDataManager.pConstructions.Add(c);
+        }
+    }
 
+    public void loadGameData()
+    {
+        string jsonString = File.ReadAllText(GAME_DATA_LIBRARY);
+        gameDataLibrary gdl = JsonUtility.FromJson<gameDataLibrary>(jsonString);
+
+        Debug.Log(pManager.pDataManager.getCraftingComponents().Count);
+        pManager.pDataManager.clearCraftingComponents();
+        Debug.Log(pManager.pDataManager.getCraftingComponents().Count);
+        foreach (CraftingComponent c in gdl.craftingRecipes)
+        {
+            pManager.pDataManager.addCraftingComponent(c);
+        }
+        Debug.Log(pManager.pDataManager.getCraftingComponents().Count);
     }
 
     private MechData transcribeMech(Mech mech)
     {
         MechData mdata = new MechData();
-        mdata.mechTypeId = UniTable.classGuid[mech.GetType()];
+        mdata.mechTypeId = UniTable.classGuid[mech.GetType()].ToString();
 
-        mdata.mechUnitId = mech.unitId;
+        mdata.mechUnitId = mech.unitId.ToString();
 
         //transcribe abilities
-        mdata.abilityIds = new List<Guid>();
+        mdata.abilityIds = new List<String>();
         foreach (ability a in mech.abilities)
         {
-            mdata.abilityIds.Add(UniTable.classGuid[a.GetType()]);
+            mdata.abilityIds.Add(UniTable.classGuid[a.GetType()].ToString());
         }
 
         //transcribe dynamic attributes
         mdata.dynamicAtt = new attributes(mech.dynamicAttributes);
 
         //transcribe base attributes
+        Debug.Log(mech.baseAtt.maxMovementPoints);
         mdata.baseAtt = new attributes(mech.baseAtt);
+        Debug.Log(mdata.baseAtt.maxMovementPoints);
 
         //transcribe mech class info
-        mdata.parts = new Dictionary<Part.slot, Guid>();
+        mdata.parts = new List<partOwnership>();
         foreach (KeyValuePair<Part.slot, Part> ownedPart in mech.parts)
         {
-            mdata.parts.Add(ownedPart.Key, ownedPart.Value.partId);
+            mdata.parts.Add(new partOwnership(ownedPart.Key, ownedPart.Value.partId.ToString()));
         }
 
         //transcribe unit class info
@@ -162,7 +166,7 @@ public class controlUtility : MonoBehaviour {
 
     private Mech loadMechData(MechData mechdata)
     {
-        Type mechClass = UniTable.GetTypeFromGuid(mechdata.mechTypeId);
+        Type mechClass = UniTable.GetTypeFromGuid(new Guid(mechdata.mechTypeId));
         if (mechClass == null)
         {
             Debug.Log("no such class found");
@@ -173,12 +177,13 @@ public class controlUtility : MonoBehaviour {
         Mech newMech = (Mech)pManager.pDataManager.transform.gameObject.AddComponent(mechClass);
         newMech.Initialize();
 
-        newMech.unitId = mechdata.mechUnitId;
+        newMech.unitId = new Guid(mechdata.mechUnitId);
 
         //load abilities
-        foreach (Guid g in mechdata.abilityIds)
+        foreach (String g in mechdata.abilityIds)
         {
-            ability a = UniTable.abilityDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(g)]].clone();
+            Guid mechGuid = new Guid(g);
+            ability a = UniTable.abilityDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(mechGuid)]].clone();
             a.parent = newMech;
             newMech.abilities.Add(a);
         }
@@ -191,10 +196,11 @@ public class controlUtility : MonoBehaviour {
         newMech.baseAtt.setTo(mechdata.baseAtt);
 
         //load mech class info
-        foreach (KeyValuePair<Part.slot, Guid> ownedPart in mechdata.parts)
+        foreach (partOwnership ownedPart in mechdata.parts)
         {
-            Debug.Log("slot: " + ownedPart.Key + " has item: " + ownedPart.Value);
-            newMech.addPartAs(masterInventory.getPart(ownedPart.Value, ownedPart.Key), ownedPart.Key);
+            Debug.Log("slot: " + ownedPart.slot + " has item: " + ownedPart.partId);
+            Guid partGuid = new Guid(ownedPart.partId);
+            newMech.addPartAs(masterInventory.getPart(partGuid, ownedPart.slot), ownedPart.slot);
         }
 
         //load unit class info
@@ -209,14 +215,13 @@ public class controlUtility : MonoBehaviour {
     {
         PartData partData = new PartData();
 
-        partData.partTypeId = UniTable.classGuid[part.GetType()];
-        Debug.Log("transcribing part: " + part + " as part type as: " + partData.partTypeId);
+        partData.partTypeId = UniTable.classGuid[part.GetType()].ToString();
         partData.displayName = part.displayName;
-        partData.partId = part.partId;
+        partData.partId = part.partId.ToString();
 
         if (null != part.owner)
         {
-            partData.ownerId = part.owner.unitId;
+            partData.ownerId = part.owner.unitId.ToString();
         }
 
         partData.slots = new List<Part.slot>();
@@ -226,10 +231,10 @@ public class controlUtility : MonoBehaviour {
         }
         
         partData.baseAtt = new attributes(part.baseAtt);
-        partData.abilityIds = new List<Guid>();
+        partData.abilityIds = new List<String>();
         foreach (ability a in part.abilities)
         {
-            partData.abilityIds.Add(UniTable.classGuid[a.GetType()]);
+            partData.abilityIds.Add(UniTable.classGuid[a.GetType()].ToString());
         }
         
         return partData;
@@ -237,11 +242,11 @@ public class controlUtility : MonoBehaviour {
 
     private Part loadPartData(PartData partData)
     {
-        Type partClass = UniTable.GetTypeFromGuid(partData.partTypeId);
+        Type partClass = UniTable.GetTypeFromGuid(new Guid(partData.partTypeId));
         Part part = masterInventory.createPart(partClass);
 
         part.displayName = partData.displayName;
-        part.partId = partData.partId;
+        part.partId = new Guid(partData.partId);
 
         foreach (Part.slot s in partData.slots)
         {
@@ -250,9 +255,10 @@ public class controlUtility : MonoBehaviour {
 
         part.baseAtt.setTo(partData.baseAtt);
 
-        foreach (Guid g in partData.abilityIds)
+        foreach (String g in partData.abilityIds)
         {
-            ability a = UniTable.abilityDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(g)]].clone();
+            Guid abilityGuid = new Guid(g);
+            ability a = UniTable.abilityDictionary[UniTable.classGuid[UniTable.GetTypeFromGuid(abilityGuid)]].clone();
             a.parent = part.owner;
             part.abilities.Add(a);
         }
@@ -262,22 +268,28 @@ public class controlUtility : MonoBehaviour {
 
 
 [Serializable]
-class dataLibrary
+class gameDataLibrary
 {
-    public List<MechData> playerMechs;
-    public List<PartData> masterInventory;
+    public List<CraftingComponent> craftingRecipes = new List<CraftingComponent>();
 }
 
+[Serializable]
+class playerDataLibrary
+{
+    public List<MechData> playerMechs = new List<MechData>();
+    public List<PartData> masterInventory = new List<PartData>();
+    public List<Construction> playerConstructions = new List<Construction>();
+}
 
 [Serializable]
 class MechData
 {
-    public Guid mechTypeId;
+    public String mechTypeId;
 
-    public Guid mechUnitId;
-    public List<Guid> abilityIds;
+    public String mechUnitId;
+    public List<String> abilityIds;
 
-    public Dictionary<Part.slot, Guid> parts;
+    public List<partOwnership> parts;
     
     public attributes dynamicAtt;
     public attributes baseAtt;
@@ -289,15 +301,28 @@ class MechData
 }
 
 [Serializable]
+class partOwnership
+{
+    public Part.slot slot;
+    public String partId;
+
+    public partOwnership(Part.slot slot, String partId)
+    {
+        this.slot = slot;
+        this.partId = partId;
+    }
+}
+
+[Serializable]
 class PartData
 {
-    public Guid partTypeId;
+    public String partTypeId;
 
     public String displayName;
-    public Guid partId;
-    public Guid ownerId;
+    public String partId;
+    public String ownerId;
     public List<Part.slot> slots;
 
     public attributes baseAtt;
-    public List<Guid> abilityIds;
+    public List<String> abilityIds;
 }

@@ -5,20 +5,20 @@ using System;
 [Serializable]
 public class attributes
 {
-    public float health { get; set; }
-    public float maxHealth { get; set; }
-    public int movementPoints { get; set; }
-    public int maxMovementPoints { get; set; }
-    public int mainActionPoints { get; set; }
-    public int maxMainActionPoints { get; set; }
-    public int bonusActionPoints { get; set; }
-    public int maxBonusActionPoints { get; set; }
-    public float armor { get; set; }
-    public float heatReduceRate { get; set; }
-    public float shieldPoints { get; set; }
-    public float maxShieldPoints { get; set; }
-    public float shieldRegenRate { get; set; }
-    public float shieldMitigation { get; set; }
+    public float health;
+    public float maxHealth;
+    public int movementPoints;
+    public int maxMovementPoints;
+    public int mainActionPoints;
+    public int maxMainActionPoints;
+    public int bonusActionPoints;
+    public int maxBonusActionPoints;
+    public float armor;
+    public float heatReduceRate;
+    public float shieldPoints;
+    public float maxShieldPoints;
+    public float shieldRegenRate;
+    public float shieldMitigation;
 
     public attributes() { }
 

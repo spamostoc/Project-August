@@ -63,7 +63,6 @@ public class MechWeapon : Part
 
     protected static void copy(MechWeapon src, MechWeapon tgt)
     {
-        Debug.Log("this is mechWeapon.copy");
         Part.copy(src, tgt);
         tgt.iconSprite = Sprite.Instantiate(src.iconSprite);
 

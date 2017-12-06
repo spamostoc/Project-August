@@ -61,7 +61,6 @@ public class Part {
 
     protected static void copy(Part src, Part tgt)
     {
-        Debug.Log("this is Part.copy");
         tgt.displayName = src.displayName;
 
         tgt.partId = Guid.NewGuid();

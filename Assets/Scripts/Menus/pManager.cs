@@ -51,6 +51,11 @@ public class pManager : MonoBehaviour
         return ret;
     }
 
+    public void clearCraftingComponents()
+    {
+        allComponents = new List<CraftingComponent>();
+    }
+
     // Use this for initialization
     void Awake()
     {
