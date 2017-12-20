@@ -3,7 +3,7 @@
       {
          "name":"mech",
          "componentGuid":"c921c933-bae6-4a97-a8d4-0612067f0cdd",
-         "cost":0.0,
+         "cost":10.0,
          "category":1,
          "nextCategory":[
             0
@@ -15,7 +15,7 @@
       {
          "name":"weapon",
          "componentGuid":"86e37a75-6ac1-4c31-9a25-c3908fe4d860",
-         "cost":0.0,
+         "cost":10.0,
          "category":1,
          "nextCategory":[
             0
@@ -27,7 +27,7 @@
       {
          "name":"tool",
          "componentGuid":"a2fa9d6e-14db-4b2f-9417-35eeeb546c1f",
-         "cost":0.0,
+         "cost":10.0,
          "category":1,
          "nextCategory":[
             0
@@ -39,7 +39,7 @@
       {
          "name":"nuclear",
          "componentGuid":"4b805ad3-4adc-4e62-b021-dabc8e6c088d",
-         "cost":0.0,
+         "cost":10.0,
          "category":2,
          "nextCategory":[
             0
@@ -51,7 +51,7 @@
       {
          "name":"electric",
          "componentGuid":"d50bc843-6efd-477e-b4a4-8949aea66c84",
-         "cost":0.0,
+         "cost":10.0,
          "category":3,
          "nextCategory":[
             4
@@ -65,7 +65,7 @@
       {
          "name":"ice",
          "componentGuid":"4cf84fb6-38ee-449f-85ab-8e11e7c16e6d",
-         "cost":0.0,
+         "cost":10.0,
          "category":3,
          "nextCategory":[
             4
@@ -79,7 +79,7 @@
       {
          "name":"concentrator",
          "componentGuid":"c0c49116-427b-4f1f-9c9d-3d944a12e1ad",
-         "cost":0.0,
+         "cost":10.0,
          "category":4,
          "nextCategory":[
             0
@@ -91,7 +91,7 @@
       {
          "name":"gun",
          "componentGuid":"5af0f68c-2251-434e-997a-20e6dcac1ebe",
-         "cost":0.0,
+         "cost":10.0,
          "category":5,
          "nextCategory":[
             6
@@ -104,7 +104,7 @@
       {
          "name":"laser",
          "componentGuid":"d4d4abdb-aa91-45de-9363-019cbf985d27",
-         "cost":0.0,
+         "cost":10.0,
          "category":8,
          "nextCategory":[
             0
@@ -117,7 +117,7 @@
       {
          "name":"rotary action",
          "componentGuid":"5f834906-8b69-4762-a389-9fb2ff446cff",
-         "cost":0.0,
+         "cost":10.0,
          "category":6,
          "nextCategory":[
             7
@@ -129,7 +129,7 @@
       {
          "name":"long barrel",
          "componentGuid":"f3d662c9-a453-4634-9c5c-a40896ac8bf4",
-         "cost":0.0,
+         "cost":10.0,
          "category":7,
          "nextCategory":[
             0
@@ -141,7 +141,7 @@
       {
          "name":"mod",
          "componentGuid":"fb76dd2c-9efd-4e82-aa7b-ec8448544a31",
-         "cost":0.0,
+         "cost":10.0,
          "category":17,
          "nextCategory":[
             0
@@ -153,7 +153,7 @@
       {
          "name":"pack",
          "componentGuid":"8df6e49a-508c-4864-a2c5-f42403b2901c",
-         "cost":0.0,
+         "cost":10.0,
          "category":18,
          "nextCategory":[
             0
