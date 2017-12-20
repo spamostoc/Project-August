@@ -7,12 +7,6 @@ using System.Linq;
 
 public class ForgeController : MonoBehaviour {
 
-    private const string ROOTLINE1 = "rootLine1";
-    private const string ROOTLINE2 = "rootLine2";
-    private const string ROOTLINE3 = "rootLine3";
-    private const string ROOTLINE4 = "rootLine4";
-    private const string ROOTLINE5 = "rootLine5";
-
     public string dynamicTag = "dynamicUI";
     public const int buttonHeight = 30;
 
@@ -22,32 +16,22 @@ public class ForgeController : MonoBehaviour {
     public RectTransform managementOptions2;
     public RectTransform managementOptions3;
 
-    public Button managementStageButton1;
-    public Button managementStageButton2;
-    public Button managementStageButton3;
-    public Button managementStageButton4;
-
-    public Text managementStageText1;
-    public Text managementStageText2;
-    public Text managementStageText3;
-    public Text managementStageText4;
-
     public RectTransform rootline1;
     public RectTransform rootline2;
     public RectTransform rootline3;
     public RectTransform rootline4;
 
     public RectTransform managementPanel;
-    private int lineIndex;
-    private int stageIndex;
+    private int lineIndex = 0;
+    private int nextStageIndex = 0;
+    private int currentStageIndex = 0;
 
     public Construction activeConstruct { get; private set; }
 
 	// Use this for initialization
 	void Start () {
-        managementStageButton2.interactable = false;
-        managementStageButton3.interactable = false;
-        managementStageButton4.interactable = false;
+
+        this.managementPanel.gameObject.SetActive(false);
 
         //root 1
         initLine(rootline1);
@@ -82,29 +66,88 @@ public class ForgeController : MonoBehaviour {
 
     public void startLine(RectTransform line)
     {
+        pManager.pDataManager.pConstructions.Add(new Construction(line.parent.name));
+        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.parent.name);
+
         line.Find("lineButton").gameObject.SetActive(false);
         line.Find("forgeLine").gameObject.SetActive(true);
-
-        pManager.pDataManager.pConstructions.Add(new Construction(line.name));
     }
 
     public void deleteLine(RectTransform line)
     {
+        pManager.pDataManager.pConstructions.Remove(pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.parent.name));
+        activeConstruct = null;
+
+        updateStageButtons(line);
+
+        if (lineIndex == lineToIndex(line))
+        {
+            indexToLine(lineIndex).sizeDelta = new Vector2(0, 200);
+            this.managementPanel.gameObject.SetActive(false);
+        }
+
         line.Find("lineButton").gameObject.SetActive(true);
         line.Find("forgeLine").gameObject.SetActive(false);
-
-        pManager.pDataManager.pConstructions.Remove(pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name));
     }
 
     public void selectLine(RectTransform line)
-    {      
-        line.sizeDelta = new Vector2(0, 400);
-        this.managementPanel.SetParent(line);
-        this.managementPanel.anchoredPosition = new Vector2(0, 0);
-        this.managementPanel.gameObject.SetActive(true);
+    {
+        if (lineToIndex(line) == lineIndex && currentStageIndex == nextStageIndex && this.managementPanel.gameObject.activeSelf)
+        {
+            indexToLine(lineIndex).sizeDelta = new Vector2(0, 200);
+            this.managementPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (lineToIndex(line) != lineIndex)
+            {
+                indexToLine(lineIndex).sizeDelta = new Vector2(0, 200);
+                lineIndex = lineToIndex(line);
+            }
 
-        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name);
+            line.sizeDelta = new Vector2(0, 400);
+            this.managementPanel.SetParent(line);
+            this.managementPanel.anchoredPosition = new Vector2(0, 0);
+            this.managementPanel.gameObject.SetActive(true);
+        }
+
+        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.parent.name);
+        currentStageIndex = nextStageIndex; //this weird interaction allows us to close only on clicking the same button twice
+                                            //since we use this shitty stage index to ID the line
         updateOptions();
+    }
+
+    private void updateStageButtons(RectTransform line)
+    {
+        //we have to find the corresponding parent object first to avoid nested stuff
+        List<RectTransform> transformParents = new List<RectTransform>(line.GetComponentsInChildren<RectTransform>());
+        RectTransform buttonParent = transformParents.FindAll(rect => rect.name == "forgeLine").Find(rect => rect.parent == line);
+
+        List<Button> buttonList = new List<Button>(buttonParent.GetComponentsInChildren<Button>());
+        List<Text> textList = new List<Text>(buttonParent.GetComponentsInChildren<Text>());
+
+        if (null != activeConstruct)
+        {
+            buttonList.Find(button => button.name == "Stage2").interactable = activeConstruct.stages[0].nextStageAvailable();
+            buttonList.Find(button => button.name == "Stage3").interactable = activeConstruct.stages[1].nextStageAvailable();
+            buttonList.Find(button => button.name == "Stage4").interactable = activeConstruct.stages[2].nextStageAvailable();
+
+            textList.Find(text => text.name == "Stage1 Text").text = activeConstruct.stages[0].getDescriptionText();
+            textList.Find(text => text.name == "Stage2 Text").text = activeConstruct.stages[1].getDescriptionText();
+            textList.Find(text => text.name == "Stage3 Text").text = activeConstruct.stages[2].getDescriptionText();
+            textList.Find(text => text.name == "Stage4 Text").text = activeConstruct.stages[3].getDescriptionText();
+        }
+        else
+        {
+            buttonList.Find(button => button.name == "Stage2").interactable = false;
+            buttonList.Find(button => button.name == "Stage3").interactable = false;
+            buttonList.Find(button => button.name == "Stage4").interactable = false;
+
+            textList.Find(text => text.name == "Stage1 Text").text = "";
+            textList.Find(text => text.name == "Stage2 Text").text = "";
+            textList.Find(text => text.name == "Stage3 Text").text = "";
+            textList.Find(text => text.name == "Stage4 Text").text = "";
+        }
     }
 
     public void updateOptions()
@@ -112,13 +155,14 @@ public class ForgeController : MonoBehaviour {
         cleanPanels();
 
         List<CraftingComponent.componentCategory> optionCategories = new List<CraftingComponent.componentCategory>();
-        if (stageIndex == 0)
+        if (currentStageIndex == 0)
         {
             optionCategories.Add(CraftingComponent.componentCategory.root);
         }
         else
         {
-            foreach (CraftingComponent c in activeConstruct.stages[stageIndex - 1].getComponents())
+            //get first option of each stage by compositing the options from the previous stage
+            foreach (CraftingComponent c in activeConstruct.stages[currentStageIndex - 1].getComponents())
             {
                 List<CraftingComponent.componentCategory> categories = c.getNextStage();
                 if (null == categories || categories.Count == 0 || categories[0] == CraftingComponent.componentCategory.none)
@@ -135,40 +179,23 @@ public class ForgeController : MonoBehaviour {
                 }
             }
         }
+        //fetch other options sequentially and populate to UI
         List<CraftingComponent> firstOption = pManager.pDataManager.getCraftingComponents(optionCategories);
         populateOptions(managementOptions1, 0, firstOption);
 
-        if (activeConstruct.stages[stageIndex].getComponents().Count > 1)
+        if (activeConstruct.stages[currentStageIndex].getComponents().Count > 1)
         {
-            List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].getComponents(0).getNextCategory());
+            List<CraftingComponent> secondOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[currentStageIndex].getComponents(0).getNextCategory());
             populateOptions(managementOptions2, 1, secondOption);
         }
         
-        if(activeConstruct.stages[stageIndex].getComponents().Count > 2)
+        if (activeConstruct.stages[currentStageIndex].getComponents().Count > 2)
         {
-            List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[stageIndex].getComponents(1).getNextCategory());
+            List<CraftingComponent> thirdOption = pManager.pDataManager.getCraftingComponents(activeConstruct.stages[currentStageIndex].getComponents(1).getNextCategory());
             populateOptions(managementOptions3, 2, thirdOption);
         }
 
-        managementStageButton2.interactable = activeConstruct.stages[0].nextStageAvailable();
-        managementStageButton3.interactable = activeConstruct.stages[1].nextStageAvailable();
-        managementStageButton4.interactable = activeConstruct.stages[2].nextStageAvailable();
-
-        //populate button text
-        managementStageText1.text = activeConstruct.stages[0].getDescriptionText();
-        managementStageText2.text = activeConstruct.stages[1].getDescriptionText();
-        managementStageText3.text = activeConstruct.stages[2].getDescriptionText();
-        managementStageText4.text = activeConstruct.stages[3].getDescriptionText();
-    }
-
-    public void setLineIndex(int index)
-    {
-        this.lineIndex = index;
-    }
-
-    public void setStageIndex(int index)
-    {
-        this.stageIndex = index;
+        updateStageButtons(indexToLine(lineIndex));
     }
 
     private bool populateOptions(RectTransform optionTransform, int optionIndex, List<CraftingComponent> options)
@@ -207,19 +234,24 @@ public class ForgeController : MonoBehaviour {
 
     public void selectOption(int componentIndex, CraftingComponent component)
     {
-        activeConstruct.setComponent(stageIndex, componentIndex, component);
+        activeConstruct.setComponent(nextStageIndex, componentIndex, component);
         this.updateOptions();
     }
 
     public void initLine(RectTransform line)
     {
-        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.name);
+        activeConstruct = pManager.pDataManager.pConstructions.Find(construct => construct.getLineName() == line.parent.name);
         if (null != activeConstruct && !activeConstruct.isEmpty())
         {
             line.Find("lineButton").gameObject.SetActive(false);
             line.Find("forgeLine").gameObject.SetActive(true);
-            updateOptions();
+            updateStageButtons(line);
         }
+    }
+
+    public void setStageIndex(int index)
+    {
+        this.nextStageIndex = index;
     }
 
     private void cleanPanels()
@@ -239,5 +271,44 @@ public class ForgeController : MonoBehaviour {
             if (r.tag.Equals(dynamicTag))
                 GameObject.DestroyObject(r.gameObject);
         }
+    }
+
+    private int lineToIndex(RectTransform line)
+    {
+        if (rootline1 == line)
+        {
+            return 0;
+        }
+        else if (rootline2 == line)
+        {
+            return 1;
+        }
+        else if (rootline3 == line)
+        {
+            return 2;
+        }
+        else if (rootline4 == line)
+        {
+            return 3;
+        }
+        throw new IndexOutOfRangeException("not such line found");
+    }
+
+    private RectTransform indexToLine(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return rootline1;
+            case 1:
+                return rootline2;
+            case 2:
+                return rootline3;
+            case 3:
+                return rootline4;
+            default:
+                throw new IndexOutOfRangeException("not such line found");
+        }
+
     }
 }
