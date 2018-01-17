@@ -311,4 +311,9 @@ public class ForgeController : MonoBehaviour {
         }
 
     }
+
+    public void loadScene(string levelName)
+    {
+        SceneLoader.sceneLoader.loadScene(levelName);
+    }
 }

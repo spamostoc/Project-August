@@ -51,4 +51,9 @@ public class Construction {
         }
         return true;
     }
+
+    public void onTick(float timeDelta)
+    {
+
+    }
 }

@@ -256,5 +256,20 @@ class OtherGuiController : MonoBehaviour
     {
         Application.LoadLevel(Application.loadedLevel);
     }
+
+    public void OnAbilityButton(int index)
+    {
+        CellGrid.ActivateAbility(index);
+    }
+
+    public void OnEndTurnButton()
+    {
+        CellGrid.EndTurn();
+    }
+
+    public void loadScene(string levelName)
+    {
+        SceneLoader.sceneLoader.loadScene(levelName);
+    }
 }
 

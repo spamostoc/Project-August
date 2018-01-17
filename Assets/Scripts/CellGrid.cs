@@ -167,7 +167,7 @@ public class CellGrid : MonoBehaviour
         Players.Find(p => p.PlayerNumber.Equals(CurrentPlayerNumber)).Play(this);     
     }
 
-    public void OnAbilityButton(int index)
+    public void ActivateAbility(int index)
     {
         CellGridState.OnAbilityActive(index);
     }

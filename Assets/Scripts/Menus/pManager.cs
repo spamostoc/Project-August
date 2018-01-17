@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System;
+using UnityEngine.UI;
 
 public class pManager : MonoBehaviour
 {
@@ -13,9 +14,20 @@ public class pManager : MonoBehaviour
 
     private List<CraftingComponent> allComponents = new List<CraftingComponent>();
 
+    public float simTime { get; private set; }
+
     /// <summary>
     /// component functions
     /// </summary>
+
+    public void onTick(float timeDelta)
+    {
+        foreach (Construction c in pDataManager.pConstructions)
+        {
+            c.onTick(timeDelta);
+        }
+        pDataManager.simTime += timeDelta;
+    }
 
     public void addCraftingComponent(CraftingComponent c)
     {
@@ -73,6 +85,9 @@ public class pManager : MonoBehaviour
 
     public void startUp()
     {
+        //set clock
+        simTime = 0.0f;
+
         //ability dictionary
         shoot newShoot = new shoot();
         newShoot.Initialize();

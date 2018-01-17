@@ -403,5 +403,10 @@ public class hangerController : MonoBehaviour {
         }
     }
     #endregion
+
+    public void loadScene(string levelName)
+    {
+        SceneLoader.sceneLoader.loadScene(levelName);
+    }
 }
 
