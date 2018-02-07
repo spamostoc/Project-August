@@ -136,6 +136,33 @@ public class ForgeController : MonoBehaviour {
             textList.Find(text => text.name == "Stage2 Text").text = activeConstruct.stages[1].getDescriptionText();
             textList.Find(text => text.name == "Stage3 Text").text = activeConstruct.stages[2].getDescriptionText();
             textList.Find(text => text.name == "Stage4 Text").text = activeConstruct.stages[3].getDescriptionText();
+
+            ColorBlock cb;
+
+            if (activeConstruct.stages[0].getCompleted())
+            {
+                cb = buttonList.Find(button => button.name == "Stage1").colors;
+                cb.colorMultiplier = 2.5f;
+                buttonList.Find(button => button.name == "Stage1").colors = cb;
+            }
+            if (activeConstruct.stages[1].getCompleted())
+            {
+                cb = buttonList.Find(button => button.name == "Stage2").colors;
+                cb.colorMultiplier = 2.5f;
+                buttonList.Find(button => button.name == "Stage2").colors = cb;
+            }
+            if (activeConstruct.stages[2].getCompleted())
+            {
+                cb = buttonList.Find(button => button.name == "Stage3").colors;
+                cb.colorMultiplier = 2.5f;
+                buttonList.Find(button => button.name == "Stage3").colors = cb;
+            }
+            if (activeConstruct.stages[3].getCompleted())
+            {
+                cb = buttonList.Find(button => button.name == "Stage3").colors;
+                cb.colorMultiplier = 2.5f;
+                buttonList.Find(button => button.name == "Stage3").colors = cb;
+            }
         }
         else
         {
@@ -147,6 +174,23 @@ public class ForgeController : MonoBehaviour {
             textList.Find(text => text.name == "Stage2 Text").text = "";
             textList.Find(text => text.name == "Stage3 Text").text = "";
             textList.Find(text => text.name == "Stage4 Text").text = "";
+
+            ColorBlock cb;
+            cb = buttonList.Find(button => button.name == "Stage1").colors;
+            cb.colorMultiplier = 1.0f;
+            buttonList.Find(button => button.name == "Stage1").colors = cb;
+
+            cb = buttonList.Find(button => button.name == "Stage2").colors;
+            cb.colorMultiplier = 1.0f;
+            buttonList.Find(button => button.name == "Stage2").colors = cb;
+
+            cb = buttonList.Find(button => button.name == "Stage3").colors;
+            cb.colorMultiplier = 1.0f;
+            buttonList.Find(button => button.name == "Stage3").colors = cb;
+
+            cb = buttonList.Find(button => button.name == "Stage3").colors;
+            cb.colorMultiplier = 1.0f;
+            buttonList.Find(button => button.name == "Stage3").colors = cb;
         }
     }
 
@@ -234,8 +278,11 @@ public class ForgeController : MonoBehaviour {
 
     public void selectOption(int componentIndex, CraftingComponent component)
     {
-        activeConstruct.setComponent(nextStageIndex, componentIndex, component);
-        this.updateOptions();
+        if (!activeConstruct.stages[nextStageIndex].getLocked())
+        {
+            activeConstruct.setComponent(nextStageIndex, componentIndex, component);
+            this.updateOptions();
+        }
     }
 
     public void initLine(RectTransform line)

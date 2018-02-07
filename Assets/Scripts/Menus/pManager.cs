@@ -22,11 +22,11 @@ public class pManager : MonoBehaviour
 
     public void onTick(float timeDelta)
     {
+        pDataManager.simTime += timeDelta;
         foreach (Construction c in pDataManager.pConstructions)
         {
             c.onTick(timeDelta);
         }
-        pDataManager.simTime += timeDelta;
     }
 
     public void addCraftingComponent(CraftingComponent c)

@@ -11,6 +11,9 @@ public class Construction {
     [SerializeField]
     private string lineName;
 
+    [SerializeField]
+    private bool completed = false;
+
     public List<CraftStage> stages = new List<CraftStage>()
     {
         new CraftStage(0), new CraftStage(1), new CraftStage(2), new CraftStage(3)
@@ -54,6 +57,34 @@ public class Construction {
 
     public void onTick(float timeDelta)
     {
+        if (completed)
+        {
+            return;
+        }
 
+        int completeCount = 0;
+        for (int i = 0; i < stages.Count; i++)
+        {
+            CraftStage cs = stages.Find(s => s.getStage() == i);
+            if (!cs.getCompleted())
+            {
+                cs.onTick(timeDelta);
+                if (cs.getCompleted())
+                {
+                    completeCount++;
+                }
+                break;
+            }
+            else
+            {
+                completeCount++;
+            }
+        }
+        
+        if (completeCount >= stages.Count)
+        {
+            masterInventory.createPart(typeof(LasGunWeapon));
+            completed = true;
+        }
     }
 }
