@@ -2,8 +2,8 @@
    "craftingRecipes":[
       {
          "name":"mech",
-         "componentGuid":"c921c933-bae6-4a97-a8d4-0612067f0cdd",
-         "cost":10.0,
+         "componentGuid":"1a38c2e4-4abf-4106-b1d4-db59d4e3926c",
+         "cost":3.0,
          "category":1,
          "nextCategory":[
             0
@@ -14,8 +14,8 @@
       },
       {
          "name":"weapon",
-         "componentGuid":"86e37a75-6ac1-4c31-9a25-c3908fe4d860",
-         "cost":10.0,
+         "componentGuid":"07b11c71-4cc2-4597-ab7f-306ed82ff911",
+         "cost":3.0,
          "category":1,
          "nextCategory":[
             0
@@ -26,8 +26,8 @@
       },
       {
          "name":"tool",
-         "componentGuid":"a2fa9d6e-14db-4b2f-9417-35eeeb546c1f",
-         "cost":10.0,
+         "componentGuid":"54820a76-93ac-4c9d-92ae-5ab478f4fcc0",
+         "cost":3.0,
          "category":1,
          "nextCategory":[
             0
@@ -38,8 +38,8 @@
       },
       {
          "name":"nuclear",
-         "componentGuid":"4b805ad3-4adc-4e62-b021-dabc8e6c088d",
-         "cost":10.0,
+         "componentGuid":"40bddce1-d862-433a-a022-1756504d45a1",
+         "cost":3.0,
          "category":2,
          "nextCategory":[
             0
@@ -50,8 +50,8 @@
       },
       {
          "name":"electric",
-         "componentGuid":"d50bc843-6efd-477e-b4a4-8949aea66c84",
-         "cost":10.0,
+         "componentGuid":"09190d3a-676b-4a1a-b083-0375db042f8b",
+         "cost":3.0,
          "category":3,
          "nextCategory":[
             4
@@ -64,8 +64,8 @@
       },
       {
          "name":"ice",
-         "componentGuid":"4cf84fb6-38ee-449f-85ab-8e11e7c16e6d",
-         "cost":10.0,
+         "componentGuid":"ac6e5a83-7c95-4d92-8b9b-66d055c83795",
+         "cost":3.0,
          "category":3,
          "nextCategory":[
             4
@@ -78,8 +78,8 @@
       },
       {
          "name":"concentrator",
-         "componentGuid":"c0c49116-427b-4f1f-9c9d-3d944a12e1ad",
-         "cost":10.0,
+         "componentGuid":"cf91aeb7-e31c-4fc0-8dd4-e834f1af2769",
+         "cost":3.0,
          "category":4,
          "nextCategory":[
             0
@@ -90,8 +90,8 @@
       },
       {
          "name":"gun",
-         "componentGuid":"5af0f68c-2251-434e-997a-20e6dcac1ebe",
-         "cost":10.0,
+         "componentGuid":"65aef9bf-6e18-4b2d-a663-570241012de3",
+         "cost":3.0,
          "category":5,
          "nextCategory":[
             6
@@ -103,8 +103,8 @@
       },
       {
          "name":"laser",
-         "componentGuid":"d4d4abdb-aa91-45de-9363-019cbf985d27",
-         "cost":10.0,
+         "componentGuid":"a066d265-25df-4370-ad5e-3615a97b79c7",
+         "cost":3.0,
          "category":8,
          "nextCategory":[
             0
@@ -116,8 +116,8 @@
       },
       {
          "name":"rotary action",
-         "componentGuid":"5f834906-8b69-4762-a389-9fb2ff446cff",
-         "cost":10.0,
+         "componentGuid":"3ccf9b55-5371-4be8-b6fd-1f81a6bd6c90",
+         "cost":3.0,
          "category":6,
          "nextCategory":[
             7
@@ -128,8 +128,8 @@
       },
       {
          "name":"long barrel",
-         "componentGuid":"f3d662c9-a453-4634-9c5c-a40896ac8bf4",
-         "cost":10.0,
+         "componentGuid":"28c88b19-4fa0-440e-809c-303a006e662e",
+         "cost":3.0,
          "category":7,
          "nextCategory":[
             0
@@ -140,9 +140,35 @@
       },
       {
          "name":"mod",
-         "componentGuid":"fb76dd2c-9efd-4e82-aa7b-ec8448544a31",
-         "cost":10.0,
+         "componentGuid":"4ca2393d-d688-426f-8fb8-abea887db20f",
+         "cost":3.0,
          "category":17,
+         "nextCategory":[
+            19,
+            20
+         ],
+         "nextStage":[
+            23
+         ]
+      },
+      {
+         "name":"pack",
+         "componentGuid":"a5683e14-c510-45c4-ac82-f33b65f51c1b",
+         "cost":3.0,
+         "category":18,
+         "nextCategory":[
+            21,
+            22
+         ],
+         "nextStage":[
+            23
+         ]
+      },
+      {
+         "name":"faster",
+         "componentGuid":"2185bb5d-ca66-47b2-ae1f-9ac1d75d0fa3",
+         "cost":3.0,
+         "category":19,
          "nextCategory":[
             0
          ],
@@ -151,10 +177,34 @@
          ]
       },
       {
-         "name":"pack",
-         "componentGuid":"8df6e49a-508c-4864-a2c5-f42403b2901c",
-         "cost":10.0,
-         "category":18,
+         "name":"harder",
+         "componentGuid":"41acb286-aea3-47eb-a455-7de06899b290",
+         "cost":3.0,
+         "category":20,
+         "nextCategory":[
+            0
+         ],
+         "nextStage":[
+            0
+         ]
+      },
+      {
+         "name":"better",
+         "componentGuid":"2a031393-091a-4fb3-8f4d-c6e641c26320",
+         "cost":3.0,
+         "category":21,
+         "nextCategory":[
+            0
+         ],
+         "nextStage":[
+            0
+         ]
+      },
+      {
+         "name":"stronger",
+         "componentGuid":"06e59125-9ed2-4c03-8596-b56561e79005",
+         "cost":3.0,
+         "category":22,
          "nextCategory":[
             0
          ],

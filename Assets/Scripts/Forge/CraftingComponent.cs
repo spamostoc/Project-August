@@ -41,7 +41,9 @@ public class CraftingComponent {
         shield,
         chassis,
         //stage 4
-        mod, pack //last category supplements
+        mod, pack, //last category supplements
+        faster, harder, better, stronger,
+        end //this just makes the check logic work
     }
 
 

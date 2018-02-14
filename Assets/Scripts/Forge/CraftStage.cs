@@ -16,7 +16,7 @@ public class CraftStage {
     public float progress;
 
     [SerializeField]
-    private bool locked = false;
+    private bool started = false;
 
     [SerializeField]
     private bool completed = false;
@@ -78,6 +78,26 @@ public class CraftStage {
         {
             ret += c.getName() + " ";
         }
+
+        ret += "\n";
+        if (this.started)
+        {
+            ret += "locked";
+        }
+        else
+        {
+            ret += "not locked";
+        }
+
+        ret += "\n";
+        if (this.completed)
+        {
+            ret += "completed";
+        }
+        else
+        {
+            ret += "not completed";
+        }
         return ret.Trim();
     }
 
@@ -91,7 +111,6 @@ public class CraftStage {
 
         foreach (CraftingComponent c in components)
         {
-            Debug.Log("stage number " + stage + " component name " + c.getName());
             if (c.getCategory() == CraftingComponent.componentCategory.none)
             {
                 return false;
@@ -120,11 +139,16 @@ public class CraftStage {
 
     public void onTick(float timeDelta)
     {
+        if (!nextStageAvailable())
+        {
+            return;
+        }
+
         this.progress += timeDelta;
 
-        if (!locked && progress > 0.0f)
+        if (!started && progress > 0.0f)
         {
-            this.locked = true;
+            this.started = true;
         }
 
         if (getPercentage() >= 1.0f)
@@ -141,6 +165,10 @@ public class CraftStage {
         {
             sum += c.getCost();
         }
+        if (sum == 0.0f)
+        {
+            return 0.0f;
+        }
         return this.progress / sum;
     }
 
@@ -151,6 +179,6 @@ public class CraftStage {
 
     public bool getLocked()
     {
-        return this.locked;
+        return this.started;
     }
 }
